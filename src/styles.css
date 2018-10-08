@@ -1,0 +1,60 @@
+body {
+    padding: 10px;
+}
+
+.block-container {
+    box-shadow: 0 0 20px 5px rgba(221, 221, 221, 1);
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    border-radius: 10px;
+    margin: 0;
+    padding: 15px;
+    background-color: white;
+}
+
+.component-title {
+    text-align: center;
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+.component-content {
+    box-shadow: 0 0 20px 5px rgba(221, 221, 221, 1);
+    text-align: center;
+    border-radius: 3px;
+}
+
+.btn-link {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.btn-link:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.btn-common {
+    border-radius: 3px;
+    padding: 7px 12px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.btn-green {
+    background-color: #00d014;
+}
+
+.btn-orange {
+    background-color: #ffb70f;
+}
+
+.btn-green:hover {
+    background-color: lime;
+}
+
+.btn-orange:hover {
+    background-color: lightcoral;
+}
