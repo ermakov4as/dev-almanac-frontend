@@ -8,12 +8,12 @@
                     :to="discTreeLink"
                     tag="button"
                     class="btn btn-green btn-common disc-btn"
-                    ><a class="btn-link">ДРЕВО</a></router-link>
+                    >ДРЕВО</router-link>
             <router-link
                     :to="editDiscLink"
                     tag="button"
                     class="btn btn-orange btn-common disc-btn"
-                    ><a class="btn-link">РЕДАКТИРОВАТЬ</a></router-link>
+                    >РЕДАКТИРОВАТЬ</router-link>
         </div>
     </div>
 </template>
@@ -23,11 +23,11 @@
         data() {
             return {
                 discTreeLink: {
-                    path: `/dashboard/sciences/${ this.discipline.id }/tree-edit`,
+                    path: `/sciences/${ this.discipline.id }/tree-edit`,
                     params: { id: this.discipline.id }
                 },
                 editDiscLink: {
-                    path: `/dashboard/sciences/${ this.discipline.id }/edit`,
+                    path: `/sciences/${ this.discipline.id }/edit`,
                     params: { id: this.discipline.id }
                 }
             }

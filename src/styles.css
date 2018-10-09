@@ -1,7 +1,3 @@
-body {
-    padding: 10px;
-}
-
 .block-container {
     box-shadow: 0 0 20px 5px rgba(221, 221, 221, 1);
     margin-left: auto;
@@ -11,6 +7,50 @@ body {
     margin: 0;
     padding: 15px;
     background-color: white;
+}
+
+body {
+    padding: 10px;
+}
+
+.btn-common {
+    border-radius: 3px;
+    padding: 7px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+}
+
+.btn-green {
+    background-color: #00d014;
+}
+
+.btn-orange {
+    background-color: #ffb70f;
+}
+
+.btn-red {
+    background-color: #ff3739;
+}
+
+.btn-green:hover {
+    background-color: lime;
+}
+
+.btn-orange:hover {
+    background-color: lightcoral;
+}
+
+.btn-red:hover {
+    background-color: darkred;
+}
+
+.btn-oval {
+    border-radius: 25px;
+    padding: 7px 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .component-title {
@@ -25,36 +65,44 @@ body {
     border-radius: 3px;
 }
 
-.btn-link {
-    color: white;
-    font-size: 14px;
-    font-weight: 500;
+.create-btn-right {
+    text-align: right;
+    padding-bottom: 20px;
+    padding-right: 50px;
 }
 
-.btn-link:hover {
-    text-decoration: none;
-    color: white;
+label {
+    margin: 0;
 }
 
-.btn-common {
-    border-radius: 3px;
-    padding: 7px 12px;
-    font-size: 14px;
-    font-weight: 500;
+.label-subtitle {
+    font-size: 18px;
+    font-weight: bolder;
+    text-align: left;
+    margin: 0;
+    padding: 10px 0 10px 10px;
 }
 
-.btn-green {
-    background-color: #00d014;
+.form-element {
+    text-align: center;
+    margin: 0 30px 30px 30px;
 }
 
-.btn-orange {
-    background-color: #ffb70f;
+.form-element:before {
+    height: 100%;
+    display: inline-block;
+    vertical-align: middle;
 }
 
-.btn-green:hover {
-    background-color: lime;
+.save-cancel-btn {
+    display: inline-block;
+    width: 10%;
+    vertical-align: middle;
+    border: 1px solid white;
 }
 
-.btn-orange:hover {
-    background-color: lightcoral;
+.save-cancel-input {
+    display: inline-block;
+    width: 80%;
+    vertical-align: middle;
 }

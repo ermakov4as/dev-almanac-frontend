@@ -7,7 +7,7 @@
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
                 <router-link
-                        to="/dashboard"
+                        to="/sciences"
                         class="nav-item active"
                         tag="li">
                     <a class="nav-link">Список дисциплин</a>

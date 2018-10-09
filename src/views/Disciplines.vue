@@ -8,47 +8,47 @@
                     :discipline="discipline"></app-discipline>
         </div>
         <div>
-            <app-create-disc></app-create-disc>
+            <app-create-btn :createBtn="createBtn"></app-create-btn>
         </div>
     </div>
 </template>
 
 <script>
     import Discipline from '../components/Disciplines/Discipline.vue';
-    import CreateDisc from '../components/Disciplines/CreateDisc.vue';
+    import CreateBtn from '../components/Elements/CreateBtn.vue';
     import axios from 'axios';
-
-    const apiURL = 'http://127.0.0.1:8081/';
 
     export default {
         data() {
             return {
                 disciplines: [{
-                    id: 0,
-                    name: "Name",
-                    content: "Content",
-                    desc: "Description",
-                    video: "Video"
-                }]
+                    id: -1,
+                    name: "",
+                    content: "",
+                    desc: "",
+                    video: ""
+                }],
+                createBtn: {
+                    name: 'СОЗДАТЬ НОВУЮ',
+                    btnPath: '/sciences/0/edit'
+                }
             }
         },
         components: {
             appDiscipline: Discipline,
-            appCreateDisc: CreateDisc
+            appCreateBtn: CreateBtn
         },
         methods: {
             getData() {
-      		axios
-				.get(`${apiURL}sciences`)
-				.then(response => {
-					this.disciplines = response.data;
-					console.log(response);
-					console.log(this.disciplines)
-				})
-				.catch(error => {
-					console.log(error);
-				});
-		    },
+      		    axios
+                    .get('/sciences')
+                    .then(response => {
+                        this.disciplines = response.data;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+                },
         },
         mounted() {
     	    this.getData();

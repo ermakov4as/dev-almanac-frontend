@@ -13,22 +13,28 @@ export default new Router({
             component: Home
         },
         {
-            path: '/dashboard',
-            name: 'dashboard',
+            path: '/sciences',
+            name: 'sciences',
             component: () =>
                 import ('./views/Disciplines.vue')
         },
         {
-            path: '/dashboard/sciences/:id/edit',
+            path: '/sciences/:id/edit',
             name: 'discEdit',
             component: () =>
                 import ('./views/DiscEdit.vue')
         },
         {
-            path: '/dashboard/sciences/:id/tree-edit',
+            path: '/sciences/:id/tree-edit',
             name: 'discTree',
             component: () =>
                 import ('./views/DiscTree.vue')
+        },
+        {
+            path: '/sciences/:id_last/lesson/:id/edit',
+            name: 'lessonEdit',
+            component: () =>
+                import ('./views/LessonEdit.vue')
         }
     ]
 })
