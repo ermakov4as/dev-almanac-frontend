@@ -24,26 +24,26 @@
                                 >CANCEL</router-link>
                     </div>
                 </div>
-                                <div class="form-group">
+                <div class="form-group">
                     <div class="label-subtitle">
                         <label for="desc">Описание</label>
                     </div>
                     <div class="form-element">
-                        <app-quil-editor
+                        <app-editor
                                 id="desc"
                                 :contentForQuil="science.desc"
-                                @quilUpdated="quilUpdatedDesc"></app-quil-editor>
+                                @quilUpdated="quilUpdatedDesc"></app-editor>
                     </div>
                 </div>
-                                <div class="form-group">
+                <div class="form-group">
                     <div class="label-subtitle">
                         <label for="content">Содержимое</label>
                     </div>
                     <div class="form-element">
-                        <app-quil-editor
+                        <app-editor
                                 id="content"
                                 :contentForQuil="science.content"
-                                @quilUpdated="quilUpdatedContent"></app-quil-editor>
+                                @quilUpdated="quilUpdatedContent"></app-editor>
                     </div>
                 </div>
                 <div class="form-group">
@@ -74,7 +74,7 @@
 <script>
     import CreateBtn from '../components/Elements/CreateBtn.vue';
     import NameDescList from '../components/Elements/NameDescList.vue';
-    import QuilEditor from '../components/Elements/QuilEditor.vue';
+    import Editor from '../components/Elements/Editor.vue';
     import axios from 'axios';
 
     export default {
@@ -104,7 +104,7 @@
         components: {
             appCreateBtn: CreateBtn,
             appNameDescList: NameDescList,
-            appQuilEditor: QuilEditor
+            appEditor: Editor
         },
         methods: {
             quilUpdatedContent(content) {
