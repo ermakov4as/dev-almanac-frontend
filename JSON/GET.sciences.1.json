@@ -1,0 +1,19 @@
+  {
+    "id": 1,
+    "name": "Some Lesson Name",
+    "desc": "Description",
+    "content": "Science content",
+    "video": "Link to video",
+    "lessons": [
+      {
+        "id": 1,
+        "name": "1st Lesson Name",
+        "desc": "Lesson 1 description"
+      },
+      {
+        "id": 4,
+        "name": "2nd Lesson Name",
+        "desc": "Lesson 2 description"
+      }
+    ]
+  }
