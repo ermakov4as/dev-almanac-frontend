@@ -23,11 +23,11 @@
         data() {
             return {
                 discTreeLink: {
-                    path: `/sciences/${ this.discipline.id }/tree-edit`,
+                    path: `/sciences/${ this.discipline.id }/upload_tree/`,
                     params: { id: this.discipline.id }
                 },
                 editDiscLink: {
-                    path: `/sciences/${ this.discipline.id }/edit`,
+                    path: `/sciences/${ this.discipline.id }/`,
                     params: { id: this.discipline.id }
                 }
             }

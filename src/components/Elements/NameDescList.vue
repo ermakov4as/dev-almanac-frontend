@@ -23,7 +23,7 @@
         data() {
             return {
                 editElementLink: {
-                    path: `${ this.editPath }${ this.element.id }/edit`,
+                    path: `${ this.editPath }${ this.element.id }/`,
                     params: {
                         id_last: this.element.id,
                         id: this.$route.params.id

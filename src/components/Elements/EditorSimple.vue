@@ -1,7 +1,7 @@
 <template>
     <md-card>
         <md-card-media>
-            <div class="quill-editor-example" @mouseleave="onEditorMouseLeave($event)">
+            <div class="quill-editor-example" @mouseleave="onEditorMouseLeave($event)" @mouseenter="onEditorMouseEnter($event)">
                 <!-- quill-editor -->
                 <!--p>{{ content }}</p-->
                 <quill-editor ref="myTextEditor"
@@ -23,7 +23,10 @@
     import hljs from 'highlight.js';
 
     export default {
-        props: ['contentForQuil'],
+        props: [
+            'contentForQuil',
+            'dataReady'
+        ],
         data() {
             //let contentLocal = this.contentForQuil;
             return {
@@ -53,7 +56,8 @@
                         }
                     }
                 },
-                firstClick: true
+                firstClick: true,
+                firstDataReady: true
             }
         },
         methods: {
@@ -71,9 +75,19 @@
             onEditorReady(editor) {
                 console.log('editor ready!', editor)
             },
+            onEditorMouseEnter(editor) {
+                if (this.dataReady & this.firstDataReady) {
+                    this.content = this.contentForQuil;
+                    this.firstDataReady = false;
+                }
+            },
             onEditorMouseLeave(editor) {
                 console.log('MOUSE!')
                 this.$emit('quilUpdated', this.content)
+                if (this.dataReady & this.firstDataReady) {
+                    this.content = this.contentForQuil;
+                    this.firstDataReady = false;
+                }
             }
         },
         computed: {
@@ -87,7 +101,10 @@
         mounted() {
             console.log('this is my editor', this.editor)
             setTimeout(() => {
-                this.content = this.contentForQuil
+                if (this.dataReady & this.firstDataReady) {
+                    this.content = this.contentForQuil;
+                    this.firstDataReady = false;
+                }
             }, 300)
         }
     }

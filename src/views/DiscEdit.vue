@@ -26,12 +26,13 @@
                 </div>
                 <div class="form-group">
                     <div class="label-subtitle">
-                        <label for="desc">Описание</label>
+                        <label for="description">Описание</label>
                     </div>
                     <div class="form-element">
                         <app-editor-simple
-                                id="desc"
-                                :contentForQuil="science.desc"
+                                id="description"
+                                :contentForQuil="science.description"
+                                :dataReady="dataReady"
                                 @quilUpdated="quilUpdatedDesc"></app-editor-simple>
                     </div>
                 </div>
@@ -79,12 +80,12 @@
             return {
                 createBtn: {
                     name: 'НОВЫЙ УРОК',
-                    btnPath: `/sciences/${ this.$route.params.id }/lesson/0/edit`
+                    btnPath: `/sciences/${ this.$route.params.id }/lessons/0/`
                 },
                 science: {
                     id: -2,
                     name: "",
-                    desc: "",
+                    description: "",
                     content: "",
                     video: "",
                     lessons: [{
@@ -93,10 +94,11 @@
                         desc: ""
                     }]
                 },
-                cancelLink: { path: '/sciences' },
-                editPath: `/sciences/${ this.$route.params.id }/lesson/`,
+                cancelLink: { path: '/sciences/' },
+                editPath: `/sciences/${ this.$route.params.id }/lessons/`,
+                dataReady: false,
                 requestPath: '/articles/',
-                showContent: false,
+                showContent: true,
                 showLessons: false,
                 vremNewId: 100
             }
@@ -115,9 +117,12 @@
                 this.science.desc = desc
             },
             getData() {
-      		    HTTP.get(`sciences/${ this.$route.params.id }/edit`)
+      		    HTTP.get(`sciences/${ this.$route.params.id }/`)
                     .then(response => {
                         this.science = response.data;
+                        this.dataReady = true;
+                        console.log('GET DiscEdit');
+                        console.log(response.data);
                     })
                     .catch(error => {
                         console.log(error);
@@ -125,7 +130,7 @@
             },
             saveScience() {
                 if (this.$route.params.id == 0) {
-                    HTTP.post(`sciences/${ this.vremNewId }/edit`, this.science)
+                    HTTP.post(`sciences/${ this.vremNewId }/`, this.science)
                         .then(response => {
                             console.log(response.data);
                         })
@@ -133,7 +138,7 @@
                             console.log(error);
                         });
                 } else {
-                    HTTP.put(`sciences/${ this.$route.params.id }/edit`, this.science)
+                    HTTP.put(`sciences/${ this.$route.params.id }/`, this.science)
                         .then(response => {
                             console.log(response.data);
                         })

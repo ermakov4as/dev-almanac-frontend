@@ -5,7 +5,6 @@ import "bootstrap-vue/dist/bootstrap-vue.css"
 import App from './App.vue'
 import router from './router'
 import store from './store'
-//import axios from 'axios'
 import VueQuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
@@ -20,8 +19,6 @@ Vue.use(BootstrapVue)
 Vue.use(VueQuillEditor, /* { default global options } */ )
 Vue.use(VueMaterial)
 Vue.use(Notifications)
-
-//axios.defaults.baseURL = 'http://127.0.0.1:8081/'
 
 new Vue({
     router,

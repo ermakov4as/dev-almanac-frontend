@@ -30,7 +30,7 @@
                 }],
                 createBtn: {
                     name: 'СОЗДАТЬ НОВУЮ',
-                    btnPath: '/sciences/0/edit'
+                    btnPath: '/sciences/0/'
                 }
             }
         },
@@ -40,9 +40,10 @@
         },
         methods: {
             getData() {
-      		    HTTP.get('sciences')
+      		    HTTP.get('sciences/')
                     .then(response => {
                         this.disciplines = response.data;
+                        //console.log(response.data);
                     })
                     .catch(error => {
                         console.log(error);
