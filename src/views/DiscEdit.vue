@@ -72,7 +72,7 @@
     import NameDescList from '../components/Elements/NameDescList.vue';
     import EditorSimple from '../components/Elements/EditorSimple.vue';
     import EditorTop from '../components/Elements/EditorTop.vue';
-    import axios from 'axios';
+    import { HTTP } from '../http-common.js';
 
     export default {
         data() {
@@ -115,8 +115,7 @@
                 this.science.desc = desc
             },
             getData() {
-      		    axios
-                    .get(`sciences/${ this.$route.params.id }/edit`)
+      		    HTTP.get(`sciences/${ this.$route.params.id }/edit`)
                     .then(response => {
                         this.science = response.data;
                     })
@@ -126,8 +125,7 @@
             },
             saveScience() {
                 if (this.$route.params.id == 0) {
-                    axios
-                        .post(`sciences/${ this.vremNewId }/edit`, this.science)
+                    HTTP.post(`sciences/${ this.vremNewId }/edit`, this.science)
                         .then(response => {
                             console.log(response.data);
                         })
@@ -135,8 +133,7 @@
                             console.log(error);
                         });
                 } else {
-                    axios
-                        .put(`sciences/${ this.$route.params.id }/edit`, this.science)
+                    HTTP.put(`sciences/${ this.$route.params.id }/edit`, this.science)
                         .then(response => {
                             console.log(response.data);
                         })

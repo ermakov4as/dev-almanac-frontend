@@ -16,7 +16,7 @@
 <script>
     import Discipline from '../components/Disciplines/Discipline.vue';
     import CreateBtn from '../components/Elements/CreateBtn.vue';
-    import axios from 'axios';
+    import { HTTP } from '../http-common.js';
 
     export default {
         data() {
@@ -40,8 +40,7 @@
         },
         methods: {
             getData() {
-      		    axios
-                    .get('sciences')
+      		    HTTP.get('sciences')
                     .then(response => {
                         this.disciplines = response.data;
                     })
