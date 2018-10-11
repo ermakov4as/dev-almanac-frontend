@@ -106,3 +106,15 @@ label {
     width: 80%;
     vertical-align: middle;
 }
+
+.show-element {
+    font-size: 14px;
+    color: blue;
+    float: right;
+    cursor: pointer;
+    margin-right: 50px;
+}
+
+.show-element:hover {
+    text-decoration: underline;
+}

@@ -41,7 +41,7 @@
         methods: {
             getData() {
       		    axios
-                    .get('/sciences')
+                    .get('sciences')
                     .then(response => {
                         this.disciplines = response.data;
                     })

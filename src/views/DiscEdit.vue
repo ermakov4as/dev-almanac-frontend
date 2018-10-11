@@ -29,39 +29,35 @@
                         <label for="desc">Описание</label>
                     </div>
                     <div class="form-element">
-                        <app-editor
+                        <app-editor-simple
                                 id="desc"
                                 :contentForQuil="science.desc"
-                                @quilUpdated="quilUpdatedDesc"></app-editor>
+                                @quilUpdated="quilUpdatedDesc"></app-editor-simple>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="label-subtitle">
                         <label for="content">Содержимое</label>
+                        <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' : 'Показать' }}</p>
                     </div>
-                    <div class="form-element">
-                        <app-editor
+                    <div class="form-element" v-if="showContent">
+                        <app-editor-top
                                 id="content"
-                                :contentForQuil="science.content"
-                                @quilUpdated="quilUpdatedContent"></app-editor>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="label-subtitle">
-                        <label for="video">Ссылка на видео</label>
-                    </div>
-                    <div class="form-element">
-                        <input
-                                type="text"
-                                id="video"
-                                class="form-control"
-                                v-model="science.video">
+                                :requestPath="requestPath"></app-editor-top>
                     </div>
                 </div>
             </form>
+            <div class="form-group lessons-list-margin">
+                <div class="label-subtitle">
+                    <label for="lessons">Список уроков</label>
+                    <p @click="showLessons = !showLessons" class="show-element lessons-list-margin">{{ showLessons ? 'Скрыть' : 'Показать' }}</p>
+                </div>
+            </div>
             <app-name-desc-list
+                    v-if="showLessons"
                     v-for="lesson in science.lessons"
                     :key="lesson.id"
+                    id="lessons"
                     :element="lesson"
                     :editPath="editPath"></app-name-desc-list>
             <div class="create-btn-right">
@@ -74,7 +70,8 @@
 <script>
     import CreateBtn from '../components/Elements/CreateBtn.vue';
     import NameDescList from '../components/Elements/NameDescList.vue';
-    import Editor from '../components/Elements/Editor.vue';
+    import EditorSimple from '../components/Elements/EditorSimple.vue';
+    import EditorTop from '../components/Elements/EditorTop.vue';
     import axios from 'axios';
 
     export default {
@@ -98,24 +95,28 @@
                 },
                 cancelLink: { path: '/sciences' },
                 editPath: `/sciences/${ this.$route.params.id }/lesson/`,
+                requestPath: '/articles/',
+                showContent: false,
+                showLessons: false,
                 vremNewId: 100
             }
         },
         components: {
             appCreateBtn: CreateBtn,
             appNameDescList: NameDescList,
-            appEditor: Editor
+            appEditorSimple: EditorSimple,
+            appEditorTop: EditorTop
         },
         methods: {
-            quilUpdatedContent(content) {
+            /*quilUpdatedContent(content) {
                 this.science.content = content
-            },
+            },*/
             quilUpdatedDesc(desc) {
                 this.science.desc = desc
             },
             getData() {
       		    axios
-                    .get(`/sciences/${ this.$route.params.id }/edit`)
+                    .get(`sciences/${ this.$route.params.id }/edit`)
                     .then(response => {
                         this.science = response.data;
                     })
@@ -126,7 +127,7 @@
             saveScience() {
                 if (this.$route.params.id == 0) {
                     axios
-                        .post(`/sciences/${ this.vremNewId }/edit`, this.science)
+                        .post(`sciences/${ this.vremNewId }/edit`, this.science)
                         .then(response => {
                             console.log(response.data);
                         })
@@ -135,7 +136,7 @@
                         });
                 } else {
                     axios
-                        .put(`/sciences/${ this.$route.params.id }/edit`, this.science)
+                        .put(`sciences/${ this.$route.params.id }/edit`, this.science)
                         .then(response => {
                             console.log(response.data);
                         })
@@ -152,5 +153,7 @@
 </script>
 
 <style scoped>
-
+    .lessons-list-margin {
+        margin-bottom: 0;
+    }
 </style>

@@ -12,14 +12,16 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
+import Notifications from 'vue-notification'
 
 Vue.config.productionTip = false
 
 Vue.use(BootstrapVue)
 Vue.use(VueQuillEditor, /* { default global options } */ )
 Vue.use(VueMaterial)
+Vue.use(Notifications)
 
-axios.defaults.baseURL = 'http://127.0.0.1:8081'
+axios.defaults.baseURL = 'http://127.0.0.1:8081/'
 
 new Vue({
     router,
