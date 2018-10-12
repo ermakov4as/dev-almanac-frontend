@@ -98,14 +98,19 @@
                 return hljs.highlightAuto(this.content).value
             }
         },
-        mounted() {
-            console.log('this is my editor', this.editor)
+        created() {
             setTimeout(() => {
                 if (this.dataReady & this.firstDataReady) {
                     this.content = this.contentForQuil;
                     this.firstDataReady = false;
                 }
-            }, 300)
+            }, 300),
+            setTimeout(() => {
+                if (this.dataReady & this.firstDataReady) {
+                    this.content = this.contentForQuil;
+                    this.firstDataReady = false;
+                }
+            }, 1000)
         }
     }
 </script>

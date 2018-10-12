@@ -17,6 +17,12 @@
                                 @click="saveScience"
                                 class="btn btn-green btn-common save-cancel-btn"
                                 >SAVE</button>
+                        <!--
+                        <button 
+                                @click="handleDeletingArticle"
+                                class="btn btn-red btn-common save-cancel-btn"
+                                >DELETE</button>
+                                -->
                         <router-link
                                 :to="cancelLink"
                                 tag="button"
@@ -44,6 +50,8 @@
                     <div class="form-element" v-if="showContent">
                         <app-editor-top
                                 id="content"
+                                :article="science.content"
+                                :dataReady="dataReady"
                                 :requestPath="requestPath"></app-editor-top>
                     </div>
                 </div>
@@ -51,7 +59,9 @@
             <div class="form-group lessons-list-margin">
                 <div class="label-subtitle">
                     <label for="lessons">Список уроков</label>
-                    <p @click="showLessons = !showLessons" class="show-element lessons-list-margin">{{ showLessons ? 'Скрыть' : 'Показать' }}</p>
+                    <p @click="showLessons = !showLessons" class="show-element lessons-list-margin">
+                        {{ showLessons ? 'Скрыть' : 'Показать' }}
+                    </p>
                 </div>
             </div>
             <app-name-desc-list
@@ -80,7 +90,8 @@
             return {
                 createBtn: {
                     name: 'НОВЫЙ УРОК',
-                    btnPath: `/sciences/${ this.$route.params.id }/lessons/0/`
+                    btnPath: `/sciences/${ this.$route.params.id }/lessons/`,
+                    requestPath: 'lessons/'
                 },
                 science: {
                     id: -2,
@@ -126,29 +137,54 @@
                     })
                     .catch(error => {
                         console.log(error);
+                        this.$notify({
+                            group: 'foo',
+                            type: "error",
+                            title: 'Произошла ошибка',
+                            text: 'Sorry'
+                        });
                     });
             },
             saveScience() {
-                if (this.$route.params.id == 0) {
-                    HTTP.post(`sciences/${ this.vremNewId }/`, this.science)
-                        .then(response => {
-                            console.log(response.data);
-                        })
-                        .catch(error => {
-                            console.log(error);
+                HTTP.put(`sciences/${ this.$route.params.id }/`, this.science)
+                    .then(response => {
+                        console.log(response.data);
+                        this.$notify({
+                            group: 'foo',
+                            type: "success",
+                            title: 'Успешно сохранено',
+                            text: 'Статья была загружена на сервер'
                         });
-                } else {
-                    HTTP.put(`sciences/${ this.$route.params.id }/`, this.science)
-                        .then(response => {
-                            console.log(response.data);
-                        })
-                        .catch(error => {
-                            console.log(error);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.$notify({
+                            group: 'foo',
+                            type: "error",
+                            title: 'Произошла ошибка',
+                            text: 'Sorry'
                         });
+                    });
+            },
+            /*handleDeletingArticle() {
+                if (confirm("Удалить дисциплину?")) {
+                    HTTP.delete(`sciences/${ this.$route.params.id }/`)
+                        .then((response) => {
+                            this.$notify({
+                                group: 'foo',
+                                type: "success",
+                                title: 'Успешно удалено',
+                                text: 'Дисциплина удалена с сервера'
+                            });
+                            this.$router.push('sciences/')
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                        })
                 }
-            }
+            }*/
         },
-        mounted() {
+        created() {
     	    this.getData();
         }
     }

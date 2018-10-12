@@ -1,13 +1,15 @@
 <template>
-    <div class="container editor-border">
+    <div class="container editor-border" @mouseleave="onEditorMouseLeave($event)" @mouseenter="onEditorMouseEnter($event)">
         <!--<picker set="apple" @select="addEmoji"/>-->
         <div class="vertical-padding" @click="closeEditor">
             <input
                     type="text"
                     class="form-control save-cancel-input"
                     v-model="article.name">
+            <!--
             <button class="btn btn-green btn-common save-cancel-btn" @click="handleSavingContent">Сохранить</button>
             <button class="btn btn-red btn-common save-cancel-btn" @click="handleDeletingArticle">Удалить</button>
+            -->
         </div>
             <!--
             <div class="col-5">
@@ -178,7 +180,11 @@
     import {Picker, Emoji} from 'emoji-mart-vue'
 
     export default {
-        props: ['requestPath'],
+        props: [
+            'requestPath',
+            'article',
+            'dataReady'
+        ],
 
         components: {
             VueEditor,
@@ -188,7 +194,7 @@
 
         data() {
             return {
-                article: "",
+                //article: "",
                 insertIndex: 0,
                 insertType: "text",
                 show: -1,
@@ -212,8 +218,8 @@
                 image_file_name: "Choose file",
                 image_url: "",
                 edit_index: 0,
-                DEFAULT_IMAGE_URL: "http://www.independentmediators.co.uk/wp-content/uploads/2016/02/placeholder-image.jpg"
-
+                DEFAULT_IMAGE_URL: "http://www.independentmediators.co.uk/wp-content/uploads/2016/02/placeholder-image.jpg",
+                firstDataReady: true
             }
         },
         methods: {
@@ -259,7 +265,35 @@
                 this.show = index;
                 console.log("show")
             },
-            handleSavingContent: function () {
+            onEditorMouseEnter(editor) {
+                if (this.dataReady & this.firstDataReady) {
+                    //this.content = this.contentForEditor;
+                    this.firstDataReady = false;
+                    this.prepareForUse(this.contentForEditor);
+                }
+            },
+            onEditorMouseLeave(editor) {
+                console.log('MOUSE-Editor!')
+                //this.$emit('quilUpdated', this.content)
+                this.prepareForSave();
+                this.$emit('editorUpdated', this.article)
+                if (this.dataReady & this.firstDataReady) {
+                    //this.content = this.contentForEditor;
+                    this.firstDataReady = false;
+                    this.prepareForUse();
+                }
+            },
+            prepareForUse() {
+                try {
+                    this.blocks = JSON.parse(this.article['content'])
+                } catch (err) {
+                    console.log(err);
+                }
+            },
+            prepareForSave() {
+                this.article['content'] = JSON.stringify(this.blocks);
+            },
+            /*handleSavingContent: function () {
                 this.article['content'] = JSON.stringify(this.blocks);
                 HTTP.put(this.requestPath + this.$route.params.id + '/', this.article)
                     .then((response) => {
@@ -278,8 +312,8 @@
                             text: 'Sorry'
                         });
                     })
-            },
-            handleDeletingArticle: function () {
+            },*/
+            /*handleDeletingArticle: function () {
                 if (confirm("Удалить статью?")) {
                     HTTP.delete(this.requestPath + this.$route.params.id + '/')
                         .then((response) => {
@@ -295,7 +329,7 @@
                             console.log(error)
                         })
                 }
-            },
+            },*/
             process_file(event) {
                 if (event.target.files[0]) {
                     this.image_file = event.target.files[0];
@@ -336,7 +370,7 @@
             },
         },
         created() {
-            HTTP.get(this.requestPath + this.$route.params.id + '/')
+            /*HTTP.get(this.requestPath + this.$route.params.id + '/')
                 .then((response) => {
                     this.article = response.data;
                     try {
@@ -344,7 +378,6 @@
                     } catch (err) {
                         console.log(err);
                     }
-
                 })
                 .catch((error) => {
                     this.$notify({
@@ -353,8 +386,21 @@
                         title: 'Произошла ошибка',
                         text: 'Sorry'
                     });
-                });
-
+                });*/
+            setTimeout(() => {
+                if (this.dataReady & this.firstDataReady) {
+                    //this.content = this.contentForQuil;
+                    this.firstDataReady = false;
+                    this.prepareForUse(this.contentForEditor);
+                }
+            }, 300),
+            setTimeout(() => {
+                if (this.dataReady & this.firstDataReady) {
+                    //this.content = this.contentForQuil;
+                    this.firstDataReady = false;
+                    this.prepareForUse(this.contentForEditor);
+                }
+            }, 1000)
         }
     }
 </script>

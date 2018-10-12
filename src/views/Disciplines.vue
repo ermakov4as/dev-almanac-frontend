@@ -30,7 +30,8 @@
                 }],
                 createBtn: {
                     name: 'СОЗДАТЬ НОВУЮ',
-                    btnPath: '/sciences/0/'
+                    btnPath: '/sciences/',
+                    requestPath: 'sciences/'
                 }
             }
         },

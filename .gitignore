@@ -2,6 +2,7 @@
 node_modules
 /node_modules
 /dist
+/src/oldFiles
 
 # local env files
 .env.local

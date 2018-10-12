@@ -1,23 +1,38 @@
 <template>
     <div>
-        <router-link
-                :to="newLessonLink"
-                tag="button"
+        <button
+                @click="createNew"
                 class="btn btn-green btn-oval create-btn"
-                >{{ createBtn.name }}</router-link>
+                >{{ createBtn.name }}</button>
     </div>
 </template>
 
 <script>
+    import { HTTP } from '../../http-common.js';
+
     export default {
         props: ['createBtn'],
         data() {
-            let id = 0;
             return {
-                newLessonLink: {
-                    path: this.createBtn.btnPath,
-                    params: { id }
-                },
+                newItem: {}
+            }
+        },
+        methods: {
+            createNew() {
+                console.log('post::: ' + this.createBtn.requestPath);
+                console.log('post::: ' + this.createBtn.btnPath);
+                HTTP.post(this.createBtn.requestPath)
+                    .then(response => {
+                        this.newItem = response.data;
+                        console.log(response.data);
+                        this.$router.push({
+                            path: this.createBtn.btnPath + this.newItem.id + '/',
+                            params: { id: this.newItem.id }
+                        })
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
             }
         }
     }
