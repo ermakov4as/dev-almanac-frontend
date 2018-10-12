@@ -199,7 +199,6 @@
 
         data() {
             return {
-                //article: "",
                 insertIndex: 0,
                 insertType: "text",
                 show: -1,
@@ -271,7 +270,7 @@
                 console.log("show")
             },
             onEditorMouseEnter(editor) {
-                console.log('MouseEnter!');
+                //console.log('MouseEnter!');
                 if (this.dataReady & this.firstDataReady) {
                     //this.content = this.contentForEditor;
                     this.firstDataReady = false;
@@ -279,7 +278,7 @@
                 }
             },
             onEditorMouseLeave(editor) {
-                console.log('MOUSE-Editor!');
+                //console.log('MOUSE-Editor!');
                 //this.$emit('quilUpdated', this.content)
                 this.prepareForSave();
                 this.$emit('editorUpdated', this.article);

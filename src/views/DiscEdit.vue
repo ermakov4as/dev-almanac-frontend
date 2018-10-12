@@ -99,8 +99,7 @@
                     id: -2,
                     name: "",
                     description: "",
-                    content: "",
-                    video: "",
+                    content: {},
                     lessons: [{
                         id: -3,
                         name: "",
@@ -136,6 +135,7 @@
       		    HTTP.get(`sciences/${ this.$route.params.id }/`)
                     .then(response => {
                         this.science = response.data;
+                        this.science.content = {};
                         this.dataReady = true;
                         //console.log('GET DiscEdit');
                         //console.log(response.data);

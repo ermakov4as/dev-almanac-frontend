@@ -13,7 +13,7 @@
                     >X</button>
         </div>
         <div class="desc-label">
-            <p>{{ element.desc }}</p>
+            <p>{{ element.description }}</p>
         </div>
     </div>
 </template>
