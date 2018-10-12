@@ -3,10 +3,10 @@
         <md-card-media>
             <div 
                     class="quill-editor-example" 
-                    @mouseleave="onEditorMouseLeave($event)" 
+                    @mouseleave="onEditorAction($event)" 
                     @mouseenter="onEditorMouseEnter($event)"
-                    @click="onEditorMouseLeave($event)"
-                    @keypress="onEditorMouseLeave($event)">
+                    @click="onEditorAction($event)"
+                    @keypress="onEditorAction($event)">
                 <!-- quill-editor -->
                 <!--p>{{ content }}</p-->
                 <quill-editor ref="myTextEditor"
@@ -86,8 +86,8 @@
                     this.firstDataReady = false;
                 }
             },
-            onEditorMouseLeave(editor) {
-                //console.log('MOUSE!')
+            onEditorAction(editor) {
+                //console.log('MOUSE!');
                 this.$emit('quilUpdated', this.content)
                 if (this.dataReady & this.firstDataReady) {
                     this.content = this.contentForQuil;

@@ -271,11 +271,11 @@
                 console.log("show")
             },
             onEditorMouseEnter(editor) {
+                console.log('MouseEnter!');
                 if (this.dataReady & this.firstDataReady) {
                     //this.content = this.contentForEditor;
                     this.firstDataReady = false;
                     this.prepareForUse(this.contentForEditor);
-                    console.log('MouseEnter!');
                 }
             },
             onEditorMouseLeave(editor) {

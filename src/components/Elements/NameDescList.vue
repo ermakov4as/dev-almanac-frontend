@@ -7,6 +7,10 @@
                     tag="button"
                     class="btn btn-orange btn-common name-and-edit-btn"
                     >РЕДАКТИРОВАТЬ</router-link>
+            <button
+                    @click="deleteElement"
+                    class="btn btn-red btn-common remove-btn"
+                    >X</button>
         </div>
         <div class="desc-label">
             <p>{{ element.desc }}</p>
@@ -18,16 +22,36 @@
     export default {
         props: [
             'element',
-            'editPath'
+            'delProps',
+            'index'
         ],
         data() {
             return {
                 editElementLink: {
-                    path: `${ this.editPath }${ this.element.id }/`,
+                    path: `${ this.delProps.editPath }${ this.element.id }/`,
                     params: {
                         id_last: this.element.id,
                         id: this.$route.params.id
                     }
+                }
+            }
+        },
+        methods: {
+            deleteElement() {
+                if (confirm(`Удалить ${ this.delProps.name }?`)) {
+                    HTTP.delete(this.delProps.delLink + this.element.id)
+                        .then((response) => {
+                            this.$notify({
+                                group: 'foo',
+                                type: "success",
+                                title: 'Успешно удалено',
+                                text: 'Дисциплина удалена с сервера'
+                            });
+                            this.$emit('elementRemoved', this.index);
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                        })
                 }
             }
         }
@@ -73,9 +97,16 @@
         border: 1px solid white;
     }
 
+    .remove-btn {
+        display: inline-block;
+        width: 5%;
+        vertical-align: middle;
+        border: 1px solid white;
+    }
+
     .name-and-edit-label {
         display: inline-block;
-        width: 80%;
+        width: 75%;
         vertical-align: middle;
         margin: 0;
     }

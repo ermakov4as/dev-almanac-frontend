@@ -66,11 +66,13 @@
             </div>
             <app-name-desc-list
                     v-if="showLessons"
-                    v-for="lesson in science.lessons"
+                    v-for="(lesson, index) in science.lessons"
                     :key="lesson.id"
                     id="lessons"
+                    :index="index"
                     :element="lesson"
-                    :editPath="editPath"></app-name-desc-list>
+                    :delProps="delProps"
+                    @elementRemoved="elementRemoved"></app-name-desc-list>
             <div class="create-btn-right">
                 <app-create-btn :createBtn="createBtn"></app-create-btn>
             </div>
@@ -106,12 +108,15 @@
                     }]
                 },
                 cancelLink: { path: '/sciences/' },
-                editPath: `/sciences/${ this.$route.params.id }/lessons/`,
                 dataReady: false,
                 requestPath: '/articles/',
                 showContent: true,
                 showLessons: false,
-                vremNewId: 100
+                delProps: {
+                    name: 'урок',
+                    editPath: `/sciences/${ this.$route.params.id }/lessons/`,
+                    delLink: 'lessons/'
+                }
             }
         },
         components: {
@@ -121,11 +126,11 @@
             appEditorTop: EditorTop
         },
         methods: {
-            /*quilUpdatedContent(content) {
-                this.science.content = content
-            },*/
             quilUpdatedDesc(desc) {
                 this.science.description = desc
+            },
+            elementRemoved(index) {
+                this.science.lessons.splice(index, 1)
             },
             getData() {
       		    HTTP.get(`sciences/${ this.$route.params.id }/`)
@@ -166,23 +171,6 @@
                         });
                     });
             },
-            /*handleDeletingArticle() {
-                if (confirm("Удалить дисциплину?")) {
-                    HTTP.delete(`sciences/${ this.$route.params.id }/`)
-                        .then((response) => {
-                            this.$notify({
-                                group: 'foo',
-                                type: "success",
-                                title: 'Успешно удалено',
-                                text: 'Дисциплина удалена с сервера'
-                            });
-                            this.$router.push('sciences/')
-                        })
-                        .catch((error) => {
-                            console.log(error)
-                        })
-                }
-            }*/
         },
         created() {
     	    this.getData();
