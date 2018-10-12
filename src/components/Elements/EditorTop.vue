@@ -270,20 +270,15 @@
                 console.log("show")
             },
             onEditorMouseEnter(editor) {
-                //console.log('MouseEnter!');
                 if (this.dataReady & this.firstDataReady) {
-                    //this.content = this.contentForEditor;
                     this.firstDataReady = false;
                     this.prepareForUse(this.contentForEditor);
                 }
             },
             onEditorMouseLeave(editor) {
-                //console.log('MOUSE-Editor!');
-                //this.$emit('quilUpdated', this.content)
                 this.prepareForSave();
                 this.$emit('editorUpdated', this.article);
                 if (this.dataReady & this.firstDataReady) {
-                    //this.content = this.contentForEditor;
                     this.firstDataReady = false;
                     this.prepareForUse();
                 }
@@ -298,43 +293,6 @@
             prepareForSave() {
                 this.article['content'] = JSON.stringify(this.blocks);
             },
-            /*handleSavingContent: function () {
-                this.article['content'] = JSON.stringify(this.blocks);
-                HTTP.put(this.requestPath + this.$route.params.id + '/', this.article)
-                    .then((response) => {
-                        this.$notify({
-                            group: 'foo',
-                            type: "success",
-                            title: 'Успешно сохранено',
-                            text: 'Статья была загружена на сервер'
-                        });
-                    })
-                    .catch((error) => {
-                        this.$notify({
-                            group: 'foo',
-                            type: "error",
-                            title: 'Произошла ошибка',
-                            text: 'Sorry'
-                        });
-                    })
-            },*/
-            /*handleDeletingArticle: function () {
-                if (confirm("Удалить статью?")) {
-                    HTTP.delete(this.requestPath + this.$route.params.id + '/')
-                        .then((response) => {
-                            this.$notify({
-                                group: 'foo',
-                                type: "success",
-                                title: 'Успешно удалено',
-                                text: 'Статья была удалена из сервера'
-                            });
-                            this.$router.push('/')
-                        })
-                        .catch((error) => {
-                            console.log(error)
-                        })
-                }
-            },*/
             process_file(event) {
                 if (event.target.files[0]) {
                     this.image_file = event.target.files[0];
@@ -375,35 +333,16 @@
             },
         },
         created() {
-            /*HTTP.get(this.requestPath + this.$route.params.id + '/')
-                .then((response) => {
-                    this.article = response.data;
-                    try {
-                        this.blocks = JSON.parse(this.article['content'])
-                    } catch (err) {
-                        console.log(err);
-                    }
-                })
-                .catch((error) => {
-                    this.$notify({
-                        group: 'foo',
-                        type: "error",
-                        title: 'Произошла ошибка',
-                        text: 'Sorry'
-                    });
-                });*/
             setTimeout(() => {
                 if (this.dataReady & this.firstDataReady) {
-                    //this.content = this.contentForQuil;
                     this.firstDataReady = false;
-                    this.prepareForUse(this.contentForEditor);
+                    this.prepareForUse();
                 }
             }, 300),
             setTimeout(() => {
                 if (this.dataReady & this.firstDataReady) {
-                    //this.content = this.contentForQuil;
                     this.firstDataReady = false;
-                    this.prepareForUse(this.contentForEditor);
+                    this.prepareForUse(r);
                 }
             }, 1000)
         }
