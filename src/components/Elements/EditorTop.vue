@@ -180,9 +180,9 @@
 </template>
 
 <script>
-    import {VueEditor} from 'vue2-editor'
-    import {HTTP, HTTP_UPLOAD} from "../../http-common.js";
-    import {Picker, Emoji} from 'emoji-mart-vue'
+    import { VueEditor } from 'vue2-editor'
+    import { HTTP_UPLOAD } from "../../http-common.js";
+    import { Picker, Emoji } from 'emoji-mart-vue'
 
     export default {
         props: [

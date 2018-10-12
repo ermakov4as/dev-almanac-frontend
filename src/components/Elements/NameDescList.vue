@@ -19,7 +19,9 @@
 </template>
 
 <script>
-    export default {
+    import { HTTP } from '../../http-common.js';
+
+export default {
         props: [
             'element',
             'delProps',
