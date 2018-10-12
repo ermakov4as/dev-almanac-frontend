@@ -1,7 +1,12 @@
 <template>
     <md-card>
         <md-card-media>
-            <div class="quill-editor-example" @mouseleave="onEditorMouseLeave($event)" @mouseenter="onEditorMouseEnter($event)">
+            <div 
+                    class="quill-editor-example" 
+                    @mouseleave="onEditorMouseLeave($event)" 
+                    @mouseenter="onEditorMouseEnter($event)"
+                    @click="onEditorMouseLeave($event)"
+                    @keypress="onEditorMouseLeave($event)">
                 <!-- quill-editor -->
                 <!--p>{{ content }}</p-->
                 <quill-editor ref="myTextEditor"
@@ -62,11 +67,11 @@
         },
         methods: {
             onEditorBlur(editor) {
-                console.log('editor blur!', editor)
+                //console.log('editor blur!', editor)
                 this.$emit('quilUpdated', this.content)
             },
             onEditorFocus(editor) {
-                console.log('editor focus!', editor)
+                //console.log('editor focus!', editor)
                 if (this.firstClick) {
                     this.content = this.contentForQuil,
                     this.firstClick = false
@@ -82,7 +87,7 @@
                 }
             },
             onEditorMouseLeave(editor) {
-                console.log('MOUSE!')
+                //console.log('MOUSE!')
                 this.$emit('quilUpdated', this.content)
                 if (this.dataReady & this.firstDataReady) {
                     this.content = this.contentForQuil;

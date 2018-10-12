@@ -32,7 +32,7 @@
                 </div>
                 <div class="form-group">
                     <div class="label-subtitle">
-                        <label for="description">Описание</label>
+                        <label for="description">Описание {{ science.description }}</label>
                     </div>
                     <div class="form-element">
                         <app-editor-simple
@@ -125,15 +125,15 @@
                 this.science.content = content
             },*/
             quilUpdatedDesc(desc) {
-                this.science.desc = desc
+                this.science.description = desc
             },
             getData() {
       		    HTTP.get(`sciences/${ this.$route.params.id }/`)
                     .then(response => {
                         this.science = response.data;
                         this.dataReady = true;
-                        console.log('GET DiscEdit');
-                        console.log(response.data);
+                        //console.log('GET DiscEdit');
+                        //console.log(response.data);
                     })
                     .catch(error => {
                         console.log(error);
@@ -148,7 +148,7 @@
             saveScience() {
                 HTTP.put(`sciences/${ this.$route.params.id }/`, this.science)
                     .then(response => {
-                        console.log(response.data);
+                        //console.log(response.data);
                         this.$notify({
                             group: 'foo',
                             type: "success",

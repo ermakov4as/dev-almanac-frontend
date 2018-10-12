@@ -1,5 +1,10 @@
 <template>
-    <div class="container editor-border" @mouseleave="onEditorMouseLeave($event)" @mouseenter="onEditorMouseEnter($event)">
+    <div 
+            class="container editor-border" 
+            @mouseleave="onEditorMouseLeave($event)" 
+            @mouseenter="onEditorMouseEnter($event)"
+            @click="onEditorMouseLeave($event)"
+            @keypress="onEditorMouseLeave($event)">
         <!--<picker set="apple" @select="addEmoji"/>-->
         <div class="vertical-padding" @click="closeEditor">
             <input
@@ -270,13 +275,14 @@
                     //this.content = this.contentForEditor;
                     this.firstDataReady = false;
                     this.prepareForUse(this.contentForEditor);
+                    console.log('MouseEnter!');
                 }
             },
             onEditorMouseLeave(editor) {
-                console.log('MOUSE-Editor!')
+                console.log('MOUSE-Editor!');
                 //this.$emit('quilUpdated', this.content)
                 this.prepareForSave();
-                this.$emit('editorUpdated', this.article)
+                this.$emit('editorUpdated', this.article);
                 if (this.dataReady & this.firstDataReady) {
                     //this.content = this.contentForEditor;
                     this.firstDataReady = false;
