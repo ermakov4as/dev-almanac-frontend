@@ -32,7 +32,7 @@
                 </div>
                 <div class="form-group">
                     <div class="label-subtitle">
-                        <label for="description">Описание {{ science.description }}</label>
+                        <label for="description">Описание</label>
                     </div>
                     <div class="form-element">
                         <app-editor-simple
