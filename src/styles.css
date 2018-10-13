@@ -57,6 +57,14 @@ body {
     text-align: center;
     width: 100%;
     padding-bottom: 10px;
+    color: darkgreen;
+}
+
+.component-subtitle {
+    text-align: center;
+    width: 100%;
+    padding-bottom: 10px;
+    color: darkgoldenrod;
 }
 
 .component-content {
@@ -69,6 +77,10 @@ body {
     text-align: right;
     padding-bottom: 20px;
     padding-right: 50px;
+}
+
+.elements-list-margin {
+    margin-bottom: 0;
 }
 
 label {
@@ -92,6 +104,18 @@ label {
     height: 100%;
     display: inline-block;
     vertical-align: middle;
+}
+
+.multi-cols-border {
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.nodes-place {
+    margin: 1px auto;
+    padding: 10px;
+    border-radius: 3px;
+    box-shadow: 0 0 40px rgb(233, 233, 233) inset;
 }
 
 .save-cancel-btn {

@@ -11,7 +11,9 @@
     import { HTTP } from '../../http-common.js';
 
     export default {
-        props: ['createBtn'],
+        props: [
+            'createBtn',
+        ],
         data() {
             return {
                 newItem: {}
@@ -27,7 +29,10 @@
                         console.log(response.data);
                         this.$router.push({
                             path: this.createBtn.btnPath + this.newItem.id + '/',
-                            params: { id: this.newItem.id }
+                            params: { 
+                                id: this.newItem.id,
+                                id_last: this.$route.params.id,
+                            }
                         })
                     })
                     .catch(error => {

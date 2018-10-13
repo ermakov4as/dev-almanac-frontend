@@ -25,15 +25,15 @@ export default {
         props: [
             'element',
             'delProps',
-            'index'
+            'index',
         ],
         data() {
             return {
                 editElementLink: {
                     path: `${ this.delProps.editPath }${ this.element.id }/`,
                     params: {
-                        id_last: this.element.id,
-                        id: this.$route.params.id
+                        id: this.element.id,
+                        id_last: this.$route.params.id,
                     }
                 }
             }

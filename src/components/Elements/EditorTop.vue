@@ -186,7 +186,6 @@
 
     export default {
         props: [
-            'requestPath',
             'article',
             'dataReady'
         ],
@@ -342,7 +341,7 @@
             setTimeout(() => {
                 if (this.dataReady & this.firstDataReady) {
                     this.firstDataReady = false;
-                    this.prepareForUse(r);
+                    this.prepareForUse();
                 }
             }, 1000)
         }

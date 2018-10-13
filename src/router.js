@@ -35,6 +35,12 @@ export default new Router({
             name: 'lessonEdit',
             component: () =>
                 import ('./views/LessonEdit.vue')
+        },
+        {
+            path: '/sciences/:id_last_1/lessons/:id_last/cards/:id/',
+            name: 'cardEdit',
+            component: () =>
+                import ('./views/CardEdit.vue')
         }
     ]
 })

@@ -1,6 +1,6 @@
 <template>
     <div class="block-container">
-        <h1 class="component-title">Редактирование дисциплины</h1>
+        <h1 class="component-title">Редактирование дисциплины {{ science.id }}</h1>
         <div class="component-content">
             <form>
                 <div class="form-group">
@@ -51,15 +51,14 @@
                         <app-editor-top
                                 id="content"
                                 :article="science.content"
-                                :dataReady="dataReady"
-                                :requestPath="requestPath"></app-editor-top>
+                                :dataReady="dataReady"></app-editor-top>
                     </div>
                 </div>
             </form>
-            <div class="form-group lessons-list-margin">
+            <div class="form-group elements-list-margin">
                 <div class="label-subtitle">
-                    <label for="lessons">Список уроков</label>
-                    <p @click="showLessons = !showLessons" class="show-element lessons-list-margin">
+                    <label for="lessons">Уроки: </label>
+                    <p @click="showLessons = !showLessons" class="show-element elements-list-margin">
                         {{ showLessons ? 'Скрыть' : 'Показать' }}
                     </p>
                 </div>
@@ -91,29 +90,28 @@
         data() {
             return {
                 createBtn: {
-                    name: 'НОВЫЙ УРОК',
-                    btnPath: `/sciences/${ this.$route.params.id }/lessons/`,
+                    name: 'ДОБАВИТЬ УРОК',
+                    btnPath: `${ this.$route.path }lessons/`,
                     requestPath: 'lessons/'
                 },
                 science: {
-                    id: -2,
+                    id: 0,
                     name: "",
                     description: "",
                     content: {},
                     lessons: [{
-                        id: -3,
+                        id: 0,
                         name: "",
-                        desc: ""
+                        description: ""
                     }]
                 },
                 cancelLink: { path: '/sciences/' },
                 dataReady: false,
-                requestPath: '/articles/',
                 showContent: true,
                 showLessons: false,
                 delProps: {
                     name: 'урок',
-                    editPath: `/sciences/${ this.$route.params.id }/lessons/`,
+                    editPath: `${ this.$route.path }lessons/`,
                     delLink: 'lessons/'
                 }
             }
@@ -135,7 +133,7 @@
       		    HTTP.get(`sciences/${ this.$route.params.id }/`)
                     .then(response => {
                         this.science = response.data;
-                        this.science.content = {};
+                        //this.science.content = {}; // IT IS ONLY FOR TESTING W/OUT SCIENCE.CONTENT AS AN OBJECT FROM SERVER !!!
                         this.dataReady = true;
                         //console.log('GET DiscEdit');
                         //console.log(response.data);
@@ -153,12 +151,12 @@
             saveScience() {
                 HTTP.put(`sciences/${ this.$route.params.id }/`, this.science)
                     .then(response => {
-                        //console.log(response.data);
+                        console.log(response.data);
                         this.$notify({
                             group: 'foo',
                             type: "success",
                             title: 'Успешно сохранено',
-                            text: 'Статья была загружена на сервер'
+                            text: 'Дисциплина загружена на сервер'
                         });
                     })
                     .catch(error => {
@@ -173,13 +171,11 @@
             },
         },
         created() {
-    	    this.getData();
+            this.getData();
         }
     }
 </script>
 
 <style scoped>
-    .lessons-list-margin {
-        margin-bottom: 0;
-    }
+
 </style>

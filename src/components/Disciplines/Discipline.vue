@@ -50,6 +50,7 @@
     .disc-float-left {
         padding: 5px 30px;
         float: left;
+        max-width: 70%
     }
 
     .disc-float-right {
