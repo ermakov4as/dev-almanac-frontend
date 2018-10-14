@@ -1,27 +1,23 @@
 <template>
-    <md-card>
-        <md-card-media>
-            <div 
-                    class="quill-editor-example" 
-                    @mouseleave="onEditorAction($event)" 
-                    @mouseenter="onEditorMouseEnter($event)"
-                    @click="onEditorAction($event)"
-                    @keypress="onEditorAction($event)">
-                <!-- quill-editor -->
-                <!--p>{{ content }}</p-->
-                <quill-editor ref="myTextEditor"
-                        v-model="content"
-                        :options="editorOption"
-                        @blur="onEditorBlur($event)"
-                        @focus="onEditorFocus($event)"
-                        @ready="onEditorReady($event)">
-                </quill-editor>
-                <!--div class="quill-code">
-                    <code class="hljs" v-html="contentCode"></code>
-                </div-->
-            </div>
-        </md-card-media>
-    </md-card>
+    <div 
+            class="quill-editor-example" 
+            @mouseleave="onEditorAction($event)" 
+            @mouseenter="onEditorMouseEnter($event)"
+            @click="onEditorAction($event)"
+            @keypress="onEditorAction($event)">
+        <!-- quill-editor -->
+        <!--p>{{ content }}</p-->
+        <quill-editor ref="myTextEditor"
+                v-model="content"
+                :options="editorOption"
+                @blur="onEditorBlur($event)"
+                @focus="onEditorFocus($event)"
+                @ready="onEditorReady($event)">
+        </quill-editor>
+        <!--div class="quill-code">
+            <code class="hljs" v-html="contentCode"></code>
+        </div-->
+    </div>
 </template>
 
 <script>

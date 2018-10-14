@@ -63,7 +63,14 @@
                                 :index="index"
                                 :node="node"
                                 @nodeRemoved="nodeRemoved"></app-nodes-del-list>
-                        <!--p>Add node</p-->
+                        <select
+                                id=""
+                                class="form-control"
+                                v-model="selectedPriority">
+                        <option 
+                                v-for="(priority, i) in priorities" 
+                                :key="i">{{ priority }}</option>
+                    </select>
                     </div>
                 </div>
                 <div class="col-6">
@@ -115,6 +122,7 @@
                     btnPath: `/${ this.$route.path }cards/`,
                     requestPath: 'cards/'
                 },
+                nodesSelected: [],
                 lesson: {
                     science: 0,
                     id: 0,
