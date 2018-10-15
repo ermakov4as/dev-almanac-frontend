@@ -1,7 +1,9 @@
 <template>
     <div class="element-table">
         <div class="name-node-line">
+            <!-- Название вершины -->
 	        <h5 class="node-name">{{ node.name }}</h5>
+            <!-- Кнопка удаления вершины из списка используемых в родительском компоненте -->
             <button
                     @click="deleteNode"
                     class="btn btn-red btn-common remove-btn"
@@ -17,8 +19,10 @@
             'index',
         ],
         methods: {
+            // Удаляет вершину. но не с сервера и не из дерева, а только из списка используемых в данном додительском компоненте вершин
             deleteNode() {
                 if (confirm(`Удалить вершину?`)) {
+                    // Возврат родителю информации о том, какая (по порядку) вершина удалена
                     this.$emit('nodeRemoved', this.index);
                 }
             }

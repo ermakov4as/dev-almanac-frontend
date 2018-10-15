@@ -73,7 +73,10 @@
                     :delProps="delProps"
                     @elementRemoved="elementRemoved"></name-desc-list>
             <div class="create-btn-right">
-                <create-btn :createBtn="createBtn" :requestId="science.id"></create-btn>
+                <create-btn 
+                        :createBtn="createBtn" 
+                        :requestId="{'science_id': science.id}"
+                        @createBtnUsed="createBtnUsed"></create-btn>
             </div>
         </div>
     </div>
@@ -123,6 +126,9 @@
             EditorTop
         },
         methods: {
+            createBtnUsed(newLesson) {
+                this.science.lessons.push(newLesson)
+            },
             quilUpdatedDesc(desc) {
                 this.science.description = desc
             },

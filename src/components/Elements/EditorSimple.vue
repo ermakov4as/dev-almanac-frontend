@@ -1,4 +1,5 @@
 <template>
+    <!-- Пока что следим за мышью и клавиатурой для приёма / отправки данных в родительский компонент -->
     <div 
             class="quill-editor-example" 
             @mouseleave="onEditorAction($event)" 
@@ -6,7 +7,6 @@
             @click="onEditorAction($event)"
             @keypress="onEditorAction($event)">
         <!-- quill-editor -->
-        <!--p>{{ content }}</p-->
         <quill-editor ref="myTextEditor"
                 v-model="content"
                 :options="editorOption"
@@ -14,9 +14,6 @@
                 @focus="onEditorFocus($event)"
                 @ready="onEditorReady($event)">
         </quill-editor>
-        <!--div class="quill-code">
-            <code class="hljs" v-html="contentCode"></code>
-        </div-->
     </div>
 </template>
 
@@ -29,12 +26,12 @@
             'dataReady'
         ],
         data() {
-            //let contentLocal = this.contentForQuil;
             return {
                 name: 'quilEditor',
-                content: ``,//contentLocal,//`<h2 class="ql-align-center"><span class="ql-font-serif">Text content loading..</span></h2>`,
+                content: ``,
                 editorOption: {
                     modules: {
+                        // Некоторые опции отключены за ненадобностью, для включения - просто раскомментить
                         toolbar: [
                             ['bold', 'italic', 'underline'/*, 'strike'*/],
                             //['blockquote', 'code-block'],
@@ -63,11 +60,9 @@
         },
         methods: {
             onEditorBlur(editor) {
-                //console.log('editor blur!', editor)
                 this.$emit('quilUpdated', this.content)
             },
             onEditorFocus(editor) {
-                //console.log('editor focus!', editor)
                 if (this.firstClick) {
                     this.content = this.contentForQuil,
                     this.firstClick = false
@@ -76,19 +71,16 @@
             onEditorReady(editor) {
                 console.log('editor ready!', editor)
             },
+            // По вхождению мыши в область редактора - запрашиваем данные, если они ещё не получены
             onEditorMouseEnter(editor) {
                 if (this.dataReady & this.firstDataReady) {
                     this.content = this.contentForQuil;
                     this.firstDataReady = false;
                 }
             },
+            // По действию в редакторе - возвращаем данные в родительский компонент.
             onEditorAction(editor) {
-                //console.log('MOUSE!');
                 this.$emit('quilUpdated', this.content)
-                if (this.dataReady & this.firstDataReady) {
-                    this.content = this.contentForQuil;
-                    this.firstDataReady = false;
-                }
             }
         },
         computed: {
@@ -99,6 +91,7 @@
                 return hljs.highlightAuto(this.content).value
             }
         },
+        // Через 0,3с и 1с после создания - запрашиваем данные, если они ещё не получены
         created() {
             setTimeout(() => {
                 if (this.dataReady & this.firstDataReady) {

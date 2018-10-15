@@ -1,24 +1,11 @@
 <template>
+    <!-- Пока что следим за мышью и клавиатурой для приёма / отправки данных в родительский компонент -->
     <div 
             class="container editor-border" 
             @mouseleave="onEditorMouseLeave($event)" 
             @mouseenter="onEditorMouseEnter($event)"
             @click="onEditorMouseLeave($event)"
             @keypress="onEditorMouseLeave($event)">
-        <!--<picker set="apple" @select="addEmoji"/>-->
-        <!--
-        <div class="vertical-padding" @click="closeEditor">
-            <input
-                    type="text"
-                    class="form-control save-cancel-input"
-                    v-model="article.name">
-        </div>
-        -->
-            <!--
-            <div class="col-5">
-                <h1><input class="form-control" v-model="article.name"/></h1>
-            </div>
-            -->
         <div id="article">
             <div class="row">
                 <div class="col-12">
@@ -94,12 +81,6 @@
                             data-target="#exampleModal">Добавить блок
                     </div>
                 </div>
-                <!--
-                <div class="col-3" @click="closeEditor">
-                    <button class="btn mr-2 btn-green btn-common" @click="handleSavingContent">Сохранить</button>
-                    <button class="btn btn-red btn-common" @click="handleDeletingArticle">Удалить</button>
-                </div>
-                -->
             </div>
         </div>
 
@@ -267,12 +248,14 @@
                 this.show = index;
                 console.log("show")
             },
+            // По вхождению мыши в область редактора - запрашиваем данные, если они ещё не получены
             onEditorMouseEnter(editor) {
                 if (this.dataReady & this.firstDataReady) {
                     this.firstDataReady = false;
                     this.prepareForUse();
                 }
             },
+            // По выходу мыши из области редактора - отправляем данные в родительский компонент
             onEditorMouseLeave(editor) {
                 this.prepareForSave();
                 this.$emit('editorUpdated', this.article);
@@ -281,6 +264,7 @@
                     this.prepareForUse();
                 }
             },
+            // Парсим строку для разбиения по блокам
             prepareForUse() {
                 this.article = this.articleOut
                 try {
@@ -289,6 +273,7 @@
                     console.log(err);
                 }
             },
+            // Собираем строку для отправки из блоков
             prepareForSave() {
                 this.article = JSON.stringify(this.blocks);
             },
@@ -331,6 +316,7 @@
                 }
             },
         },
+        // Через 0,3с и 1с после создания - запрашиваем данные, если они ещё не получены
         created() {
             setTimeout(() => {
                 if (this.dataReady & this.firstDataReady) {
@@ -380,7 +366,6 @@
         border-radius: .25rem;
         background: transparent none;
         border: 1px solid rgba(0, 0, 0, .125);
-        /*margin: 10px;*/
         padding: 5px;
     }
 

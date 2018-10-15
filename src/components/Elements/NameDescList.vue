@@ -1,17 +1,22 @@
 <template>
     <div class="element-table">
+        <!-- Верхняя строка блока -->
         <div class="name-and-edit-line">
+            <!-- Название элемента -->
 	        <h5 class="name-and-edit-label">{{ element.name }}</h5>
+            <!-- Кнопка редактирования элемента (переход на страницу редактирования) -->
             <router-link
                     :to="editElementLink"
                     tag="button"
                     class="btn btn-orange btn-common name-and-edit-btn"
                     >РЕДАКТИРОВАТЬ</router-link>
+            <!-- Кнопка удаления элемента -->
             <button
                     @click="deleteElement"
                     class="btn btn-red btn-common remove-btn"
                     >X</button>
         </div>
+        <!-- Нижняя строка блока - описание элемента -->
         <div class="desc-label">
             <p>{{ element.description }}</p>
         </div>
@@ -39,6 +44,7 @@
             }
         },
         methods: {
+            // Запрос на удаление элемента
             deleteElement() {
                 if (confirm(`Удалить ${ this.delProps.name }?`)) {
                     HTTP.delete(this.delProps.delLink + this.element.id)
@@ -49,6 +55,7 @@
                                 title: 'Успешно удалено',
                                 text: 'Дисциплина удалена с сервера'
                             });
+                            // Возврат родителю информации о том, какой (по порядку) элемент был удалён
                             this.$emit('elementRemoved', this.index);
                         })
                         .catch((error) => {

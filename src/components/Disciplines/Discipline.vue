@@ -1,14 +1,18 @@
 <template>
     <div class="discipline">
+        <!-- Слева располагаем название дисциплины -->
         <div class="disc-float-left">
 	        <h3>{{ discipline.name }}</h3>
         </div>
+        <!-- Справа располагаем кнопки -->
         <div class="disc-float-right">
+            <!--Переход на страницу редактирования древа этой дисциплины -->
             <router-link
                     :to="discTreeLink"
                     tag="button"
                     class="btn btn-green btn-common disc-btn"
                     >ДРЕВО</router-link>
+            <!-- Переход на страницу редактирования этой дисциплины-->
             <router-link
                     :to="editDiscLink"
                     tag="button"

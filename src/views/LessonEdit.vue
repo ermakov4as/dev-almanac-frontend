@@ -104,7 +104,10 @@
                     :delProps="delProps"
                     @elementRemoved="elementRemoved"></name-desc-list>
             <div class="create-btn-right">
-                <create-btn :createBtn="createBtn" :requestId="lesson.id"></create-btn>
+                <create-btn 
+                        :createBtn="createBtn" 
+                        :requestId="{'lesson_id': lesson.id}"
+                        @createBtnUsed="createBtnUsed"></create-btn>
             </div>
         </div>
     </div>
@@ -162,6 +165,9 @@
             NodesDelList
         },
         methods: {
+            createBtnUsed(newCard) {
+                this.lesson.cards.push(newCard)
+            },
             quilUpdatedDesc(desc) {
                 this.lesson.description = desc
             },

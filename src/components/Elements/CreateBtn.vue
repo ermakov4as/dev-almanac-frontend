@@ -21,20 +21,13 @@
             }
         },
         methods: {
+            // Создаём новый элемент (урок, карточку, вершину)
             createNew() {
-                console.log('post::: ' + this.createBtn.requestPath);
-                console.log('post::: ' + this.createBtn.btnPath);
                 HTTP.post(this.createBtn.requestPath, this.requestId)
                     .then(response => {
                         this.newItem = response.data;
-                        console.log(response.data);
-                        this.$router.push({
-                            path: this.createBtn.btnPath + this.newItem.id + '/',
-                            params: { 
-                                id: this.newItem.id,
-                                id_last: this.$route.params.id,
-                            }
-                        })
+                        // Возвращаем новый элемент компоненту-родителю
+                        this.$emit('createBtnUsed', this.newItem);
                     })
                     .catch(error => {
                         console.log(error);
