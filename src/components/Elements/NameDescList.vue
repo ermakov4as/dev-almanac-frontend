@@ -21,7 +21,7 @@
 <script>
     import { HTTP } from '../../http-common.js';
 
-export default {
+    export default {
         props: [
             'element',
             'delProps',

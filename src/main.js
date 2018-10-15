@@ -1,7 +1,4 @@
 import Vue from 'vue'
-import BootstrapVue from "bootstrap-vue"
-import "bootstrap/dist/css/bootstrap.min.css"
-import "bootstrap-vue/dist/bootstrap-vue.css"
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -13,7 +10,6 @@ import Notifications from 'vue-notification'
 
 Vue.config.productionTip = false
 
-Vue.use(BootstrapVue)
 Vue.use(VueQuillEditor, /* { default global options } */ )
 Vue.use(Notifications)
 

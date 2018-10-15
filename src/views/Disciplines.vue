@@ -2,13 +2,13 @@
     <div class="block-container">
         <h1 class="component-title">Список дисциплин</h1>
         <div class="component-content">
-            <app-discipline
+            <discipline
                     v-for="discipline in disciplines"
                     :key="discipline.id"
-                    :discipline="discipline"></app-discipline>
+                    :discipline="discipline"></discipline>
         </div>
         <div>
-            <app-create-btn :createBtn="createBtn"></app-create-btn>
+            <create-btn :createBtn="createBtn" :requestId="''"></create-btn>
         </div>
     </div>
 </template>
@@ -31,13 +31,14 @@
                 createBtn: {
                     name: 'СОЗДАТЬ НОВУЮ',
                     btnPath: '/sciences/',
-                    requestPath: 'sciences/'
+                    requestPath: 'sciences/',
+                    requestId: ''
                 }
             }
         },
         components: {
-            appDiscipline: Discipline,
-            appCreateBtn: CreateBtn
+            Discipline,
+            CreateBtn
         },
         methods: {
             getData() {

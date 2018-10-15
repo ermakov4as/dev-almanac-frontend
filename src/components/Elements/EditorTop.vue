@@ -6,16 +6,14 @@
             @click="onEditorMouseLeave($event)"
             @keypress="onEditorMouseLeave($event)">
         <!--<picker set="apple" @select="addEmoji"/>-->
+        <!--
         <div class="vertical-padding" @click="closeEditor">
             <input
                     type="text"
                     class="form-control save-cancel-input"
                     v-model="article.name">
-            <!--
-            <button class="btn btn-green btn-common save-cancel-btn" @click="handleSavingContent">Сохранить</button>
-            <button class="btn btn-red btn-common save-cancel-btn" @click="handleDeletingArticle">Удалить</button>
-            -->
         </div>
+        -->
             <!--
             <div class="col-5">
                 <h1><input class="form-control" v-model="article.name"/></h1>
@@ -57,15 +55,15 @@
                                 <vue-editor v-model="block.content" :editorToolbar="customToolbar"></vue-editor>
                             </div>
                             <div class="mt-1">
-                                <button v-if="index===0" class="btn btn-outline-primary mr-1" @click="insertIndex=-1"
+                                <div v-if="index===0" class="btn btn-outline-primary mr-1" @click="insertIndex=-1"
                                         data-toggle="modal"
                                         data-target="#exampleModal">Вставить предыдущий блок
-                                </button>
-                                <button class="btn btn-outline-primary mr-1" @click="insertIndex=index"
+                                </div>
+                                <div class="btn btn-outline-primary mr-1" @click="insertIndex=index"
                                         data-toggle="modal"
                                         data-target="#exampleModal">Вставить следующий блок
-                                </button>
-                                <button class="btn btn-outline-danger" @click="deleteBlock(index)">Удалить</button>
+                                </div>
+                                <div class="btn btn-outline-danger" @click="deleteBlock(index)">Удалить</div>
                             </div>
                         </div>
                         <!--Обычное отображение-->
@@ -91,10 +89,10 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-outline-primary mr-1" @click="insertIndex=blocks.length-1"
+                    <div class="btn btn-outline-primary mr-1" @click="insertIndex=blocks.length-1"
                             data-toggle="modal"
                             data-target="#exampleModal">Добавить блок
-                    </button>
+                    </div>
                 </div>
                 <!--
                 <div class="col-3" @click="closeEditor">
@@ -186,7 +184,7 @@
 
     export default {
         props: [
-            'article',
+            'articleOut',
             'dataReady'
         ],
 
@@ -198,6 +196,7 @@
 
         data() {
             return {
+                article: "",
                 insertIndex: 0,
                 insertType: "text",
                 show: -1,
@@ -271,7 +270,7 @@
             onEditorMouseEnter(editor) {
                 if (this.dataReady & this.firstDataReady) {
                     this.firstDataReady = false;
-                    this.prepareForUse(this.contentForEditor);
+                    this.prepareForUse();
                 }
             },
             onEditorMouseLeave(editor) {
@@ -283,6 +282,7 @@
                 }
             },
             prepareForUse() {
+                this.article = this.articleOut
                 try {
                     this.blocks = JSON.parse(this.article['content'])
                 } catch (err) {
@@ -290,7 +290,7 @@
                 }
             },
             prepareForSave() {
-                this.article['content'] = JSON.stringify(this.blocks);
+                this.article = JSON.stringify(this.blocks);
             },
             process_file(event) {
                 if (event.target.files[0]) {

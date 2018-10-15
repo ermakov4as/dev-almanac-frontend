@@ -30,11 +30,11 @@
                         <label for="description">Описание</label>
                     </div>
                     <div class="form-element">
-                        <app-editor-simple
+                        <editor-simple
                                 id="description"
                                 :contentForQuil="lesson.description"
                                 :dataReady="dataReady"
-                                @quilUpdated="quilUpdatedDesc"></app-editor-simple>
+                                @quilUpdated="quilUpdatedDesc"></editor-simple>
                     </div>
                 </div>
                 <div class="form-group">
@@ -43,10 +43,10 @@
                         <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' : 'Показать' }}</p>
                     </div>
                     <div class="form-element" v-if="showContent">
-                        <app-editor-top
+                        <editor-top
                                 id="content"
-                                :article="lesson.content"
-                                :dataReady="dataReady"></app-editor-top>
+                                :articleOut="lesson.content"
+                                :dataReady="dataReady"></editor-top>
                     </div>
                 </div>
             </form>
@@ -56,21 +56,25 @@
                         <label for="nodes">Вершины урока</label>
                     </div>
                     <div class="form-element nodes-place">
-                        <app-nodes-del-list
+                        <nodes-del-list
                                 v-for="(node, index) in lesson.nodes"
                                 :key="node.id"
                                 id="nodes"
                                 :index="index"
                                 :node="node"
-                                @nodeRemoved="nodeRemoved"></app-nodes-del-list>
-                        <select
-                                id=""
-                                class="form-control"
-                                v-model="selectedPriority">
-                        <option 
-                                v-for="(priority, i) in priorities" 
-                                :key="i">{{ priority }}</option>
-                    </select>
+                                @nodeRemoved="nodeRemoved"></nodes-del-list>
+                        <div class="add-node-line">
+                            <select
+                                    id=""
+                                    class="form-control add-node-select"
+                                    v-model="nodeAdding">
+                                <option 
+                                        v-for="node in nodesSelected" 
+                                        :key="node.id">{{ node.name }}</option>
+                            </select>
+                            <button
+                                    class="btn btn-green btn-common save-cancel-btn add-node-btn">Добавить</button>
+                        </div>
                     </div>
                 </div>
                 <div class="col-6">
@@ -90,7 +94,7 @@
                     </p>
                 </div>
             </div>
-            <app-name-desc-list
+            <name-desc-list
                     v-if="showCards"
                     v-for="(card, index) in lesson.cards"
                     :key="card.id"
@@ -98,9 +102,9 @@
                     :index="index"
                     :element="card"
                     :delProps="delProps"
-                    @elementRemoved="elementRemoved"></app-name-desc-list>
+                    @elementRemoved="elementRemoved"></name-desc-list>
             <div class="create-btn-right">
-                <app-create-btn :createBtn="createBtn"></app-create-btn>
+                <create-btn :createBtn="createBtn" :requestId="lesson.id"></create-btn>
             </div>
         </div>
     </div>
@@ -117,18 +121,14 @@
     export default {
         data() {
             return {
-                createBtn: {
-                    name: 'ДОБАВИТЬ КАРТОЧКУ',
-                    btnPath: `/${ this.$route.path }cards/`,
-                    requestPath: 'cards/'
-                },
                 nodesSelected: [],
+                nodeAdding: {},
                 lesson: {
                     science: 0,
                     id: 0,
                     name: "",
                     description: "",
-                    content: {},
+                    content: "",
                     nodes: [],
                     tree: {},
                     cards: [{
@@ -136,6 +136,11 @@
                         name: "",
                         description: ""
                     }]
+                },
+                createBtn: {
+                    name: 'ДОБАВИТЬ КАРТОЧКУ',
+                    btnPath: `/${ this.$route.path }cards/`,
+                    requestPath: 'cards/'
                 },
                 cancelLink: { path: `/sciences/${ this.$route.params.id }/` },
                 dataReady: false,
@@ -150,11 +155,11 @@
             }
         },
         components: {
-            appCreateBtn: CreateBtn,
-            appNameDescList: NameDescList,
-            appEditorSimple: EditorSimple,
-            appEditorTop: EditorTop,
-            appNodesDelList: NodesDelList
+            CreateBtn,
+            NameDescList,
+            EditorSimple,
+            EditorTop,
+            NodesDelList
         },
         methods: {
             quilUpdatedDesc(desc) {
@@ -215,5 +220,29 @@
 </script>
 
 <style scoped>
+    .add-node-line {
+        text-align: center;
+        border: 1px solid gray;
+        padding: 0;
+    }
 
+    .add-node-line:before {
+        height: 100%;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .add-node-btn {
+        display: inline-block;
+        width: 20%;
+        vertical-align: middle;
+        border: 1px solid white;
+    }
+
+    .add-node-select {
+        display: inline-block;
+        width: 80%;
+        vertical-align: middle;
+        margin: 0;
+    }
 </style>

@@ -13,6 +13,7 @@
     export default {
         props: [
             'createBtn',
+            'requestId'
         ],
         data() {
             return {
@@ -23,7 +24,7 @@
             createNew() {
                 console.log('post::: ' + this.createBtn.requestPath);
                 console.log('post::: ' + this.createBtn.btnPath);
-                HTTP.post(this.createBtn.requestPath)
+                HTTP.post(this.createBtn.requestPath, this.requestId)
                     .then(response => {
                         this.newItem = response.data;
                         console.log(response.data);

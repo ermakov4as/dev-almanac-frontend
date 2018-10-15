@@ -35,11 +35,11 @@
                         <label for="description">Описание</label>
                     </div>
                     <div class="form-element">
-                        <app-editor-simple
+                        <editor-simple
                                 id="description"
                                 :contentForQuil="science.description"
                                 :dataReady="dataReady"
-                                @quilUpdated="quilUpdatedDesc"></app-editor-simple>
+                                @quilUpdated="quilUpdatedDesc"></editor-simple>
                     </div>
                 </div>
                 <div class="form-group">
@@ -48,10 +48,10 @@
                         <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' : 'Показать' }}</p>
                     </div>
                     <div class="form-element" v-if="showContent">
-                        <app-editor-top
+                        <editor-top
                                 id="content"
-                                :article="science.content"
-                                :dataReady="dataReady"></app-editor-top>
+                                :articleOut="science.content"
+                                :dataReady="dataReady"></editor-top>
                     </div>
                 </div>
             </form>
@@ -63,7 +63,7 @@
                     </p>
                 </div>
             </div>
-            <app-name-desc-list
+            <name-desc-list
                     v-if="showLessons"
                     v-for="(lesson, index) in science.lessons"
                     :key="lesson.id"
@@ -71,9 +71,9 @@
                     :index="index"
                     :element="lesson"
                     :delProps="delProps"
-                    @elementRemoved="elementRemoved"></app-name-desc-list>
+                    @elementRemoved="elementRemoved"></name-desc-list>
             <div class="create-btn-right">
-                <app-create-btn :createBtn="createBtn"></app-create-btn>
+                <create-btn :createBtn="createBtn" :requestId="science.id"></create-btn>
             </div>
         </div>
     </div>
@@ -89,21 +89,21 @@
     export default {
         data() {
             return {
-                createBtn: {
-                    name: 'ДОБАВИТЬ УРОК',
-                    btnPath: `${ this.$route.path }lessons/`,
-                    requestPath: 'lessons/'
-                },
                 science: {
                     id: 0,
                     name: "",
                     description: "",
-                    content: {},
+                    content: "",
                     lessons: [{
                         id: 0,
                         name: "",
                         description: ""
                     }]
+                },
+                createBtn: {
+                    name: 'ДОБАВИТЬ УРОК',
+                    btnPath: `${ this.$route.path }lessons/`,
+                    requestPath: 'lessons/'
                 },
                 cancelLink: { path: '/sciences/' },
                 dataReady: false,
@@ -117,10 +117,10 @@
             }
         },
         components: {
-            appCreateBtn: CreateBtn,
-            appNameDescList: NameDescList,
-            appEditorSimple: EditorSimple,
-            appEditorTop: EditorTop
+            CreateBtn,
+            NameDescList,
+            EditorSimple,
+            EditorTop
         },
         methods: {
             quilUpdatedDesc(desc) {
