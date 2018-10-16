@@ -4,6 +4,7 @@
         <h2 class="component-subtitle">Дисциплина {{ lesson.science }}</h2>
         <div class="component-content">
             <form>
+                <!-- Блок редактирования названия урока, кнопок сохранить на сервере и вернуться назад -->
                 <div class="form-group">
                     <div class="label-subtitle">
                         <label for="name">Название</label>
@@ -25,6 +26,7 @@
                                 >CANCEL</router-link>
                     </div>
                 </div>
+                <!-- Блок редактирования описания урока, редактор Quill -->
                 <div class="form-group">
                     <div class="label-subtitle">
                         <label for="description">Описание</label>
@@ -37,6 +39,7 @@
                                 @quilUpdated="quilUpdatedDesc"></editor-simple>
                     </div>
                 </div>
+                <!-- Блок редактирования содержания урока, блочный редактор -->
                 <div class="form-group">
                     <div class="label-subtitle">
                         <label for="content">Содержимое</label>
@@ -50,7 +53,9 @@
                     </div>
                 </div>
             </form>
+            <!-- Разделённая на 2 колонки часть -->
             <div class="row form-group multi-cols-border">
+                <!-- Блок списка вершин урока с возможностью исключить и списка и добавить в него -->
                 <div class="col-6">
                     <div class="label-subtitle">
                         <label for="nodes">Вершины урока</label>
@@ -77,6 +82,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- Блок древа дисциплины -->
                 <div class="col-6">
                     <div class="label-subtitle">
                         <label for="tree">Дерево дисциплины</label>
@@ -86,6 +92,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Блок списка карточек -->
             <div class="form-group elements-list-margin">
                 <div class="label-subtitle">
                     <label for="cards">Карточки: </label>
@@ -104,6 +111,7 @@
                     :delProps="delProps"
                     @elementRemoved="elementRemoved"></name-desc-list>
             <div class="create-btn-right">
+                <!-- Кнопка создания новой карточки -->
                 <create-btn 
                         :createBtn="createBtn" 
                         :requestId="{'lesson_id': lesson.id}"
@@ -165,6 +173,7 @@
             NodesDelList
         },
         methods: {
+            // Функции-обработчики действий из дочерних компонентов
             createBtnUsed(newCard) {
                 this.lesson.cards.push(newCard)
             },
@@ -177,14 +186,12 @@
             nodeRemoved(index) {
                 this.lesson.nodes.splice(index, 1)
             },
+            // Получение данных с сервера (изначально)
             getData() {
       		    HTTP.get(`lessons/${ this.$route.params.id }/`)
                     .then(response => {
                         this.lesson = response.data;
-                        //this.science.content = {}; // IT IS ONLY FOR TESTING W/OUT SCIENCE.CONTENT AS AN OBJECT FROM SERVER !!!
                         this.dataReady = true;
-                        console.log('GET LessonEdit');
-                        console.log(response.data);
                     })
                     .catch(error => {
                         console.log(error);
@@ -196,10 +203,10 @@
                         });
                     });
             },
+            // Сохранение данных на сервере
             saveLesson() {
                 HTTP.put(`lessons/${ this.$route.params.id }/`, this.lesson)
                     .then(response => {
-                        console.log(response.data);
                         this.$notify({
                             group: 'foo',
                             type: "success",
@@ -220,7 +227,6 @@
         },
         created() {
             this.getData();
-            //console.log(this.$route.params);
         }
     }
 </script>

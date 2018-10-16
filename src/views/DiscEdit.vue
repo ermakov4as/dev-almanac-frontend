@@ -3,6 +3,7 @@
         <h1 class="component-title">Редактирование дисциплины {{ science.id }}</h1>
         <div class="component-content">
             <form>
+                <!-- Блок редактирования названия дисциплины, кнопок сохранить на сервере и вернуться назад -->
                 <div class="form-group">
                     <div class="label-subtitle">
                         <label for="name">Название</label>
@@ -17,12 +18,6 @@
                                 @click="saveScience"
                                 class="btn btn-green btn-common save-cancel-btn"
                                 >SAVE</button>
-                        <!--
-                        <button 
-                                @click="handleDeletingArticle"
-                                class="btn btn-red btn-common save-cancel-btn"
-                                >DELETE</button>
-                                -->
                         <router-link
                                 :to="cancelLink"
                                 tag="button"
@@ -30,6 +25,7 @@
                                 >CANCEL</router-link>
                     </div>
                 </div>
+                <!-- Блок редактирования описания дисциплины, редактор Quill -->
                 <div class="form-group">
                     <div class="label-subtitle">
                         <label for="description">Описание</label>
@@ -42,6 +38,7 @@
                                 @quilUpdated="quilUpdatedDesc"></editor-simple>
                     </div>
                 </div>
+                <!-- Блок редактирования содержания дисциплины, блочный редактор -->
                 <div class="form-group">
                     <div class="label-subtitle">
                         <label for="content">Содержимое</label>
@@ -55,6 +52,7 @@
                     </div>
                 </div>
             </form>
+            <!-- Блок списка уроков -->
             <div class="form-group elements-list-margin">
                 <div class="label-subtitle">
                     <label for="lessons">Уроки: </label>
@@ -72,6 +70,7 @@
                     :element="lesson"
                     :delProps="delProps"
                     @elementRemoved="elementRemoved"></name-desc-list>
+            <!-- Кнопка создания нового урока -->
             <div class="create-btn-right">
                 <create-btn 
                         :createBtn="createBtn" 
@@ -126,6 +125,7 @@
             EditorTop
         },
         methods: {
+            // Функции-обработчики действий из дочерних компонентов
             createBtnUsed(newLesson) {
                 this.science.lessons.push(newLesson)
             },
@@ -135,14 +135,12 @@
             elementRemoved(index) {
                 this.science.lessons.splice(index, 1)
             },
+            // Получение данных с сервера (изначально)
             getData() {
       		    HTTP.get(`sciences/${ this.$route.params.id }/`)
                     .then(response => {
                         this.science = response.data;
-                        //this.science.content = {}; // IT IS ONLY FOR TESTING W/OUT SCIENCE.CONTENT AS AN OBJECT FROM SERVER !!!
                         this.dataReady = true;
-                        //console.log('GET DiscEdit');
-                        //console.log(response.data);
                     })
                     .catch(error => {
                         console.log(error);
@@ -154,10 +152,10 @@
                         });
                     });
             },
+            // Сохранение данных на сервере
             saveScience() {
                 HTTP.put(`sciences/${ this.$route.params.id }/`, this.science)
                     .then(response => {
-                        console.log(response.data);
                         this.$notify({
                             group: 'foo',
                             type: "success",

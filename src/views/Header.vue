@@ -1,10 +1,12 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-dark header-navbar">
+        <!-- Переход на домашнюю страницу -->
         <div>
             <router-link to="/" class="navbar-brand">Almanac 20 / 80</router-link>
         </div>
 
         <div class="collapse navbar-collapse">
+            <!-- Переход на страницу списка дисциплин -->
             <ul class="navbar-nav mr-auto">
                 <router-link
                         to="/sciences/"
@@ -13,6 +15,7 @@
                     <a class="nav-link">Список дисциплин</a>
                 </router-link>
             </ul>
+            <!-- Пока без функционала: кнопка "я автор" -->
             <ul class="navbar-nav mr-right">
                 <li class="nav-item">
                     <a class="nav-link disabled" href="#">Я автор</a>

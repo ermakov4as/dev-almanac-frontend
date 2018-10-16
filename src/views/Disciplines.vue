@@ -2,6 +2,7 @@
     <div class="block-container">
         <h1 class="component-title">Список дисциплин</h1>
         <div class="component-content">
+            <!-- Блок-строка дисциплины -->
             <discipline
                     v-for="discipline in disciplines"
                     :key="discipline.id"
@@ -41,11 +42,11 @@
             CreateBtn
         },
         methods: {
+            // Получение данных с сервера
             getData() {
       		    HTTP.get('sciences/')
                     .then(response => {
                         this.disciplines = response.data;
-                        //console.log(response.data);
                     })
                     .catch(error => {
                         console.log(error);
