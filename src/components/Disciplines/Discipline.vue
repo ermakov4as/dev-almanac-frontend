@@ -18,11 +18,18 @@
                     tag="button"
                     class="btn btn-orange btn-common disc-btn"
                     >РЕДАКТИРОВАТЬ</router-link>
+            <!-- УДАЛЕНИЕ ДИСЦИПЛИНЫ. ВРЕМЕННАЯ КНОПКА ДЛЯ ОТЛАДКИ. -->
+            <button
+                    @click="deleteScience"
+                    class="btn btn-red btn-common disc-btn"
+                    >X</button>
         </div>
     </div>
 </template>
 
 <script>
+    import { HTTP } from '../../http-common.js';
+
     export default {
         data() {
             return {
@@ -36,7 +43,31 @@
                 }
             }
         },
-        props: ['discipline']
+        props: [
+            'discipline',
+            'index'
+        ],
+        // УДАЛЕНИЕ ДИСЦИПЛИНЫ. ВРЕМЕННАЯ КНОПКА ДЛЯ ОТЛАДКИ.
+        methods: {
+            deleteScience() {
+                if (confirm(`Удалить дисциплину (опция доступна только на этапе отладки)?`)) {
+                     HTTP.delete('sciences/' + this.discipline.id)
+                        .then((response) => {
+                            this.$notify({
+                                group: 'foo',
+                                type: "success",
+                                title: 'Успешно удалено',
+                                text: 'Дисциплина удалена с сервера'
+                            });
+                            // Возврат родителю информации о том, какой (по порядку) элемент был удалён
+                            this.$emit('scienceRemoved', this.index);
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                        })
+                }
+            }
+        }
     }
 </script>
 

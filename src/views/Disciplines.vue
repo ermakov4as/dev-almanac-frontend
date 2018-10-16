@@ -4,12 +4,17 @@
         <div class="component-content">
             <!-- Блок-строка дисциплины -->
             <discipline
-                    v-for="discipline in disciplines"
+                    v-for="(discipline, index) in disciplines"
                     :key="discipline.id"
-                    :discipline="discipline"></discipline>
+                    :index="index"
+                    :discipline="discipline"
+                    @scienceRemoved="scienceRemoved"></discipline>
         </div>
         <div>
-            <create-btn :createBtn="createBtn" :requestId="''"></create-btn>
+            <create-btn 
+                    :createBtn="createBtn" 
+                    :requestId="''"
+                    @createBtnUsed="createBtnUsed"></create-btn>
         </div>
     </div>
 </template>
@@ -23,7 +28,7 @@
         data() {
             return {
                 disciplines: [{
-                    id: -1,
+                    id: 0,
                     name: "",
                     content: "",
                     desc: "",
@@ -51,6 +56,13 @@
                     .catch(error => {
                         console.log(error);
                     });
+                },
+                createBtnUsed(newLesson) {
+                    this.disciplines.push(newLesson)
+                },
+                // УДАЛЕНИЕ ДИСЦИПЛИНЫ. ВРЕМЕННО ДЛЯ ОТЛАДКИ.
+                scienceRemoved(index) {
+                    this.disciplines.splice(index, 1)
                 },
         },
         mounted() {
