@@ -43,11 +43,11 @@
                         <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' : 'Показать' }}</p>
                     </div>
                     <div class="form-element-complex" v-if="showContent">
-                        <editor-top
+                        <editor-block
                                 id="content"
                                 :articleOut="science.content"
                                 :dataReady="dataReady"
-                                @editorUpdated="editorUpdated"></editor-top>
+                                @editorUpdated="editorUpdated"></editor-block>
                     </div>
                 </div>
             </form>
@@ -83,7 +83,7 @@
 <script>
     import CreateBtn from '../components/Elements/CreateBtn.vue';
     import NameDescList from '../components/Elements/NameDescList.vue';
-    import EditorTop from '../components/Elements/EditorTop.vue';
+    import EditorBlock from '../components/Elements/EditorBlock.vue';
     import { HTTP } from '../http-common.js';
 
     export default {
@@ -132,7 +132,7 @@
         components: {
             CreateBtn,
             NameDescList,
-            EditorTop,
+            EditorBlock,
         },
         methods: {
             // Функции-обработчики действий из дочерних компонентов
