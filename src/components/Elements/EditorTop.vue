@@ -1,11 +1,5 @@
 <template>
-    <!-- Пока что следим за мышью и клавиатурой для приёма / отправки данных в родительский компонент -->
-    <div 
-            class="container editor-border" 
-            @mouseleave="onEditorMouseLeave($event)" 
-            @mouseenter="onEditorMouseEnter($event)"
-            @click="onEditorMouseLeave($event)"
-            @keypress="onEditorMouseLeave($event)">
+    <div class="container editor-border ">
         <div id="article">
             <div class="row">
                 <div class="col-12">
@@ -192,6 +186,7 @@
                 customToolbar: [
                     [{header: [false, 1, 2, 3]}],
                     ['bold', 'italic', 'underline'],
+                    /*[{ 'align': [] }],*/
                     [{'list': 'ordered'}, {'list': 'bullet'}],
                     [{color: 'red'}],
                     [/*'link', */'image', 'video']
@@ -248,27 +243,11 @@
                 this.show = index;
                 console.log("show")
             },
-            // По вхождению мыши в область редактора - запрашиваем данные, если они ещё не получены
-            onEditorMouseEnter(editor) {
-                if (this.dataReady & this.firstDataReady) {
-                    this.firstDataReady = false;
-                    this.prepareForUse();
-                }
-            },
-            // По выходу мыши из области редактора - отправляем данные в родительский компонент
-            onEditorMouseLeave(editor) {
-                this.prepareForSave();
-                this.$emit('editorUpdated', this.article);
-                if (this.dataReady & this.firstDataReady) {
-                    this.firstDataReady = false;
-                    this.prepareForUse();
-                }
-            },
             // Парсим строку для разбиения по блокам
             prepareForUse() {
                 this.article = this.articleOut
                 try {
-                    this.blocks = JSON.parse(this.article['content'])
+                    this.blocks = JSON.parse(this.article)
                 } catch (err) {
                     console.log(err);
                 }
@@ -316,20 +295,19 @@
                 }
             },
         },
-        // Через 0,3с и 1с после создания - запрашиваем данные, если они ещё не получены
-        created() {
-            setTimeout(() => {
-                if (this.dataReady & this.firstDataReady) {
-                    this.firstDataReady = false;
-                    this.prepareForUse();
-                }
-            }, 300),
-            setTimeout(() => {
-                if (this.dataReady & this.firstDataReady) {
-                    this.firstDataReady = false;
-                    this.prepareForUse();
-                }
-            }, 1000)
+        watch: {
+            // Отслеживаем получение данных с сервера в родительском компоненте
+            dataReady() {
+                this.prepareForUse();
+            },
+            // Отслеживаем все изменения контента и возвращаем их в родительский компонент
+            blocks: {
+                handler(val, oldVal) {
+                    this.prepareForSave();
+                    this.$emit('editorUpdated', this.article);
+                },
+                deep: true
+            }
         }
     }
 </script>

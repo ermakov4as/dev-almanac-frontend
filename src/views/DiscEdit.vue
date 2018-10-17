@@ -31,11 +31,9 @@
                         <label for="description">Описание</label>
                     </div>
                     <div class="form-element">
-                        <editor-simple
-                                id="description"
-                                :contentForQuil="science.description"
-                                :dataReady="dataReady"
-                                @quilUpdated="quilUpdatedDesc"></editor-simple>
+                        <quill-editor 
+                                v-model="science.description"
+                                :options="customToolbar"></quill-editor>
                     </div>
                 </div>
                 <!-- Блок редактирования содержания дисциплины, блочный редактор -->
@@ -44,11 +42,12 @@
                         <label for="content">Содержимое</label>
                         <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' : 'Показать' }}</p>
                     </div>
-                    <div class="form-element" v-if="showContent">
+                    <div class="form-element-complex" v-if="showContent">
                         <editor-top
                                 id="content"
                                 :articleOut="science.content"
-                                :dataReady="dataReady"></editor-top>
+                                :dataReady="dataReady"
+                                @editorUpdated="editorUpdated"></editor-top>
                     </div>
                 </div>
             </form>
@@ -84,7 +83,6 @@
 <script>
     import CreateBtn from '../components/Elements/CreateBtn.vue';
     import NameDescList from '../components/Elements/NameDescList.vue';
-    import EditorSimple from '../components/Elements/EditorSimple.vue';
     import EditorTop from '../components/Elements/EditorTop.vue';
     import { HTTP } from '../http-common.js';
 
@@ -115,22 +113,34 @@
                     name: 'урок',
                     editPath: `${ this.$route.path }lessons/`,
                     delLink: 'lessons/'
+                },
+                customToolbar: {
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline'],
+                            [{header: [false, 1, 2, 3]}],
+                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                            [{ 'font': [] }],
+                            [{ 'color': [] }, { 'background': [] }],
+                            [{ 'align': [] }],
+                            ['image', 'video']
+                        ]
+                    }
                 }
             }
         },
         components: {
             CreateBtn,
             NameDescList,
-            EditorSimple,
-            EditorTop
+            EditorTop,
         },
         methods: {
             // Функции-обработчики действий из дочерних компонентов
+            editorUpdated(content) {
+                this.science.content = content
+            },
             createBtnUsed(newLesson) {
                 this.science.lessons.push(newLesson)
-            },
-            quilUpdatedDesc(desc) {
-                this.science.description = desc
             },
             elementRemoved(index) {
                 this.science.lessons.splice(index, 1)

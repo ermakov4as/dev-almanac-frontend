@@ -20,7 +20,7 @@
                                 class="btn btn-green btn-common save-cancel-btn"
                                 >SAVE</button>
                         <router-link
-                                :to="cancelLink"
+                                :to="`/sciences/${ lesson.science }/`"
                                 tag="button"
                                 class="btn btn-red btn-common save-cancel-btn"
                                 >CANCEL</router-link>
@@ -32,18 +32,16 @@
                         <label for="description">Описание</label>
                     </div>
                     <div class="form-element">
-                        <editor-simple
-                                id="description"
-                                :contentForQuil="lesson.description"
-                                :dataReady="dataReady"
-                                @quilUpdated="quilUpdatedDesc"></editor-simple>
+                        <quill-editor 
+                                v-model="lesson.description"
+                                :options="customToolbar"></quill-editor>
                     </div>
                 </div>
                 <!-- Блок редактирования содержания урока, блочный редактор -->
                 <div class="form-group">
                     <div class="label-subtitle">
                         <label for="content">Содержимое</label>
-                        <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' : 'Показать' }}</p>
+                        <p @click="showContent = !showContent" class="show-element-complex">{{ showContent ? 'Скрыть' : 'Показать' }}</p>
                     </div>
                     <div class="form-element" v-if="showContent">
                         <editor-top
@@ -89,6 +87,15 @@
                     </div>
                     <div class="form-element nodes-place">
                         <p>tree....</p>
+
+                    <!-- ТЕСТ ДРЕВА -->
+                        <ul id="demo">
+                            <tree
+                                class="item"
+                                :model="treeData">
+                            </tree>
+                        </ul>
+
                     </div>
                 </div>
             </div>
@@ -124,14 +131,44 @@
 <script>
     import CreateBtn from '../components/Elements/CreateBtn.vue';
     import NameDescList from '../components/Elements/NameDescList.vue';
-    import EditorSimple from '../components/Elements/EditorSimple.vue';
     import EditorTop from '../components/Elements/EditorTop.vue';
     import NodesDelList from '../components/Elements/NodesDelList.vue';
+    import Tree from '../components/Elements/Tree.vue';
     import { HTTP } from '../http-common.js';
 
     export default {
         data() {
             return {
+                // ТЕСТОВЫЕ ДАННЫЕ ДЛЯ ДРЕВА
+                treeData: {
+                    name: 'My Tree',
+                    children: [
+                        { name: 'hello' },
+                        { name: 'wat' },
+                        {
+                        name: 'child folder',
+                        children: [
+                            {
+                            name: 'child folder',
+                            children: [
+                                { name: 'hello' },
+                                { name: 'wat' }
+                            ]
+                            },
+                            { name: 'hello' },
+                            { name: 'wat' },
+                            {
+                            name: 'child folder',
+                            children: [
+                                { name: 'hello' },
+                                { name: 'wat' }
+                            ]
+                            }
+                        ]
+                        }
+                    ]
+                },
+
                 nodesSelected: [],
                 nodeAdding: {},
                 lesson: {
@@ -153,32 +190,40 @@
                     btnPath: `/${ this.$route.path }cards/`,
                     requestPath: 'cards/'
                 },
-                cancelLink: { path: `/sciences/${ this.$route.params.id }/` },
                 dataReady: false,
                 showContent: true,
                 showCards: false,
-                scienceName: this.$route.params.futureName,
                 delProps: {
                     name: 'карточку',
                     editPath: `${ this.$route.path }cards/`,
                     delLink: 'cards/'
+                },
+                customToolbar: {
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline'],
+                            [{header: [false, 1, 2, 3]}],
+                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                            [{ 'font': [] }],
+                            [{ 'color': [] }, { 'background': [] }],
+                            [{ 'align': [] }],
+                            ['image', 'video']
+                        ]
+                    }
                 }
             }
         },
         components: {
             CreateBtn,
             NameDescList,
-            EditorSimple,
             EditorTop,
-            NodesDelList
+            NodesDelList,
+            Tree
         },
         methods: {
             // Функции-обработчики действий из дочерних компонентов
             createBtnUsed(newCard) {
                 this.lesson.cards.push(newCard)
-            },
-            quilUpdatedDesc(desc) {
-                this.lesson.description = desc
             },
             elementRemoved(index) {
                 this.lesson.cards.splice(index, 1)
