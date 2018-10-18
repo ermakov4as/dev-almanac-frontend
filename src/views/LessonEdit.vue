@@ -71,13 +71,14 @@
                             <select
                                     id=""
                                     class="form-control add-node-select"
-                                    v-model="nodeAdding">
+                                    v-model="nodeAdding.name">
                                 <option 
                                         v-for="node in nodesSelected" 
                                         :key="node.id">{{ node.name }}</option>
                             </select>
                             <button
-                                    class="btn btn-green btn-common save-cancel-btn add-node-btn">Добавить</button>
+                                    class="btn btn-green btn-common save-cancel-btn add-node-btn"
+                                    @click="addNodeToLesson">Добавить</button>
                         </div>
                     </div>
                 </div>
@@ -135,42 +136,46 @@
     import NodesDelList from '../components/Elements/NodesDelList.vue';
     import Tree from '../components/Elements/Tree.vue';
     import { HTTP } from '../http-common.js';
+    import { mapMutations, mapGetters } from 'vuex';
 
     export default {
         data() {
             return {
                 // ТЕСТОВЫЕ ДАННЫЕ ДЛЯ ДРЕВА
                 treeData: {
+                    id: 100,
                     name: 'My Tree',
                     children: [
-                        { name: 'hello' },
-                        { name: 'wat' },
+                        { name: 'hello', id: 101 },
+                        { name: 'wat', id: 102 },
                         {
                         name: 'child folder',
+                        id: 103,
                         children: [
                             {
                             name: 'child folder',
+                            id: 104,
                             children: [
-                                { name: 'hello' },
-                                { name: 'wat' }
+                                { name: 'hello', id: 105 },
+                                { name: 'wat', id: 106 }
                             ]
                             },
-                            { name: 'hello' },
-                            { name: 'wat' },
+                            { name: 'hello', id: 107 },
+                            { name: 'wat', id: 108 },
                             {
                             name: 'child folder',
+                            id: 109,
                             children: [
-                                { name: 'hello' },
-                                { name: 'wat' }
+                                { name: 'hello', id: 110 },
+                                { name: 'wat', id: 111, }
                             ]
                             }
                         ]
                         }
                     ]
                 },
-
-                nodesSelected: [],
-                nodeAdding: {},
+                //nodesSelected: [],
+                nodeAdding: { name: '' },
                 lesson: {
                     science: 0,
                     id: 0,
@@ -220,7 +225,19 @@
             NodesDelList,
             Tree
         },
+        computed: {
+            ...mapGetters([
+                'nodesSelected'
+            ])
+        },
         methods: {
+            addNodeToLesson() {
+                console.log(this.nodeAdding)
+                this.lesson.nodes.push(this.nodeAdding)
+            },
+            ...mapMutations([
+                'clearState'
+            ]),
             // Функции-обработчики действий из дочерних компонентов
             editorUpdated(content) {
                 this.lesson.content = content
@@ -275,6 +292,7 @@
         },
         created() {
             this.getData();
+            this.clearState();
         }
     }
 </script>

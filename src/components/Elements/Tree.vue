@@ -2,7 +2,7 @@
     <li>
         <div
                 :class="{bold: isFolder}"
-                @click="toggle"
+                @click="/*toggle*/nodeChozen(model)"
                 @dblclick="changeType">
         {{ model.name }}
         <span v-if="isFolder">[{{ open ? '-' : '+' }}]</span>
@@ -21,6 +21,7 @@
 
 <script>
     import Tree from './Tree.vue';
+    import { mapMutations } from 'vuex';
 
     export default {
         name: "tree",
@@ -36,6 +37,15 @@
                 }
         },
         methods: {
+            nodeChozen(node) {
+                this.toggle()
+                console.log('NodeChozen!')
+                console.log(node)
+                this.addNode(node)
+            },
+            ...mapMutations([
+                'addNode'
+            ]),
             toggle() {
                 if (this.isFolder) {
                     this.open = !this.open
