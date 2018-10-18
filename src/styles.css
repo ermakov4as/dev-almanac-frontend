@@ -147,3 +147,7 @@ label {
 .show-element:hover {
     text-decoration: underline;
 }
+
+.tree-place {
+    text-align: left;
+}

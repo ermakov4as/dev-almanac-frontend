@@ -386,34 +386,34 @@
         color: black;
     }
 
-    #article img {
+    #article >>> img {
         width: 100%;
     }
 
-    #article h1 {
+    #article >>> h1 {
         font-size: 3rem;
         text-transform: uppercase;
         font-weight: 900;
     }
 
-    #article h2 {
+    #article >>> h2 {
         font-size: 1.8rem;
         text-transform: uppercase;
         font-weight: 900;
     }
 
-    #article h3 {
+    #article >>> h3 {
         font-size: 1.4rem;
         text-transform: uppercase;
         font-weight: 900;
         color: #2c3e50;
     }
 
-    #article p {
+    #article >>> p {
         margin-bottom: 0;
     }
 
-    #article em {
+    #article >>> em {
         font-family: 'EB Garamond', serif;
     }
 </style>

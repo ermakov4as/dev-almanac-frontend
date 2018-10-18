@@ -41,20 +41,21 @@
                 <div class="form-group">
                     <div class="label-subtitle">
                         <label for="content">Содержимое</label>
-                        <p @click="showContent = !showContent" class="show-element-complex">{{ showContent ? 'Скрыть' : 'Показать' }}</p>
+                        <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' : 'Показать' }}</p>
                     </div>
                     <div class="form-element" v-if="showContent">
                         <editor-block
                                 id="content"
                                 :articleOut="lesson.content"
-                                :dataReady="dataReady"></editor-block>
+                                :dataReady="dataReady"
+                                @editorUpdated="editorUpdated"></editor-block>
                     </div>
                 </div>
             </form>
             <!-- Разделённая на 2 колонки часть -->
             <div class="row form-group multi-cols-border">
                 <!-- Блок списка вершин урока с возможностью исключить и списка и добавить в него -->
-                <div class="col-6">
+                <div class="col-7">
                     <div class="label-subtitle">
                         <label for="nodes">Вершины урока</label>
                     </div>
@@ -81,12 +82,11 @@
                     </div>
                 </div>
                 <!-- Блок древа дисциплины -->
-                <div class="col-6">
+                <div class="col-5">
                     <div class="label-subtitle">
                         <label for="tree">Дерево дисциплины</label>
                     </div>
-                    <div class="form-element nodes-place">
-                        <p>tree....</p>
+                    <div class="form-element nodes-place tree-place">
 
                     <!-- ТЕСТ ДРЕВА -->
                         <ul id="demo">
@@ -222,6 +222,9 @@
         },
         methods: {
             // Функции-обработчики действий из дочерних компонентов
+            editorUpdated(content) {
+                this.lesson.content = content
+            },
             createBtnUsed(newCard) {
                 this.lesson.cards.push(newCard)
             },

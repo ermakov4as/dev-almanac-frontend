@@ -23,18 +23,16 @@
     import Tree from './Tree.vue';
 
     export default {
-        // demo data
+        name: "tree",
         props: ['model'], 
         data() {
             return {
                 open: false
             }
         },
-        //name: this.model.name,
         computed: {
             isFolder() {
-                return this.model.children &&
-                    this.model.children.length
+                return this.model.children && this.model.children.length
                 }
         },
         methods: {
@@ -58,31 +56,8 @@
         },
         components: {
             Tree
-        },
-        created() {
-            console.log(this.model)
         }
     }
-
-    
-        // define the item component
-        
-        /*props: {
-            model: Object
-        },*/
-        /*data: function () {
-           return {
-                open: false
-                }
-            },*/
-  
-        // boot up the demo
-        /*var demo = new Vue({
-        el: '#demo',
-        data: {
-            treeData: data
-        }
-        })*/
 </script>
 
 <style scoped>
