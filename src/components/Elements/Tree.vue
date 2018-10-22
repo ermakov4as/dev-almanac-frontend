@@ -1,60 +1,59 @@
 <template type="text/x-template" id="item-template">
-    <li>
-        <div>
-            <button
-                    class="btn-tree btn-tree-node"
-                    :class="{bold: isFolder, chozen: isChozen}"
-                    @click="/*toggle*/nodeChozen(model)">
-                    <!-- @dblclick="changeType" -->
-            {{ model.name }}
-            </button>
-            <button 
-                    v-if="isFolder" 
-                    @click="toggle"
-                    class="btn-tree btn-tree-open"
-                    :class="{bold: isFolder, openned: open}">
-            {{ open ? '-' : '+' }}</button>
-        </div>
-        <ul v-show="open" v-if="isFolder">
+    <li :class="{'node-item': !node.is_property}">
+        <span
+                class="btn-tree btn-tree-node"
+                :class="{property: node.is_property,  selected: isSelected}"
+                @click="toggle(node)">
+        {{ node.name }}
+        </span>
+        <ol :class="{'node': !node.is_property}">
             <tree
-                class="item"
-                v-for="(model, index) in model.children"
-                        :key="index"
-                        :model="model">
+                    class="item"
+                    v-for="(node, index) in node.children"
+                    :key="index"
+                    :node="node">
             </tree>
-        </ul>
+        </ol>
     </li>
 </template>
 
 <script>
     import Tree from './Tree.vue';
-    import { mapMutations } from 'vuex';
+    import {mapMutations, mapGetters} from 'vuex';
 
     export default {
         name: "tree",
-        props: ['model'], 
+        props: ['node'],
         data() {
             return {
                 open: false,
-                isChozen: false
+                isSelected: false
             }
         },
         computed: {
-            isFolder() {
-                return this.model.children && this.model.children.length
-                }
+            ...mapGetters([
+                'nodeRemoved'
+            ])
         },
         methods: {
-            nodeChozen(node) {
-                this.addNode(node)
-                this.isChozen = !this.isChozen
+            toggle(node) {
+                if (!this.node.is_property) {
+                    this.toggleNode(node);
+                    this.isSelected = !this.isSelected
+                }
             },
             ...mapMutations([
-                'addNode'
+                'toggleNode',
+                'removeNode'
             ]),
-            toggle() {
-                if (this.isFolder) {
-                    this.open = !this.open
+        },
+        watch: {
+            nodeRemoved: {
+                handler(val, oldVal) {
+                    if (this.nodeRemoved == this.node.id) {
+                        this.isSelected = !this.isSelected
+                        this.removeNode(-1)
+                    }
                 }
             }
         },
@@ -69,37 +68,42 @@
         font-family: Menlo, Consolas, monospace;
         color: #444;
     }
+
     .item {
         cursor: pointer;
     }
+
     .bold {
         font-weight: bold;
     }
+
     ul {
         padding-left: 1em;
         line-height: 1.5em;
         list-style-type: dot;
     }
-    
-    .btn-tree {
-        border: 1px solid inherit;
-        background-color: inherit;
-        padding: 3px 18px;
-        color: black;
-        cursor: pointer;
+
+    .node {
+        counter-reset: item;
+        padding-left: 2rem;
     }
-    .btn-tree-node {
-        min-width: 50%;
+
+    li {
+        display: block
     }
-    .btn-tree-open {
-        margin-left: 10px;
+
+    .node-item:before {
+        content: counters(item, ".") ". ";
+        counter-increment: item
     }
-    .chozen {
-        background-color: lawngreen;
+
+    .property {
+        text-decoration: underline;
+    }
+
+    .selected {
+        background-color: lightgreen;
         border-color: black
     }
-    .openned {
-        background-color: aqua;
-        border-color: black;
-    }
+
 </style>
