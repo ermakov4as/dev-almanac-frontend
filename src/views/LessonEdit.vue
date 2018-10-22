@@ -18,12 +18,14 @@
                         <button
                                 @click="saveLesson"
                                 class="btn btn-green btn-common save-cancel-btn"
-                                >SAVE</button>
+                        >SAVE
+                        </button>
                         <router-link
                                 :to="`/sciences/${ lesson.science }/`"
                                 tag="button"
                                 class="btn btn-red btn-common save-cancel-btn"
-                                >CANCEL</router-link>
+                        >CANCEL
+                        </router-link>
                     </div>
                 </div>
                 <!-- Блок редактирования описания урока, редактор Quill -->
@@ -32,7 +34,7 @@
                         <label for="description">Описание</label>
                     </div>
                     <div class="form-element">
-                        <quill-editor 
+                        <quill-editor
                                 v-model="lesson.description"
                                 :options="customToolbar"></quill-editor>
                     </div>
@@ -41,7 +43,8 @@
                 <div class="form-group">
                     <div class="label-subtitle">
                         <label for="content">Содержимое</label>
-                        <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' : 'Показать' }}</p>
+                        <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' :
+                            'Показать' }}</p>
                     </div>
                     <div class="form-element" v-if="showContent">
                         <editor-block
@@ -71,15 +74,17 @@
                             <select
                                     class="form-control add-node-select"
                                     v-model="nodeAdding">
-                                <option 
+                                <option
                                         v-for="node in nodesSelected"
-                                        v-if="notInList(node.id)" 
+                                        v-if="notInList(node.id)"
                                         :value="node.id"
-                                        :key="node.id">{{ node.name }}</option>
+                                        :key="node.id">{{ node.name }}
+                                </option>
                             </select>
                             <button
                                     class="btn btn-green btn-common save-cancel-btn add-node-btn"
-                                    @click="addNodeToLesson">Добавить</button>
+                                    @click="addNodeToLesson">Добавить
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -90,14 +95,13 @@
                     </div>
                     <div class="form-element nodes-place tree-place">
 
-                    <!-- ТЕСТ ДРЕВА -->
-                        <ul id="demo">
+                        <!-- ТЕСТ ДРЕВА -->
+                        <ol class="node">
                             <tree
-                                class="item"
-                                :model="treeData">
+                                    class="item"
+                                    :node="treeData">
                             </tree>
-                        </ul>
-
+                        </ol>
                     </div>
                 </div>
             </div>
@@ -121,8 +125,8 @@
                     @elementRemoved="elementRemoved"></name-desc-list>
             <div class="create-btn-right">
                 <!-- Кнопка создания новой карточки -->
-                <create-btn 
-                        :createBtn="createBtn" 
+                <create-btn
+                        :createBtn="createBtn"
                         :requestId="{'lesson_id': lesson.id}"
                         @createBtnUsed="createBtnUsed"></create-btn>
             </div>
@@ -136,8 +140,8 @@
     import EditorBlock from '../components/Elements/EditorBlock.vue';
     import NodesDelList from '../components/Elements/NodesDelList.vue';
     import Tree from '../components/Elements/Tree.vue';
-    import { HTTP } from '../http-common.js';
-    import { mapMutations, mapGetters } from 'vuex';
+    import {HTTP} from '../http-common.js';
+    import {mapMutations, mapGetters} from 'vuex';
 
     export default {
         data() {
@@ -146,32 +150,36 @@
                 treeData: {
                     id: 100,
                     name: 'My Tree',
+                    is_property: false,
                     children: [
-                        { name: 'hello', id: 101 },
-                        { name: 'wat', id: 102 },
+                        {name: 'hello', id: 101, is_property: true},
+                        {name: 'wat', id: 102, is_property: true},
                         {
-                        name: 'child folder',
-                        id: 103,
-                        children: [
-                            {
                             name: 'child folder',
-                            id: 104,
+                            id: 103,
+                            is_property: false,
                             children: [
-                                { name: 'hello', id: 105 },
-                                { name: 'wat', id: 106 }
+                                {
+                                    name: 'child folder',
+                                    id: 104,
+                                    is_property: true,
+                                    children: [
+                                        {name: 'hello', id: 105, is_property: false,},
+                                        {name: 'wat', id: 106, is_property: false,}
+                                    ]
+                                },
+                                {name: 'hello', id: 107, is_property: true,},
+                                {name: 'wat', id: 108, is_property: true,},
+                                {
+                                    name: 'child folder',
+                                    id: 109,
+                                    is_property: true,
+                                    children: [
+                                        {name: 'hello', id: 110, is_property: false,},
+                                        {name: 'wat', id: 111, is_property: false,}
+                                    ]
+                                }
                             ]
-                            },
-                            { name: 'hello', id: 107 },
-                            { name: 'wat', id: 108 },
-                            {
-                            name: 'child folder',
-                            id: 109,
-                            children: [
-                                { name: 'hello', id: 110 },
-                                { name: 'wat', id: 111, }
-                            ]
-                            }
-                        ]
                         }
                     ]
                 },
@@ -212,10 +220,10 @@
                         toolbar: [
                             ['bold', 'italic', 'underline'],
                             [{header: [false, 1, 2, 3]}],
-                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                            [{ 'font': [] }],
-                            [{ 'color': [] }, { 'background': [] }],
-                            [{ 'align': [] }],
+                            [{'list': 'ordered'}, {'list': 'bullet'}],
+                            [{'font': []}],
+                            [{'color': []}, {'background': []}],
+                            [{'align': []}],
                             ['image', 'video']
                         ]
                     }
@@ -271,7 +279,7 @@
             },
             // Получение данных с сервера (изначально)
             getData() {
-      		    HTTP.get(`lessons/${ this.$route.params.id }/`)
+                HTTP.get(`lessons/${ this.$route.params.id }/`)
                     .then(response => {
                         this.lesson = response.data;
                         this.dataReady = true;
@@ -321,21 +329,29 @@
         border: 1px solid gray;
         padding: 0;
     }
+
     .add-node-line:before {
         height: 100%;
         display: inline-block;
         vertical-align: middle;
     }
+
     .add-node-btn {
         display: inline-block;
         width: 20%;
         vertical-align: middle;
         border: 1px solid white;
     }
+
     .add-node-select {
         display: inline-block;
         width: 80%;
         vertical-align: middle;
         margin: 0;
+    }
+
+    .node {
+        counter-reset: item;
+        padding-left: 0;
     }
 </style>
