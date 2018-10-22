@@ -1,20 +1,27 @@
 <template type="text/x-template" id="item-template">
     <li>
-        <div
-                :class="{bold: isFolder}"
-                @click="/*toggle*/nodeChozen(model)"
-                @dblclick="changeType">
-        {{ model.name }}
-        <span v-if="isFolder">[{{ open ? '-' : '+' }}]</span>
+        <div>
+            <button
+                    class="btn-tree btn-tree-node"
+                    :class="{bold: isFolder, chozen: isChozen}"
+                    @click="/*toggle*/nodeChozen(model)">
+                    <!-- @dblclick="changeType" -->
+            {{ model.name }}
+            </button>
+            <button 
+                    v-if="isFolder" 
+                    @click="toggle"
+                    class="btn-tree btn-tree-open"
+                    :class="{bold: isFolder, openned: open}">
+            {{ open ? '-' : '+' }}</button>
         </div>
         <ul v-show="open" v-if="isFolder">
-        <tree
-            class="item"
-            v-for="(model, index) in model.children"
-                    :key="index"
-                    :model="model">
-        </tree>
-        <li class="add" @click="addChild">+</li>
+            <tree
+                class="item"
+                v-for="(model, index) in model.children"
+                        :key="index"
+                        :model="model">
+            </tree>
         </ul>
     </li>
 </template>
@@ -28,7 +35,8 @@
         props: ['model'], 
         data() {
             return {
-                open: false
+                open: false,
+                isChozen: false
             }
         },
         computed: {
@@ -38,10 +46,8 @@
         },
         methods: {
             nodeChozen(node) {
-                this.toggle()
-                console.log('NodeChozen!')
-                console.log(node)
                 this.addNode(node)
+                this.isChozen = !this.isChozen
             },
             ...mapMutations([
                 'addNode'
@@ -50,18 +56,6 @@
                 if (this.isFolder) {
                     this.open = !this.open
                 }
-            },
-            changeType() {
-                if (!this.isFolder) {
-                    Vue.set(this.model, 'children', [])
-                    this.addChild()
-                    this.open = true
-                }
-            },
-            addChild() {
-                this.model.children.push({
-                    name: 'new stuff'
-                })
             }
         },
         components: {
@@ -85,5 +79,26 @@
         padding-left: 1em;
         line-height: 1.5em;
         list-style-type: dot;
+    }
+    .btn-tree {
+        border: 1px solid inherit;
+        background-color: inherit;
+        padding: 3px 18px;
+        color: black;
+        cursor: pointer;
+    }
+    .btn-tree-node {
+        min-width: 50%;
+    }
+    .btn-tree-open {
+        margin-left: 10px;
+    }
+    .chozen {
+        background-color: lawngreen;
+        border-color: black
+    }
+    .openned {
+        background-color: aqua;
+        border-color: black;
     }
 </style>

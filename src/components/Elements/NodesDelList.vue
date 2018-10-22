@@ -23,7 +23,7 @@
             deleteNode() {
                 if (confirm(`Удалить вершину?`)) {
                     // Возврат родителю информации о том, какая (по порядку) вершина удалена
-                    this.$emit('nodeRemoved', this.index);
+                    this.$emit('nodeRemoved', this.index, this.node.id);
                 }
             }
         }

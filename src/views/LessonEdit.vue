@@ -62,18 +62,19 @@
                     <div class="form-element nodes-place">
                         <nodes-del-list
                                 v-for="(node, index) in lesson.nodes"
-                                :key="node.id"
+                                :key="node.index"
                                 id="nodes"
                                 :index="index"
                                 :node="node"
                                 @nodeRemoved="nodeRemoved"></nodes-del-list>
                         <div class="add-node-line">
                             <select
-                                    id=""
                                     class="form-control add-node-select"
-                                    v-model="nodeAdding.name">
+                                    v-model="nodeAdding">
                                 <option 
-                                        v-for="node in nodesSelected" 
+                                        v-for="node in nodesSelected"
+                                        v-if="notInList(node.id)" 
+                                        :value="node.id"
                                         :key="node.id">{{ node.name }}</option>
                             </select>
                             <button
@@ -174,8 +175,11 @@
                         }
                     ]
                 },
-                //nodesSelected: [],
-                nodeAdding: { name: '' },
+                idInList: [],
+                nodeAdding: {
+                    id: 0,
+                    name: ''
+                },
                 lesson: {
                     science: 0,
                     id: 0,
@@ -231,12 +235,24 @@
             ])
         },
         methods: {
+            notInList(id) {
+                if (this.idInList.indexOf(id) == -1) {
+                    return true
+                } else {
+                    return false
+                }
+                console.log()
+            },
             addNodeToLesson() {
-                console.log(this.nodeAdding)
-                this.lesson.nodes.push(this.nodeAdding)
+                //console.log(this.nodeAdding)
+                let currentNode = this.nodesSelected.find(x => x.id === this.nodeAdding) //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                //console.log(currentNode)
+                this.lesson.nodes.push(currentNode)
+                this.idInList.push(currentNode.id)
             },
             ...mapMutations([
-                'clearState'
+                'clearState',
+                'addNode'
             ]),
             // Функции-обработчики действий из дочерних компонентов
             editorUpdated(content) {
@@ -248,8 +264,10 @@
             elementRemoved(index) {
                 this.lesson.cards.splice(index, 1)
             },
-            nodeRemoved(index) {
+            nodeRemoved(index, id) {
                 this.lesson.nodes.splice(index, 1)
+                let idIndex = this.idInList.indexOf(id)
+                this.idInList.splice(idIndex, 1)
             },
             // Получение данных с сервера (изначально)
             getData() {

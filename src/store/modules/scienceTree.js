@@ -3,12 +3,6 @@ const state = {
 };
 
 const getters = {
-    /*[types.DOUBLE_COUNTER]: state => { // doubleCounter
-        return state.counter * 2;
-    },
-    [types.CLICK_COUNTER]: state => { // stringCounter
-        return state.counter + ' Clicks';
-    }*/
     nodesSelected: state => {
         return state.chozenNodes
     }
@@ -25,7 +19,6 @@ const mutations = {
             let index = state.chozenNodes.indexOf(payload)
             state.chozenNodes.splice(index, 1)
         }
-        console.log(state.chozenNodes)
     }
 };
 
