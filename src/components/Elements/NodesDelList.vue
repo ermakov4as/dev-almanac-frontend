@@ -34,11 +34,9 @@
     p {
         margin: 0;
     }
-
     .element-table {
         margin: 0 0 -1px 0;
     }
-
     .desc-label {
         border: 1px solid gray;
         margin-top: -1px;
@@ -49,26 +47,22 @@
         padding-right: 10px;
         min-height: 30px;
     }
-
     .name-node-line {
         text-align: center;
         border: 1px solid gray;
         padding: 0;
     }
-
     .name-node-line:before {
         height: 100%;
         display: inline-block;
         vertical-align: middle;
     }
-
     .remove-btn {
         display: inline-block;
         width: 10%;
         vertical-align: middle;
         border: 1px solid white;
     }
-
     .node-name {
         display: inline-block;
         width: 90%;

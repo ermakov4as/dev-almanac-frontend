@@ -321,20 +321,17 @@
         border: 1px solid gray;
         padding: 0;
     }
-
     .add-node-line:before {
         height: 100%;
         display: inline-block;
         vertical-align: middle;
     }
-
     .add-node-btn {
         display: inline-block;
         width: 20%;
         vertical-align: middle;
         border: 1px solid white;
     }
-
     .add-node-select {
         display: inline-block;
         width: 80%;
