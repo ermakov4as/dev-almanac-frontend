@@ -1,14 +1,14 @@
 const state = {
     chozenNodes: [],
-    removedNodeId: -1
+    selectedNodeId: -1
 };
 
 const getters = {
     nodesSelected: state => {
         return state.chozenNodes
     },
-    nodeRemoved: state => {
-        return state.removedNodeId
+    nodeSelected: state => {
+        return state.selectedNodeId
     }
 };
 
@@ -24,9 +24,8 @@ const mutations = {
             state.chozenNodes.splice(index, 1);
         }
     },
-    removeNode: (state, payload) => {
-        state.removedNodeId = payload
-            //console.log('removed' + state.removedNodeId)
+    changeNodeSelection: (state, payload) => {
+        state.selectedNodeId = payload
     },
     initNodes: (state, payload) => {
         state.chozenNodes = payload

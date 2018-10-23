@@ -75,8 +75,8 @@
                                     class="form-control add-node-select"
                                     v-model="nodeAdding">
                                 <option
-                                        v-for="node in nodesSelected"
-                                        v-if="notInList(node.id)"
+                                        v-for="node in nodesNotInList"
+                                        v-if="notInList(node)"
                                         :value="node.id"
                                         :key="node.id">{{ node.name }}
                                 </option>
@@ -182,11 +182,8 @@
                         }
                     ]
                 },
-                idInList: [],
-                nodeAdding: {
-                    id: 0,
-                    name: ''
-                },
+                nodesNotInList: [],
+                nodeAdding: {id: 0},
                 lesson: {
                     science: 0,
                     id: 0,
@@ -241,26 +238,46 @@
                 'nodesSelected'
             ])
         },
-        methods: {
-            notInList(id) {
-                if (this.idInList.indexOf(id) == -1) {
-                    return true
-                } else {
-                    return false
+        watch: {
+            dataReady: {
+                handler(val, oldVal) {
+                    this.treeInspect(this.treeData);
                 }
-                console.log()
+            }
+        },
+        methods: {
+            treeInspect(branch) {
+                if (!branch.is_property) {
+                    this.nodesNotInList.push(branch);
+                };
+                if (branch.children) {
+                    let branchLenght = branch.children.length;
+                    let childrenVisited = 0;
+                    while (branchLenght > childrenVisited) {
+                        this.treeInspect(branch.children[childrenVisited]);
+                        childrenVisited += 1;
+                    };
+                };
+            },
+            notInList(node) {
+                if (this.nodesSelected.indexOf(node) == -1) {
+                    return true;
+                } else {
+                    return false;
+                };
             },
             addNodeToLesson() {
-                //console.log(this.nodeAdding)
-                let currentNode = this.nodesSelected.find(x => x.id === this.nodeAdding) //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                //console.log(currentNode)
-                this.lesson.nodes.push(currentNode)
-                this.idInList.push(currentNode.id)
+                if (this.nodeAdding.id != 0) {
+                    let currentNode = this.nodesNotInList.find(x => x.id === this.nodeAdding); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    this.nodeAdding = {id: 0};
+                    this.toggleNode(currentNode);
+                    this.changeNodeSelection(currentNode.id);
+                };
             },
             ...mapMutations([
                 'clearState',
                 'toggleNode',
-                'removeNode',
+                'changeNodeSelection',
                 'initNodes'
             ]),
             // Функции-обработчики действий из дочерних компонентов
@@ -274,10 +291,8 @@
                 this.lesson.cards.splice(index, 1)
             },
             nodeRemoved(index, node) {
-                let idIndex = this.idInList.indexOf(node.id)
-                this.idInList.splice(idIndex, 1)
                 this.toggleNode(node)
-                this.removeNode(node.id)
+                this.changeNodeSelection(node.id)
             },
             // Получение данных с сервера (изначально)
             getData() {

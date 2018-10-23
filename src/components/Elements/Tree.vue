@@ -32,7 +32,7 @@
         },
         computed: {
             ...mapGetters([
-                'nodeRemoved'
+                'nodeSelected'
             ])
         },
         methods: {
@@ -44,15 +44,15 @@
             },
             ...mapMutations([
                 'toggleNode',
-                'removeNode'
+                'changeNodeSelection'
             ]),
         },
         watch: {
-            nodeRemoved: {
+            nodeSelected: {
                 handler(val, oldVal) {
-                    if (this.nodeRemoved == this.node.id) {
+                    if (this.nodeSelected == this.node.id) {
                         this.isSelected = !this.isSelected
-                        this.removeNode(-1)
+                        this.changeNodeSelection(-1)
                     }
                 }
             }
