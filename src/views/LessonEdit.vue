@@ -312,7 +312,7 @@
                             text: 'Sorry'
                         });
                     });
-            },
+            }
         },
         created() {
             this.clearState();
