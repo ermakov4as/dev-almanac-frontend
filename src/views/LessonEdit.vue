@@ -76,9 +76,9 @@
                                     v-model="nodeAdding">
                                 <option
                                         v-for="node in nodesNotInList"
-                                        v-if="notInList(node)"
-                                        :value="node.id"
-                                        :key="node.id">{{ node.name }}
+                                        v-if="nodesSelected.indexOf(node) == -1"
+                                        :value="node.object.id"
+                                        :key="node.object.id">{{ node.object.name }}
                                 </option>
                             </select>
                             <button
@@ -145,45 +145,16 @@
     export default {
         data() {
             return {
-                // ТЕСТОВЫЕ ДАННЫЕ ДЛЯ ДРЕВА
                 treeData: {
-                    id: 100,
-                    name: 'My Tree',
-                    is_property: false,
-                    children: [
-                        {name: 'hello', id: 101, is_property: true},
-                        {name: 'wat', id: 102, is_property: true},
-                        {
-                            name: 'child folder',
-                            id: 103,
-                            is_property: false,
-                            children: [
-                                {
-                                    name: 'child folder',
-                                    id: 104,
-                                    is_property: true,
-                                    children: [
-                                        {name: 'hello', id: 105, is_property: false,},
-                                        {name: 'wat', id: 106, is_property: false,}
-                                    ]
-                                },
-                                {name: 'hello', id: 107, is_property: true,},
-                                {name: 'wat', id: 108, is_property: true,},
-                                {
-                                    name: 'child folder',
-                                    id: 109,
-                                    is_property: true,
-                                    children: [
-                                        {name: 'hello', id: 110, is_property: false,},
-                                        {name: 'wat', id: 111, is_property: false,}
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
+                    children: [],
+                    object: {
+                        id: 0,
+                        name: "",
+                        is_property: true
+                    }
                 },
                 nodesNotInList: [],
-                nodeAdding: {id: 0},
+                nodeAdding: 0,
                 lesson: {
                     science: 0,
                     id: 0,
@@ -204,6 +175,7 @@
                     requestPath: 'cards/'
                 },
                 dataReady: false,
+                treeDataReady: false,
                 showContent: true,
                 showCards: false,
                 delProps: {
@@ -239,7 +211,7 @@
             ])
         },
         watch: {
-            dataReady: {
+            treeDataReady: {
                 handler(val, oldVal) {
                     this.treeInspect(this.treeData);
                 }
@@ -247,7 +219,7 @@
         },
         methods: {
             treeInspect(branch) {
-                if (!branch.is_property) {
+                if (!branch.object.is_property) {
                     this.nodesNotInList.push(branch);
                 };
                 if (branch.children) {
@@ -259,19 +231,12 @@
                     };
                 };
             },
-            notInList(node) {
-                if (this.nodesSelected.indexOf(node) == -1) {
-                    return true;
-                } else {
-                    return false;
-                };
-            },
             addNodeToLesson() {
-                if (this.nodeAdding.id != 0) {
-                    let currentNode = this.nodesNotInList.find(x => x.id === this.nodeAdding); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    this.nodeAdding = {id: 0};
+                if (this.nodeAdding != 0) {
+                    let currentNode = this.nodesNotInList.find(x => x.object.id === this.nodeAdding); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    this.nodeAdding = 0;
                     this.toggleNode(currentNode);
-                    this.changeNodeSelection(currentNode.id);
+                    this.changeNodeSelection(currentNode.object.id);
                 };
             },
             ...mapMutations([
@@ -292,7 +257,7 @@
             },
             nodeRemoved(index, node) {
                 this.toggleNode(node)
-                this.changeNodeSelection(node.id)
+                this.changeNodeSelection(node.object.id)
             },
             // Получение данных с сервера (изначально)
             getData() {
@@ -300,7 +265,21 @@
                     .then(response => {
                         this.lesson = response.data;
                         this.dataReady = true;
-                        this.initNodes(this.lesson.nodes);
+                        HTTP.get(`sciences/${ this.lesson.science }/`)
+                            .then(response => {
+                                this.treeData = response.data.nodes;
+                                this.treeDataReady = true;
+                                this.initNodes(this.lesson.nodes);
+                            })
+                            .catch(error => {
+                                console.log(error);
+                                this.$notify({
+                                    group: 'foo',
+                                    type: "error",
+                                    title: 'Произошла ошибка',
+                                    text: 'Sorry'
+                                });
+                            });
                     })
                     .catch(error => {
                         console.log(error);
@@ -336,8 +315,8 @@
             },
         },
         created() {
-            this.getData();
             this.clearState();
+            this.getData();
         }
     }
 </script>

@@ -1,12 +1,12 @@
 <template type="text/x-template" id="item-template">
-    <li :class="{'node-item': !node.is_property}">
+    <li :class="{'node-item': !node.object.is_property}">
         <span
                 class="btn-tree btn-tree-node"
-                :class="{property: node.is_property,  selected: isSelected}"
+                :class="{property: node.object.is_property,  selected: isSelected}"
                 @click="toggle(node)">
-        {{ node.name }}
+        {{ node.object.name }}
         </span>
-        <ol :class="{'node': !node.is_property}">
+        <ol :class="{'node': !node.object.is_property}">
             <tree
                     class="item"
                     v-for="(node, index) in node.children"
@@ -37,7 +37,7 @@
         },
         methods: {
             toggle(node) {
-                if (!this.node.is_property) {
+                if (!this.node.object.is_property) {
                     this.toggleNode(node);
                     this.isSelected = !this.isSelected
                 }
@@ -50,7 +50,7 @@
         watch: {
             nodeSelected: {
                 handler(val, oldVal) {
-                    if (this.nodeSelected == this.node.id) {
+                    if (this.nodeSelected == this.node.object.id) {
                         this.isSelected = !this.isSelected
                         this.changeNodeSelection(-1)
                     }
