@@ -38,7 +38,7 @@
         methods: {
             toggle(node) {
                 if (!this.node.object.is_property) {
-                    this.toggleNode(node);
+                    this.toggleNode(node.object);
                     this.isSelected = !this.isSelected
                 }
             },

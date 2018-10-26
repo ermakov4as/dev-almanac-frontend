@@ -14,10 +14,10 @@
                                 id="name"
                                 class="form-control save-cancel-input"
                                 v-model="science.name">
-                        <button
+                        <div
                                 @click="saveScience"
                                 class="btn btn-green btn-common save-cancel-btn"
-                                >SAVE</button>
+                                >SAVE</div>
                         <router-link
                                 :to="cancelLink"
                                 tag="button"
@@ -150,6 +150,7 @@
       		    HTTP.get(`sciences/${ this.$route.params.id }/`)
                     .then(response => {
                         this.science = response.data;
+                        console.log(this.science);
                         this.dataReady = true;
                     })
                     .catch(error => {
@@ -164,8 +165,10 @@
             },
             // Сохранение данных на сервере
             saveScience() {
+                console.log(this.science);
                 HTTP.put(`sciences/${ this.$route.params.id }/`, this.science)
                     .then(response => {
+                        alert('Сохранено!');
                         this.$notify({
                             group: 'foo',
                             type: "success",
@@ -174,6 +177,7 @@
                         });
                     })
                     .catch(error => {
+                        alert('Ошибка сохранения :( \n Попробуйте ещё раз...');
                         console.log(error);
                         this.$notify({
                             group: 'foo',

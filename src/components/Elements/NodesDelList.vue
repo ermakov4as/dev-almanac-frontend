@@ -2,12 +2,12 @@
     <div class="element-table">
         <div class="name-node-line">
             <!-- Название вершины -->
-	        <h5 class="node-name">{{ node.object.name }}</h5>
+	        <h5 class="node-name">{{ node.name }}</h5>
             <!-- Кнопка удаления вершины из списка используемых в родительском компоненте -->
-            <button
+            <div
                     @click="deleteNode"
                     class="btn btn-red btn-common remove-btn"
-                    >X</button>
+                    >X</div>
         </div>
     </div>
 </template>

@@ -77,14 +77,14 @@
                                 <option
                                         v-for="node in nodesNotInList"
                                         v-if="nodesSelected.indexOf(node) == -1"
-                                        :value="node.object.id"
-                                        :key="node.object.id">{{ node.object.name }}
+                                        :value="node.id"
+                                        :key="node.id">{{ node.name }}
                                 </option>
                             </select>
-                            <button
+                            <div
                                     class="btn btn-green btn-common save-cancel-btn add-node-btn"
                                     @click="addNodeToLesson">Добавить
-                            </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -233,10 +233,10 @@
             },
             addNodeToLesson() {
                 if (this.nodeAdding != 0) {
-                    let currentNode = this.nodesNotInList.find(x => x.object.id === this.nodeAdding); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    let currentNode = this.nodesNotInList.find(x => x.id === this.nodeAdding); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     this.nodeAdding = 0;
                     this.toggleNode(currentNode);
-                    this.changeNodeSelection(currentNode.object.id);
+                    this.changeNodeSelection(currentNode.id);
                 };
             },
             ...mapMutations([
@@ -257,7 +257,7 @@
             },
             nodeRemoved(index, node) {
                 this.toggleNode(node)
-                this.changeNodeSelection(node.object.id)
+                this.changeNodeSelection(node.id)
             },
             // Получение данных с сервера (изначально)
             getData() {
@@ -298,6 +298,7 @@
                 console.log(this.lesson);
                 HTTP.put(`lessons/${ this.$route.params.id }/`, this.lesson)
                     .then(response => {
+                        alert('Сохранено!');
                         this.$notify({
                             group: 'foo',
                             type: "success",
@@ -306,6 +307,7 @@
                         });
                     })
                     .catch(error => {
+                        alert('Ошибка сохранения :( \n Попробуйте ещё раз...');
                         console.log(error);
                         this.$notify({
                             group: 'foo',

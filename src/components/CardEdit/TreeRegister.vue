@@ -4,7 +4,7 @@
                 class="btn-tree btn-tree-node"
                 :class="{selected: isSelected}"
                 @click="toggle(node)">
-            {{ node.object.name }}
+            {{ node.name }}
         </span>
     </li>
 </template>
@@ -38,7 +38,7 @@
         watch: {
             nodeSelected: {
                 handler(val, oldVal) {
-                    if (this.nodeSelected == this.node.object.id) {
+                    if (this.nodeSelected == this.node.id) {
                         this.isSelected = !this.isSelected
                         this.changeNodeSelection(-1)
                     }
@@ -74,7 +74,7 @@
     }
 
     li {
-        display: block
+        display: block;
     }
 
     .node-item:before {
@@ -90,5 +90,4 @@
         background-color: lightgreen;
         border-color: black
     }
-
 </style>

@@ -15,11 +15,11 @@
                                 id="name"
                                 class="form-control save-cancel-input"
                                 v-model="card.name">
-                        <button
+                        <div
                                 @click="saveCard"
                                 class="btn btn-green btn-common save-cancel-btn"
                         >SAVE
-                        </button>
+                        </div>
                         <router-link
                                 :to="`sciences/${ card.science }/lessons/${ card.lesson }/`"
                                 tag="button"
@@ -61,14 +61,14 @@
                                     <option
                                             v-for="node in treeList"
                                             v-if="nodesSelected.indexOf(node) == -1"
-                                            :value="node.object.id"
-                                            :key="node.object.id">{{ node.object.name }}
+                                            :value="node.id"
+                                            :key="node.id">{{ node.name }}
                                     </option>
                                 </select>
-                                <button
+                                <div
                                         class="btn btn-green btn-common save-cancel-btn add-node-btn"
                                         @click="addNodeToLesson">Добавить
-                                </button>
+                                </div>
                             </div>
                         </div>
                         <!-- Блок редактирования содержания карточки, блочный редактор -->
@@ -98,13 +98,13 @@
                         <div class="form-element nodes-place tree-place">
                             <!-- ТЕСТ СПИСКА ВЕРШИН ДРЕВА -->
                             <ul>
-                                <tree-list 
+                                <tree-register 
                                         v-for="node in treeList" 
-                                        :key="node.object.id"
+                                        :key="node.id"
                                         id="tree"
                                         class="item"
                                         :node="node">
-                                </tree-list>
+                                </tree-register>
                             </ul>
                         </div>
                     </div>
@@ -158,7 +158,7 @@
 <script>
     import EditorBlock from '../components/Elements/EditorBlock.vue';
     import NodesDelList from '../components/Elements/NodesDelList.vue';
-    import TreeList from '../components/CardEdit/TreeList.vue';
+    import TreeRegister from '../components/CardEdit/TreeRegister.vue';
     import {HTTP} from '../http-common.js';
     import {mapMutations, mapGetters} from 'vuex';
 
@@ -195,7 +195,7 @@
                 dataReady: false,
                 showContent: false,
                 showTrainer: false,
-                treeDataReady: 0
+                treeDataReady: 0,
             };
         },
         components: {
@@ -203,7 +203,7 @@
             //NameDescList,
             EditorBlock,
             NodesDelList,
-            TreeList
+            TreeRegister
         },
         computed: {
             ...mapGetters([
@@ -215,7 +215,7 @@
                 handler(val, oldVal) {
                     if (this.treeDataReady == 2) {
                         if (this.lessonTreeData.length > 0) {
-                            this.treeNodesToBuild(this.scienceTreeData, this.lessonTreeData.map(x => x.object.id));
+                            this.treeNodesToBuild(this.scienceTreeData, this.lessonTreeData.map(x => x.id));
                         };
                         this.treeDataReady = 0;
                     };
@@ -224,14 +224,19 @@
         },
         methods: {
             treeNodesToBuild(branch, storage) {
+                //console.log('!!!');
+                //console.log(branch);
+                //console.log(storage);
                 if (storage.indexOf(branch.object.id) != -1) {
-                    this.treeList.push(branch);
+                    this.treeList.push(branch.object);
+                    //console.log('!!!!!');
+                    //console.log(branch.object);
                 };
                 if (branch.children) {
                     let branchLenght = branch.children.length;
                     let childrenVisited = 0;
                     while (branchLenght > childrenVisited) {
-                        this.treeNodesToBuild(branch.children[childrenVisited]);
+                        this.treeNodesToBuild(branch.children[childrenVisited], storage);
                         childrenVisited += 1;
                     };
                 };
@@ -245,16 +250,18 @@
                 this.card.content = content
             },
             addNodeToLesson() {
+                console.log(this.nodeAdding);
+                console.log(this.treeList);
                 if (this.nodeAdding != 0) {
-                    let currentNode = this.nodesNotInList.find(x => x.object.id === this.nodeAdding); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    let currentNode = this.treeList.find(x => x.id === this.nodeAdding); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     this.nodeAdding = 0;
                     this.toggleNode(currentNode);
-                    this.changeNodeSelection(currentNode.object.id);
+                    this.changeNodeSelection(currentNode.id);
                 };
             },
             nodeRemoved(index, node) {
                 this.toggleNode(node)
-                this.changeNodeSelection(node.object.id)
+                this.changeNodeSelection(node.id)
             },
             ...mapMutations([
                 'clearState',
@@ -263,9 +270,13 @@
                 'initNodes'
             ]),
             saveCard() {
-                this.card.nodes = this.nodesSelected
+                this.card.nodes = this.nodesSelected;
+                this.card.time = parseInt(this.card.time);
+                console.log(typeof(this.card.time));
+                console.log(this.card);
                 HTTP.put(`cards/${ this.$route.params.id }/`, this.card)
                     .then(response => {
+                        alert('Сохранено!');
                         this.$notify({
                             group: 'foo',
                             type: "success",
@@ -274,6 +285,7 @@
                         });
                     })
                     .catch(error => {
+                        alert('Ошибка сохранения :( \n Попробуйте ещё раз...');
                         console.log(error);
                         this.$notify({
                             group: 'foo',
@@ -302,7 +314,7 @@
                             .then(response => {
                                 this.scienceTreeData = response.data.nodes;
                                 this.treeDataReady += 1;
-                                console.log(this.scienceTreeData);
+                                //console.log(this.scienceTreeData);
                             })
                             .catch(error => {
                                 console.log(error);
@@ -317,7 +329,7 @@
                             .then(response => {
                                 this.lessonTreeData = response.data.nodes;
                                 this.treeDataReady += 1;
-                                console.log(this.lessonTreeData);
+                                //console.log(this.lessonTreeData);
                             })
                             .catch(error => {
                                 console.log(error);

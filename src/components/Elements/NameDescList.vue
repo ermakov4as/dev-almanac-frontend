@@ -11,10 +11,10 @@
                     class="btn btn-orange btn-common name-and-edit-btn"
                     >РЕДАКТИРОВАТЬ</router-link>
             <!-- Кнопка удаления элемента -->
-            <button
+            <div
                     @click="deleteElement"
                     class="btn btn-red btn-common remove-btn"
-                    >X</button>
+                    >X</div>
         </div>
         <!-- Нижняя строка блока - описание элемента -->
         <div class="desc-label">

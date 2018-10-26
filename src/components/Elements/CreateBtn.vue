@@ -1,9 +1,9 @@
 <template>
     <div>
-        <button
+        <div
                 @click="createNew"
                 class="btn btn-green btn-oval create-btn"
-                >{{ createBtn.name }}</button>
+                >{{ createBtn.name }}</div>
     </div>
 </template>
 
