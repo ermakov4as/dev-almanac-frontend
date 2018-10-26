@@ -21,7 +21,7 @@
                         >SAVE
                         </button>
                         <router-link
-                                :to="`/lessons/${ card.lesson }/`"
+                                :to="`sciences/${ card.science }/lessons/${ card.lesson }/`"
                                 tag="button"
                                 class="btn btn-red btn-common save-cancel-btn"
                         >CANCEL
@@ -59,7 +59,7 @@
                                         class="form-control add-node-select"
                                         v-model="nodeAdding">
                                     <option
-                                            v-for="node in nodesNotInList"
+                                            v-for="node in treeList"
                                             v-if="nodesSelected.indexOf(node) == -1"
                                             :value="node.object.id"
                                             :key="node.object.id">{{ node.object.name }}
@@ -96,24 +96,30 @@
                             <label for="tree">Дерево урока</label>
                         </div>
                         <div class="form-element nodes-place tree-place">
-                            <!-- ТЕСТ ДРЕВА -->
-                            <ol class="node">
-                                <tree
+                            <!-- ТЕСТ СПИСКА ВЕРШИН ДРЕВА -->
+                            <ul>
+                                <tree-list 
+                                        v-for="node in treeList" 
+                                        :key="node.object.id"
+                                        id="tree"
                                         class="item"
-                                        :node="treeData">
-                                </tree>
-                            </ol>
+                                        :node="node">
+                                </tree-list>
+                            </ul>
                         </div>
                     </div>
                 </div>
                 <!-- Блок редактирования времени на изучение карточки -->
                 <div class="form-group">
                     <div class="label-subtitle">
-                        <label for="time">Время на изучение</label>
+                        <label for="time">Время на изучение
+                            <span class="label-subdescription">   (в секундах)</span>
+                        </label>
                     </div>
                     <div class="form-element">
                         <input
-                                type="time"
+                                type="number"
+                                min="0"
                                 id="time"
                                 class="form-control time-input"
                                 v-model="card.time">
@@ -152,7 +158,7 @@
 <script>
     import EditorBlock from '../components/Elements/EditorBlock.vue';
     import NodesDelList from '../components/Elements/NodesDelList.vue';
-    import Tree from '../components/Elements/Tree.vue';
+    import TreeList from '../components/CardEdit/TreeList.vue';
     import {HTTP} from '../http-common.js';
     import {mapMutations, mapGetters} from 'vuex';
 
@@ -182,19 +188,14 @@
                         ]
                     }
                 },
-                nodesNotInList: [],
                 nodeAdding: 0,
-                treeData: {
-                    children: [],
-                    object: {
-                        id: 0,
-                        name: "",
-                        is_property: true
-                    }
-                },
+                treeList: [],
+                scienceTreeData: {},
+                lessonTreeData: [],
                 dataReady: false,
                 showContent: false,
-                showTrainer: false
+                showTrainer: false,
+                treeDataReady: 0
             };
         },
         components: {
@@ -202,14 +203,44 @@
             //NameDescList,
             EditorBlock,
             NodesDelList,
-            Tree
+            TreeList
         },
         computed: {
             ...mapGetters([
                 'nodesSelected'
             ])
         },
+        watch: {
+            treeDataReady: {
+                handler(val, oldVal) {
+                    if (this.treeDataReady == 2) {
+                        if (this.lessonTreeData.length > 0) {
+                            this.treeNodesToBuild(this.scienceTreeData, this.lessonTreeData.map(x => x.object.id));
+                        };
+                        this.treeDataReady = 0;
+                    };
+                }
+            }
+        },
         methods: {
+            treeNodesToBuild(branch, storage) {
+                if (storage.indexOf(branch.object.id) != -1) {
+                    this.treeList.push(branch);
+                };
+                if (branch.children) {
+                    let branchLenght = branch.children.length;
+                    let childrenVisited = 0;
+                    while (branchLenght > childrenVisited) {
+                        this.treeNodesToBuild(branch.children[childrenVisited]);
+                        childrenVisited += 1;
+                    };
+                };
+            },
+            /*cardTimeCorrect() {
+                let hours = Math.floor(this.card.time / 60 / 60 % 60).toString();
+                let minutes = Math.floor(this.card.time / 60 % 60).toString();
+                this.card.time = `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+            },*/
             editorUpdated(content) {
                 this.card.content = content
             },
@@ -232,7 +263,7 @@
                 'initNodes'
             ]),
             saveCard() {
-                //this.lesson.nodes = this.nodesSelected
+                this.card.nodes = this.nodesSelected
                 HTTP.put(`cards/${ this.$route.params.id }/`, this.card)
                     .then(response => {
                         this.$notify({
@@ -255,9 +286,48 @@
             getData() {
                 HTTP.get(`cards/${ this.$route.params.id }/`)
                     .then(response => {
-                        //console.log(response.data);
+                        console.log(response.data);
                         this.card = response.data;
+                        //this.cardTimeCorrect();
                         this.dataReady = true;
+
+                        //{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+                        this.card.science = 1;
+                        this.card.lesson = 3;
+                        //s.card.lesson = 3;
+                        //{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
+
+                        this.initNodes(this.card.nodes);
+                        HTTP.get(`sciences/${ this.card.science }/`)
+                            .then(response => {
+                                this.scienceTreeData = response.data.nodes;
+                                this.treeDataReady += 1;
+                                console.log(this.scienceTreeData);
+                            })
+                            .catch(error => {
+                                console.log(error);
+                                this.$notify({
+                                    group: 'foo',
+                                    type: "error",
+                                    title: 'Произошла ошибка',
+                                    text: 'Sorry'
+                                });
+                            });
+                        HTTP.get(`lessons/${ this.card.lesson }/`)
+                            .then(response => {
+                                this.lessonTreeData = response.data.nodes;
+                                this.treeDataReady += 1;
+                                console.log(this.lessonTreeData);
+                            })
+                            .catch(error => {
+                                console.log(error);
+                                this.$notify({
+                                    group: 'foo',
+                                    type: "error",
+                                    title: 'Произошла ошибка',
+                                    text: 'Sorry'
+                                });
+                            });
                     })
                     .catch(error => {
                         console.log(error);
@@ -326,6 +396,15 @@
     }
 
     .time-input {
-        width: 120px;
+        width: 200px;
+    }
+
+    li {
+        display: block
+    }
+
+    .selected {
+        background-color: lightgreen;
+        border-color: black
     }
 </style>

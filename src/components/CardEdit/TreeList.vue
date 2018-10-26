@@ -1,32 +1,22 @@
 <template type="text/x-template" id="item-template">
-    <li :class="{'node-item': !node.object.is_property}">
+    <li>
         <span
                 class="btn-tree btn-tree-node"
-                :class="{property: node.object.is_property,  selected: isSelected}"
+                :class="{selected: isSelected}"
                 @click="toggle(node)">
-        {{ node.object.name }}
+            {{ node.object.name }}
         </span>
-        <ol :class="{'node': !node.object.is_property}">
-            <tree
-                    class="item"
-                    v-for="(node, index) in node.children"
-                    :key="index"
-                    :node="node">
-            </tree>
-        </ol>
     </li>
 </template>
 
 <script>
-    import Tree from './Tree.vue';
     import {mapMutations, mapGetters} from 'vuex';
 
     export default {
-        name: "tree",
+        name: "tree-list",
         props: ['node'],
         data() {
             return {
-                open: false,
                 isSelected: false
             }
         },
@@ -37,10 +27,8 @@
         },
         methods: {
             toggle(node) {
-                if (!this.node.object.is_property) {
-                    this.toggleNode(node);
-                    this.isSelected = !this.isSelected
-                }
+                this.toggleNode(node);
+                this.isSelected = !this.isSelected
             },
             ...mapMutations([
                 'toggleNode',
@@ -56,9 +44,6 @@
                     }
                 }
             }
-        },
-        components: {
-            Tree
         }
     }
 </script>

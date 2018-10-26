@@ -15,11 +15,11 @@
                                 id="name"
                                 class="form-control save-cancel-input"
                                 v-model="lesson.name">
-                        <button
+                        <div
                                 @click="saveLesson"
                                 class="btn btn-green btn-common save-cancel-btn"
                         >SAVE
-                        </button>
+                        </div> <!-- Button -->
                         <router-link
                                 :to="`/sciences/${ lesson.science }/`"
                                 tag="button"
@@ -138,7 +138,7 @@
     import NameDescList from '../components/Elements/NameDescList.vue';
     import EditorBlock from '../components/Elements/EditorBlock.vue';
     import NodesDelList from '../components/Elements/NodesDelList.vue';
-    import Tree from '../components/Elements/Tree.vue';
+    import Tree from '../components/LessonEdit/Tree.vue';
     import {HTTP} from '../http-common.js';
     import {mapMutations, mapGetters} from 'vuex';
 
@@ -265,11 +265,12 @@
                     .then(response => {
                         this.lesson = response.data;
                         this.dataReady = true;
+                        console.log(this.lesson);
+                        this.initNodes(this.lesson.nodes);
                         HTTP.get(`sciences/${ this.lesson.science }/`)
                             .then(response => {
                                 this.treeData = response.data.nodes;
                                 this.treeDataReady = true;
-                                this.initNodes(this.lesson.nodes);
                             })
                             .catch(error => {
                                 console.log(error);
@@ -293,7 +294,8 @@
             },
             // Сохранение данных на сервере
             saveLesson() {
-                this.lesson.nodes = this.nodesSelected
+                this.lesson.nodes = this.nodesSelected;
+                console.log(this.lesson);
                 HTTP.put(`lessons/${ this.$route.params.id }/`, this.lesson)
                     .then(response => {
                         this.$notify({
