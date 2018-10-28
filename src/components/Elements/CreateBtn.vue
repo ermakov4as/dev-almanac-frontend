@@ -2,8 +2,9 @@
     <div>
         <div
                 @click="createNew"
-                class="btn btn-green btn-oval create-btn"
-                >{{ createBtn.name }}</div>
+                class="btn btn-green btn-oval create-btn">
+            {{ createBtn.name }}
+        </div>
     </div>
 </template>
 
@@ -38,13 +39,5 @@
 </script>
 
 <style scoped>
-    .create-btn {
-        margin-top: 20px;
-    }
 
-    .createItem {
-        margin-bottom: 20px;
-        margin-right: 50px;
-        margin-left: auto;
-    }
 </style>

@@ -18,7 +18,7 @@
         </div>
         <!-- Нижняя строка блока - описание элемента -->
         <div class="desc-label">
-            <p>{{ element.description }}</p>
+            <p v-html="element.description"></p>
         </div>
     </div>
 </template>

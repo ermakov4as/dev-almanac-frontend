@@ -13,6 +13,10 @@ body {
     padding: 10px;
 }
 
+.bottom-imitate {
+    padding-bottom: 20px;
+}
+
 .btn-common {
     border-radius: 3px;
     padding: 7px 12px;
@@ -79,6 +83,10 @@ body {
     padding-right: 50px;
 }
 
+.create-btn {
+    margin-top: 20px;
+}
+
 .elements-list-margin {
     margin-bottom: 0;
 }
@@ -91,6 +99,14 @@ label {
     font-size: 18px;
     font-weight: bolder;
     text-align: left;
+    margin: 0;
+    padding: 10px 0 10px 10px;
+}
+
+.label-subtitle-center {
+    font-size: 20px;
+    font-weight: bolder;
+    text-align: center;
     margin: 0;
     padding: 10px 0 10px 10px;
 }

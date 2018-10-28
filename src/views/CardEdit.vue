@@ -21,7 +21,7 @@
                         >SAVE
                         </div>
                         <router-link
-                                :to="`sciences/${ card.science }/lessons/${ card.lesson }/`"
+                                :to="`/sciences/${ card.science }/lessons/${ card.lesson }/`"
                                 tag="button"
                                 class="btn btn-red btn-common save-cancel-btn"
                         >CANCEL
@@ -135,6 +135,7 @@
                     </p>
                 </div>
             </div>
+            <h3 v-if="showTrainer">Здесь будут тренажёры карточек...</h3>
             <!--name-desc-list
                     v-if="showTrainer"
                     v-for="(card, index) in lesson.cards"
@@ -146,10 +147,9 @@
                     @elementRemoved="elementRemoved"></name-desc-list-->
             <div class="create-btn-right">
                 <!-- Кнопка создания нового тренажёра карточки -->
-                <!--create-btn
-                        :createBtn="createBtn"
-                        :requestId="{'lesson_id': lesson.id}"
-                        @createBtnUsed="createBtnUsed"></create-btn-->
+                <div
+                        @click="createNewTrainer"
+                        class="btn btn-green btn-oval create-btn">Добавить тренажёр</div>
             </div>
         </div>
     </div>
@@ -223,14 +223,10 @@
             }
         },
         methods: {
+            createNewTrainer() {}, ///////////////////////////////////////////////////////////////////////////////////
             treeNodesToBuild(branch, storage) {
-                //console.log('!!!');
-                //console.log(branch);
-                //console.log(storage);
                 if (storage.indexOf(branch.object.id) != -1) {
                     this.treeList.push(branch.object);
-                    //console.log('!!!!!');
-                    //console.log(branch.object);
                 };
                 if (branch.children) {
                     let branchLenght = branch.children.length;
@@ -306,7 +302,6 @@
                         //{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
                         this.card.science = 1;
                         this.card.lesson = 3;
-                        //s.card.lesson = 3;
                         //{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
 
                         this.initNodes(this.card.nodes);
