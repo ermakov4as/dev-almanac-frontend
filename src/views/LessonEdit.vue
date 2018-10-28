@@ -18,13 +18,13 @@
                         <div
                                 @click="saveLesson"
                                 class="btn btn-green btn-common save-cancel-btn"
-                        >SAVE
+                        >       SAVE
                         </div> <!-- Button -->
                         <router-link
                                 :to="`/sciences/${ lesson.science }/`"
                                 tag="button"
                                 class="btn btn-red btn-common save-cancel-btn"
-                        >CANCEL
+                                >CANCEL
                         </router-link>
                     </div>
                 </div>

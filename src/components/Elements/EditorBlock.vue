@@ -247,7 +247,9 @@
             prepareForUse() {
                 this.article = this.articleOut
                 try {
+                    console.log('PrepareForUse!');
                     this.blocks = JSON.parse(this.article)
+                    console.log(this.blocks);
                 } catch (err) {
                     console.log(err);
                 }
@@ -298,6 +300,7 @@
         watch: {
             // Отслеживаем получение данных с сервера в родительском компоненте
             dataReady() {
+                console.log('dataReady!');
                 this.prepareForUse();
             },
             // Отслеживаем все изменения контента и возвращаем их в родительский компонент
@@ -308,6 +311,9 @@
                 },
                 deep: true
             }
+        },
+        created() {
+            console.log('Editor created!');
         }
     }
 </script>

@@ -19,7 +19,7 @@
                                 class="btn btn-green btn-common save-cancel-btn"
                                 >SAVE</div>
                         <router-link
-                                :to="cancelLink"
+                                to="/sciences/"
                                 tag="button"
                                 class="btn btn-red btn-common save-cancel-btn"
                                 >CANCEL</router-link>
@@ -105,7 +105,6 @@
                     btnPath: `${ this.$route.path }lessons/`,
                     requestPath: 'lessons/'
                 },
-                cancelLink: { path: '/sciences/' },
                 dataReady: false,
                 showContent: true,
                 showLessons: false,

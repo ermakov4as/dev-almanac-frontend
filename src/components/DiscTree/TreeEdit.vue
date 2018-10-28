@@ -3,7 +3,7 @@
         <span
                 class="btn-tree btn-tree-node"
                 :class="{property: node.object.is_property,  selected: isSelected}"
-                @click="toggle(node)">
+                @click="toggleEditing(node.object.id)">
             {{ node.object.name }}
         </span>
         <ol :class="{'node': !node.object.is_property}">
@@ -36,26 +36,10 @@
             ])
         },
         methods: {
-            toggle(node) {
-                /*if (!this.node.object.is_property) {*/
-                this.toggleEditing(node.object.id);
-                //this.isSelected = !this.isSelected
-                /*}*/
-            },
             ...mapMutations([
                 'toggleEditing'
             ]),
         },
-        /*watch: {
-            nodeSelected: {
-                handler(val, oldVal) {
-                    if (this.nodeSelected == this.node.object.id) {
-                        this.isSelected = !this.isSelected
-                        this.changeNodeSelection(-1)
-                    }
-                }
-            }
-        },*/
         watch: {
             editingNode: {
                 handler(val, oldVal) {
