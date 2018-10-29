@@ -1,6 +1,6 @@
 <template>
     <div class="block-container">
-        <h1 class="component-title">Редактирование дисциплины {{ science.id }}</h1>
+        <!--<h1 class="component-title">Редактирование дисциплины {{ science.id }}</h1>-->
         <div class="component-content">
             <form>
                 <!-- Блок редактирования названия дисциплины, кнопок сохранить на сервере и вернуться назад -->
@@ -87,6 +87,7 @@
     import { HTTP } from '../http-common.js';
 
     export default {
+        name: 'Science Editor',
         data() {
             return {
                 science: {
@@ -107,7 +108,7 @@
                 },
                 dataReady: false,
                 showContent: true,
-                showLessons: false,
+                showLessons: true,
                 delProps: {
                     name: 'урок',
                     editPath: `${ this.$route.path }lessons/`,

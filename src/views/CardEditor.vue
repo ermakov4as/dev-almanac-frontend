@@ -158,7 +158,7 @@
 <script>
     import EditorBlock from '../components/Elements/EditorBlock.vue';
     import NodesDelList from '../components/Elements/NodesDelList.vue';
-    import TreeRegister from '../components/CardEdit/TreeRegister.vue';
+    import TreeRegister from '../components/CardEditor/TreeRegister.vue';
     import {HTTP} from '../http-common.js';
     import {mapMutations, mapGetters} from 'vuex';
 

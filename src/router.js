@@ -16,31 +16,31 @@ export default new Router({
             path: '/sciences/',
             name: 'sciences',
             component: () =>
-                import ('./views/Disciplines.vue')
+                import ('./views/ScienceList.vue')
         },
         {
             path: '/sciences/:id/',
             name: 'discEdit',
             component: () =>
-                import ('./views/DiscEdit.vue')
+                import ('./views/ScienceEditor.vue')
         },
         {
             path: '/sciences/:id/upload_tree/',
             name: 'discTree',
             component: () =>
-                import ('./views/DiscTree.vue')
+                import ('./views/ScienceTree.vue')
         },
         {
             path: '/sciences/:id_last/lessons/:id/',
             name: 'lessonEdit',
             component: () =>
-                import ('./views/LessonEdit.vue')
+                import ('./views/LessonEditor.vue')
         },
         {
             path: '/sciences/:id_last_1/lessons/:id_last/cards/:id/',
             name: 'cardEdit',
             component: () =>
-                import ('./views/CardEdit.vue')
+                import ('./views/CardEditor.vue')
         }
     ]
 })

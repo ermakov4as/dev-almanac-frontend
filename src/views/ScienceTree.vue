@@ -93,7 +93,7 @@
 </template>
 
 <script>
-    import TreeEdit from '../components/DiscTree/TreeEdit.vue';
+    import TreeEdit from '../components/ScienceTree/TreeEdit.vue';
     import EditorBlock from '../components/Elements/EditorBlock.vue';
     import { HTTP } from '../http-common.js';
     import {mapMutations, mapGetters} from 'vuex';
