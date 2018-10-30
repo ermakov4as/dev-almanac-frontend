@@ -1,7 +1,8 @@
 <template>
     <div class="block-container">
-        <h1 class="component-title">Редактирование урока {{ lesson.id }}</h1>
-        <h2 class="component-subtitle">Дисциплина {{ lesson.science }}</h2>
+        <!--Пользователей не должно волновать, какие айдишники использовать-->
+        <h1 class="component-title">Редактирование урока "{{ lesson.name }}"</h1>
+        <!--<h2 class="component-subtitle">Дисциплина {{ lesson.science }}</h2>-->
         <div class="component-content">
             <form>
                 <!-- Блок редактирования названия урока, кнопок сохранить на сервере и вернуться назад -->
@@ -32,6 +33,7 @@
                 <div class="form-group">
                     <div class="label-subtitle">
                         <label for="description">Описание</label>
+                        <p></p>
                     </div>
                     <div class="form-element">
                         <quill-editor
@@ -76,7 +78,7 @@
                                     v-model="nodeAdding">
                                 <option
                                         v-for="node in nodesNotInList"
-                                        v-if="nodesSelected.indexOf(node) == -1"
+                                        v-if="!(nodesSelected.find(x => x.id === node.id))"
                                         :value="node.id"
                                         :key="node.id">{{ node.name }}
                                 </option>
@@ -98,7 +100,8 @@
                         <ol class="node">
                             <tree
                                     class="item"
-                                    :node="treeData">
+                                    :node="treeData"
+                                    :ready="treeDataReady">
                             </tree>
                         </ol>
                     </div>
@@ -138,7 +141,7 @@
     import NameDescList from '../components/Elements/NameDescList.vue';
     import EditorBlock from '../components/Elements/EditorBlock.vue';
     import NodesDelList from '../components/Elements/NodesDelList.vue';
-    import Tree from '../components/LessonEdit/Tree.vue';
+    import Tree from '../components/LessonEditor/Tree.vue';
     import {HTTP} from '../http-common.js';
     import {mapMutations, mapGetters} from 'vuex';
 
@@ -177,7 +180,7 @@
                 dataReady: false,
                 treeDataReady: false,
                 showContent: true,
-                showCards: false,
+                showCards: true,
                 delProps: {
                     name: 'карточку',
                     editPath: `${ this.$route.path }cards/`,
@@ -219,8 +222,10 @@
         },
         methods: {
             treeInspect(branch) {
+                console.log('nodesNotInList');
+                console.log(this.nodesNotInList);
                 if (!branch.object.is_property) {
-                    this.nodesNotInList.push(branch);
+                    this.nodesNotInList.push(branch.object);
                 };
                 if (branch.children) {
                     let branchLenght = branch.children.length;
@@ -238,6 +243,8 @@
                     this.toggleNode(currentNode);
                     this.changeNodeSelection(currentNode.id);
                 };
+                console.log('Attention_1');
+                console.log(this.nodesSelected);
             },
             ...mapMutations([
                 'clearState',
@@ -271,6 +278,7 @@
                             .then(response => {
                                 this.treeData = response.data.nodes;
                                 this.treeDataReady = true;
+                                //this.initNodes(this.lesson.nodes);
                             })
                             .catch(error => {
                                 console.log(error);

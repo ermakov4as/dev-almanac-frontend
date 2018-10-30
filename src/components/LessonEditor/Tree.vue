@@ -11,6 +11,7 @@
                     class="item"
                     v-for="(node, index) in node.children"
                     :key="index"
+                    :ready="ready"
                     :node="node">
             </tree>
         </ol>
@@ -23,19 +24,32 @@
 
     export default {
         name: "tree",
-        props: ['node'],
+        props: [
+            'node', 
+            'ready'
+        ],
         data() {
             return {
                 open: false,
-                isSelected: false
-            }
+                isSelected: false,
+                firstNodesGetting: true
+            };
         },
         computed: {
             ...mapGetters([
-                'nodeSelected'
+                'nodeSelected',
+                'nodesSelected'
             ])
         },
         methods: {
+            initSelestedNodes() {
+                console.log('1st - test');
+                console.log(this.nodesSelected);
+                console.log(this.node.object.id);
+                if (this.nodesSelected.find(x => x.id === this.node.object.id)) {
+                    this.isSelected = !this.isSelected;
+                };
+            },
             toggle(node) {
                 if (!this.node.object.is_property) {
                     this.toggleNode(node.object);
@@ -51,9 +65,29 @@
             nodeSelected: {
                 handler(val, oldVal) {
                     if (this.nodeSelected == this.node.object.id) {
-                        this.isSelected = !this.isSelected
-                        this.changeNodeSelection(-1)
-                    }
+                        this.isSelected = !this.isSelected;
+                        this.changeNodeSelection(-1);
+                    };
+                }
+            },
+            /*nodesSelected: {
+                handler(val, oldVal) {
+                    if (this.firstNodesGetting) {
+                        this.initSelestedNodes();
+                        console.log('1st');
+                        this.firstNodesGetting = false;
+                    };
+                    console.log('Tree');
+                }
+            }*/
+            ready: {
+                handler(val, oldVal) {
+                    if (this.firstNodesGetting) {
+                        this.initSelestedNodes();
+                        console.log('1st');
+                        this.firstNodesGetting = false;
+                    };
+                    console.log('ready...ready...');
                 }
             }
         },

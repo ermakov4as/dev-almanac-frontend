@@ -1,7 +1,7 @@
 <template>
     <div class="block-container">
-        <h1 class="component-title">Редактирование карточки {{ card.id }}</h1>
-        <h2 class="component-subtitle">Урок {{ card.lesson }}  Дисциплина {{ card.science }}</h2>
+        <h1 class="component-title">Редактирование карточки "{{ card.name }}"</h1>
+        <!--h2 class="component-subtitle">Урок {{ card.lesson }}  Дисциплина {{ card.science }}</h2-->
         <div class="component-content">
             <form>
                 <!-- Блок редактирования названия карточки, кнопок сохранить на сервере и вернуться назад -->
@@ -103,6 +103,7 @@
                                         :key="node.id"
                                         id="tree"
                                         class="item"
+                                        :ready="treeStartReady"
                                         :node="node">
                                 </tree-register>
                             </ul>
@@ -158,7 +159,7 @@
 <script>
     import EditorBlock from '../components/Elements/EditorBlock.vue';
     import NodesDelList from '../components/Elements/NodesDelList.vue';
-    import TreeRegister from '../components/CardEdit/TreeRegister.vue';
+    import TreeRegister from '../components/CardEditor/TreeRegister.vue';
     import {HTTP} from '../http-common.js';
     import {mapMutations, mapGetters} from 'vuex';
 
@@ -195,6 +196,7 @@
                 dataReady: false,
                 showContent: false,
                 showTrainer: false,
+                treeStartReady: false,
                 treeDataReady: 0,
             };
         },
@@ -214,6 +216,7 @@
             treeDataReady: {
                 handler(val, oldVal) {
                     if (this.treeDataReady == 2) {
+                        this.treeStartReady = true;
                         if (this.lessonTreeData.length > 0) {
                             this.treeNodesToBuild(this.scienceTreeData, this.lessonTreeData.map(x => x.id));
                         };
@@ -294,16 +297,11 @@
             getData() {
                 HTTP.get(`cards/${ this.$route.params.id }/`)
                     .then(response => {
+                        console.log('response_data_check');
                         console.log(response.data);
                         this.card = response.data;
                         //this.cardTimeCorrect();
                         this.dataReady = true;
-
-                        //{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-                        this.card.science = 1;
-                        this.card.lesson = 3;
-                        //{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-
                         this.initNodes(this.card.nodes);
                         HTTP.get(`sciences/${ this.card.science }/`)
                             .then(response => {

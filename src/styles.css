@@ -31,7 +31,7 @@ body {
 }
 
 .btn-green {
-    background-color: #00d014;
+    background-color: #4ca64c;
 }
 
 .btn-orange {
@@ -39,19 +39,19 @@ body {
 }
 
 .btn-red {
-    background-color: #ff3739;
+    background-color: #e53142;
 }
 
 .btn-green:hover {
-    background-color: lime;
+    background-color: #3c793c;
 }
 
 .btn-orange:hover {
-    background-color: lightcoral;
+    background-color: #eaab0f;
 }
 
 .btn-red:hover {
-    background-color: darkred;
+    background-color: #ca2939;
 }
 
 .btn-oval {

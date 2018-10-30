@@ -17,7 +17,7 @@
                     >X</div>
         </div>
         <!-- Нижняя строка блока - описание элемента -->
-        <div class="desc-label">
+        <div class="desc-label" id="article">
             <p v-html="element.description"></p>
         </div>
     </div>
@@ -30,7 +30,7 @@
         props: [
             'element',
             'delProps',
-            'index',
+            'index'
         ],
         data() {
             return {
@@ -40,7 +40,8 @@
                         id: this.element.id,
                         id_last: this.$route.params.id,
                     }
-                }
+                },
+                blocks: []
             }
         },
         methods: {
@@ -68,6 +69,10 @@
 </script>
 
 <style scoped>
+    #article >>> p {
+        margin-bottom: 0;
+    }
+
     p {
         margin: 0;
     }

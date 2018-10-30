@@ -1,6 +1,6 @@
 <template>
     <div class="block-container">
-        <h1 class="component-title">Дисциплина {{ science.id }}</h1>
+        <h1 class="component-title">Дисциплина "{{ science.name }}"</h1>
         <div class="component-content">
             <!-- Разделённая на 2 колонки часть -->
             <div class="row form-group multi-cols-border">
@@ -93,7 +93,7 @@
 </template>
 
 <script>
-    import TreeEdit from '../components/DiscTree/TreeEdit.vue';
+    import TreeEdit from '../components/ScienceTree/TreeEdit.vue';
     import EditorBlock from '../components/Elements/EditorBlock.vue';
     import { HTTP } from '../http-common.js';
     import {mapMutations, mapGetters} from 'vuex';
