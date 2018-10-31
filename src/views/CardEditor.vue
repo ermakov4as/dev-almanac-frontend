@@ -197,6 +197,7 @@
                 showContent: false,
                 showTrainer: false,
                 treeStartReady: false,
+                //editorDataReady: false,
                 treeDataReady: 0,
             };
         },
@@ -223,7 +224,14 @@
                         this.treeDataReady = 0;
                     };
                 }
-            }
+            }/*,
+            showContent: {
+                handler(val, oldVal) {
+                    if (this.dataReady && this.showContent) {
+                        this.editorDataReady = true;
+                    };
+                }
+            }*/
         },
         methods: {
             createNewTrainer() {}, ///////////////////////////////////////////////////////////////////////////////////
@@ -249,8 +257,8 @@
                 this.card.content = content
             },
             addNodeToLesson() {
-                console.log(this.nodeAdding);
-                console.log(this.treeList);
+                //console.log(this.nodeAdding);
+                //console.log(this.treeList);
                 if (this.nodeAdding != 0) {
                     let currentNode = this.treeList.find(x => x.id === this.nodeAdding); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     this.nodeAdding = 0;
@@ -271,8 +279,8 @@
             saveCard() {
                 this.card.nodes = this.nodesSelected;
                 this.card.time = parseInt(this.card.time);
-                console.log(typeof(this.card.time));
-                console.log(this.card);
+                //console.log(typeof(this.card.time));
+                //console.log(this.card);
                 HTTP.put(`cards/${ this.$route.params.id }/`, this.card)
                     .then(response => {
                         alert('Сохранено!');
@@ -297,8 +305,8 @@
             getData() {
                 HTTP.get(`cards/${ this.$route.params.id }/`)
                     .then(response => {
-                        console.log('response_data_check');
-                        console.log(response.data);
+                        //console.log('response_data_check');
+                        //console.log(response.data);
                         this.card = response.data;
                         //this.cardTimeCorrect();
                         this.dataReady = true;

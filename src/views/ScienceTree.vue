@@ -73,7 +73,6 @@
                                     <div class="form-group">
                                         <div class="label-subtitle">
                                             <label for="content">Содержимое вершины</label>
-                                            <p>{{ currentNode.object.content }}</p>
                                         </div>
                                         <div class="form-element" id="content">
                                             <editor-block
@@ -151,13 +150,14 @@
             editingNode: {
                 handler(val, oldVal) {
                     if (this.editingNode != -1) {
+                        this.editDataReady = false;
                         if (this.currentNode.object.id != 0) {
-                            this. science.nodes = this.nodeSaveToNodes(this.science.nodes, this.currentNode);
+                            this.science.nodes = this.nodeSaveToNodes(this.science.nodes, this.currentNode);
                         };
                         this.nodeSearch(this.science.nodes, this.editingNode);
                         this.editDataReady = !this.editDataReady;
                         this.checkEditorState();
-                        console.log('editDataReady!');
+                        //console.log('editDataReady!');
                     }
                 }
             },
@@ -170,7 +170,7 @@
         methods: {
             checkEditorState() { ///////////////////////////////////////////////////////////////////////////////////////////
                 if (this.showContent && this.editingNode != -1) {
-                    this.editDataReady = !this.editDataReady;
+                    this.editDataReady = true;
                     //setTimeout(this.editDataReady = !this.editDataReady, 100);
                     console.log('And now?');
                 }

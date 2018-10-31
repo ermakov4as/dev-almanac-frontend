@@ -314,6 +314,9 @@
         },
         created() {
             console.log('Editor created!');
+            if (this.dataReady) {
+                this.prepareForUse();
+            };
         }
     }
 </script>
