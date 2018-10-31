@@ -2,6 +2,7 @@
     <li :class="{'node-item': !node.object.is_property}">
         <span
                 class="btn-tree btn-tree-node"
+                v-if="node.object.id"
                 :class="{property: node.object.is_property,  selected: isSelected}"
                 @click="toggleEditing(node.object.id)">
             {{ node.object.name }}

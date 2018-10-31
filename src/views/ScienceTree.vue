@@ -37,11 +37,48 @@
                         </div>
                         <template v-if="editingNode != -1">   
                             <!-- Блок названия, перемещения вверх-вниз и удаления ноды --> 
-                            <div class="form-group">Hазвание, вниз-вверх, удаление</div>
+                            <div class="form-group">
+                                <div class="form-element">
+                                    <input
+                                            type="text"
+                                            id="name"
+                                            class="form-control node-delete-input"
+                                            v-model="currentNode.object.name">
+                                    <div 
+                                            class="btn btn-red btn-common btn-delete-node"
+                                            @click="deleteNode">
+                                        Удалить {{ currentNode.object.is_property ? 'вершину' : 'свойство' }}</div>
+                                </div>
+                            </div>
                             <!-- Блок перемещения ноды в другое место -->
                             <div class="form-group">Перемещение в другое место</div>
                             <!-- Блок создания новой ноды: в текущем месте или в конце списка -->
-                            <div class="form-group">Новая вершина в конец или здесь</div>
+                            <div class="form-group">
+                                <div class="label-subtitle">
+                                    <label for="create">Добавление вершины</label>
+                                </div>
+                                <div class="form-element-nf">
+                                    <input
+                                            type="text"
+                                            id="name"
+                                            class="form-control node-name-input"
+                                            v-model="newNodeName.core">
+                                    <div 
+                                            class="btn btn-green btn-oval btn-half-place"
+                                            @click="addNode('core')">Добавить свойство в корень</div>
+                                </div>
+                                <div class="form-element">
+                                    <input
+                                            type="text"
+                                            id="name"
+                                            class="form-control node-name-input"
+                                            v-model="newNodeName.child">
+                                    <div 
+                                            class="btn btn-orange btn-oval btn-half-place"
+                                            @click="addNode('child')">
+                                        Добавить {{ currentNode.object.is_property ? 'дочернюю вершину' : 'дочернее свойство' }}</div>
+                                </div>
+                            </div>
                             <!-- Блок редактирования содержимого вершины / свойства -->
                             <div class="form-group" v-if="!currentNode.object.is_property">
                                 <div class="label-subtitle">
@@ -112,6 +149,11 @@
                 treeDataReady: false,
                 showContent: false,
                 editDataReady: false,
+                newNodeDetected: false,
+                newNodeName: {
+                    core: "",
+                    child: ""
+                },
                 currentNode: {
                     children: [],
                     object: {
@@ -122,6 +164,7 @@
                         content: ""
                     }
                 },
+                currentTmpId: -2,
                 customToolbar: {
                     modules: {
                         toolbar: [
@@ -157,7 +200,6 @@
                         this.nodeSearch(this.science.nodes, this.editingNode);
                         this.editDataReady = !this.editDataReady;
                         this.checkEditorState();
-                        //console.log('editDataReady!');
                     }
                 }
             },
@@ -168,11 +210,91 @@
             }
         },
         methods: {
+            deleteNode() {
+                if (this.science.nodes.object.id != this.currentNode.object.id) {
+                    this.science.nodes = this.deleteCurrentNode(this.science.nodes, this.currentNode);
+                } else {
+                    alert('Нельзя удалить корневую вершину!');
+                };
+            },
+            deleteCurrentNode(branch, node) {
+                if (branch.children) {
+                    if (branch.children.find(x => x.object.id === node.object.id)) {
+                        console.log('Point one');
+                        let index = branch.children.indexOf(node);
+                        console.log('Point two');
+                        branch.children.splice(index, 1);
+                        this.clearEditing();
+                    };
+                    let branchLenght = branch.children.length;
+                    let childrenVisited = 0;
+                    while (branchLenght > childrenVisited) {
+                        this.deleteCurrentNode(branch.children[childrenVisited], node);
+                        childrenVisited += 1;
+                    };
+                };
+                return branch;
+            },
+            deleteTmpIds(branch) {
+                //console.log(branch.object.id);
+                if (branch.object.id < -1) {
+                    delete branch.object.id;
+                    //console.log('deleted');
+                };
+                if (branch.children) {
+                    let branchLenght = branch.children.length;
+                    let childrenVisited = 0;
+                    while (branchLenght > childrenVisited) {
+                        this.deleteTmpIds(branch.children[childrenVisited]);
+                        childrenVisited += 1;
+                    };
+                };
+                return branch;
+            },
+            giveTmpId(node) {
+                node.object.id = this.currentTmpId;
+                this.currentTmpId -= 1;
+            },
+            addNode(mode) {
+                let newNode = {
+                    children: [],
+                    object: {
+                        id: 0,
+                        name: "",
+                        is_property: true
+                    }
+                };
+                if (mode === 'core' && this.newNodeName.core != "") {
+                    newNode.object.name = this.newNodeName.core;
+                    this.giveTmpId(newNode);
+                    this.science.nodes.children.push(newNode);
+                    this.newNodeName.core = "";
+                    console.log('core');
+                    console.log(this.science.nodes);
+                };
+                if (mode === 'child' && this.newNodeName.child != "") {
+                    console.log(this.currentNode);
+                    if (this.currentNode.object.is_property) {
+                        console.log('it is property"s child');
+                        newNode.object.is_property = false;
+                        newNode.object.tmp = "";
+                        newNode.object.description = "";
+                        newNode.object.content = "";
+                    };
+                    newNode.object.name = this.newNodeName.child;
+                    this.giveTmpId(newNode);
+                    this.currentNode.children.push(newNode);
+                    this.science.nodes = this.nodeSaveToNodes(this.science.nodes, this.currentNode);
+                    this.newNodeName.child = "";
+                    console.log('child');
+                    console.log(this.currentNode);
+                };
+                this.newNodeDetected = true;
+            },
             checkEditorState() { ///////////////////////////////////////////////////////////////////////////////////////////
                 if (this.showContent && this.editingNode != -1) {
                     this.editDataReady = true;
-                    //setTimeout(this.editDataReady = !this.editDataReady, 100);
-                    console.log('And now?');
+                    //console.log('And now?');
                 }
             },
              nodeSaveToNodes(branch, node) {
@@ -228,9 +350,12 @@
             },
              saveTree() {
                  if (this.currentNode.object.id != 0) {
-                    this. science.nodes = this.nodeSaveToNodes(this.science.nodes, this.currentNode);
+                    this.science.nodes = this.nodeSaveToNodes(this.science.nodes, this.currentNode);
                 };
-                console.log(this.science);
+                if (this.newNodeDetected) {
+                    this.science.nodes = this.deleteTmpIds(this.science.nodes);
+                };
+                console.log(this.science.nodes);
                 HTTP.put(`sciences/${ this.$route.params.id }/upload_tree/`, this.science)
                     .then(response => {
                         alert('Сохранено!');
@@ -261,5 +386,16 @@
 </script>
 
 <style scoped>
+    .btn-delete-node {
+        display: inline-block;
+        width: 30%;
+        vertical-align: middle;
+        border: 1px solid white;
+    }
 
+    .node-delete-input {
+        display: inline-block;
+        width: 70%;
+        vertical-align: middle;
+    }
 </style>

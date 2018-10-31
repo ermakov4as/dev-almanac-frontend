@@ -108,6 +108,11 @@ body {
     margin: 0 30px 30px 30px;
 }
 
+.form-element-nf {
+    text-align: center;
+    margin: 0 30px 10px 30px;
+}
+
 .form-element-complex {
     margin: 0 30px 30px 30px;
     text-align: justify;
@@ -154,6 +159,12 @@ label {
     padding: 10px;
     border-radius: 3px;
     box-shadow: 0 0 40px rgb(233, 233, 233) inset;
+}
+
+.node-name-input {
+    display: inline-block;
+    width: 50%;
+    vertical-align: middle;
 }
 
 .save-cancel-btn {
