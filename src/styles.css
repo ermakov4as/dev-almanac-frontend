@@ -42,6 +42,10 @@ body {
     background-color: #e53142;
 }
 
+.btn-blue {
+    background-color: lightblue;
+}
+
 .btn-green:hover {
     background-color: #3c793c;
 }
@@ -52,6 +56,10 @@ body {
 
 .btn-red:hover {
     background-color: #ca2939;
+}
+
+.btn-blue:hover {
+    background-color: blue;
 }
 
 .btn-oval {
@@ -97,6 +105,10 @@ body {
 
 .create-btn {
     margin-top: 20px;
+}
+
+.disabled {
+    cursor: not-allowed;
 }
 
 .elements-list-margin {

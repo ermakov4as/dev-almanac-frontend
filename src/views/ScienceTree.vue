@@ -39,6 +39,16 @@
                             <!-- Блок названия, перемещения вверх-вниз и удаления ноды --> 
                             <div class="form-group">
                                 <div class="form-element">
+                                    <div class="btns-vertical">
+                                        <div 
+                                                class="btn btn-blue btn-move"
+                                                :class="{disabled: !moveAccess.up}"
+                                                @click="nodeMove('up')">Выше</div>
+                                        <div 
+                                                class="btn btn-blue btn-move"
+                                                :class="{disabled: !moveAccess.down}"
+                                                @click="nodeMove('down')">Ниже</div>
+                                    </div>
                                     <input
                                             type="text"
                                             id="name"
@@ -51,7 +61,33 @@
                                 </div>
                             </div>
                             <!-- Блок перемещения ноды в другое место -->
-                            <div class="form-group">Перемещение в другое место</div>
+                            <div class="form-group">
+                                <div class="label-subtitle">
+                                    <label for="move">Переместить в другое место</label>
+                                </div>
+                                <div class="form-element">
+
+                                <!-- вверх/вних???
+                                    <div class="add-node-line">
+                                        <select
+                                                class="form-control add-node-select"
+                                                v-model="nodeAdding">
+                                            <option
+                                                    v-for="node in nodesNotInList"
+                                                    v-if="!(nodesSelected.find(x => x.id === node.id))"
+                                                    :value="node.id"
+                                                    :key="node.id">{{ node.name }}
+                                            </option>
+                                        </select>
+                                        <div
+                                                class="btn btn-green btn-common save-cancel-btn add-node-btn"
+                                                @click="addNodeToLesson">Добавить
+                                        </div>
+                                    </div>
+                                -->
+
+                                </div>
+                            </div>
                             <!-- Блок создания новой ноды: в текущем месте или в конце списка -->
                             <div class="form-group">
                                 <div class="label-subtitle">
@@ -154,6 +190,10 @@
                     core: "",
                     child: ""
                 },
+                moveAccess: {
+                    up: false,
+                    down: false
+                },
                 currentNode: {
                     children: [],
                     object: {
@@ -192,6 +232,10 @@
         watch: {
             editingNode: {
                 handler(val, oldVal) {
+                    this.moveAccess = {
+                        up: false,
+                        down: false
+                    };
                     if (this.editingNode != -1) {
                         this.editDataReady = false;
                         if (this.currentNode.object.id != 0) {
@@ -200,6 +244,7 @@
                         this.nodeSearch(this.science.nodes, this.editingNode);
                         this.editDataReady = !this.editDataReady;
                         this.checkEditorState();
+                        this.checkMoveAccess(this.science.nodes, this.currentNode);
                     }
                 }
             },
@@ -210,6 +255,66 @@
             }
         },
         methods: {
+            moveNode(branch, node, mode) {
+                if (branch.children) {
+                    if (branch.children.find(x => x.object.id === node.object.id)) {
+                        let index = branch.children.indexOf(node);
+                        if (mode === 'up') {
+                            branch.children[index] = branch.children[index - 1];
+                            branch.children[index - 1] = node;
+                        };
+                        if (mode === 'down') {
+                            branch.children[index] = branch.children[index + 1];
+                            branch.children[index + 1] = node;
+                        };
+                        //this.clearEditing();                        
+                        /*if (mode === 'down') {
+                            index +=1;
+                        };
+                        branch.children[index] = branch.children.splice(index + 1, 1, branch.children[index])[0];*/
+                    };
+                    let branchLenght = branch.children.length;
+                    let childrenVisited = 0;
+                    while (branchLenght > childrenVisited) {
+                        this.moveNode(branch.children[childrenVisited], node, mode);
+                        childrenVisited += 1;
+                    };
+                };
+                return branch;
+            },
+            nodeMove(mode) {
+                if ((mode === 'up' && this.moveAccess.up) || (mode === 'down' && this.moveAccess.down)) {
+                    this.science.nodes = this.moveNode(this.science.nodes, this.currentNode, mode);
+                    console.log(this.science.nodes);
+                };
+            },
+            checkMoveAccess(branch, node) {
+                if (!(this.science.nodes.object.id === node.object.id)) {
+                    if (branch.children) {
+                        //console.log('moveAccess: st.1');
+                        //console.log(branch.children);
+                        //console.log(node);
+                        if (branch.children.find(x => x.object.id === node.object.id)) {
+                            //console.log('moveAccess: st.2');
+                            let index = branch.children.indexOf(node);
+                            if (index > 0) {
+                                this.moveAccess.up = true;
+                            };
+                            if ((-1 < index) && (index < branch.children.length - 1)) {
+                                //console.log(index);
+                                //console.log(branch.children.length - 1);
+                                this.moveAccess.down = true;
+                            };
+                        };                    
+                        let branchLenght = branch.children.length;
+                        let childrenVisited = 0;
+                        while (branchLenght > childrenVisited) {
+                            this.checkMoveAccess(branch.children[childrenVisited], node);
+                            childrenVisited += 1;
+                        };
+                    };
+                };
+            },
             deleteNode() {
                 if (this.science.nodes.object.id != this.currentNode.object.id) {
                     this.science.nodes = this.deleteCurrentNode(this.science.nodes, this.currentNode);
@@ -220,9 +325,9 @@
             deleteCurrentNode(branch, node) {
                 if (branch.children) {
                     if (branch.children.find(x => x.object.id === node.object.id)) {
-                        console.log('Point one');
+                        //console.log('Point one');
                         let index = branch.children.indexOf(node);
-                        console.log('Point two');
+                        //console.log('Point two');
                         branch.children.splice(index, 1);
                         this.clearEditing();
                     };
@@ -386,16 +491,35 @@
 </script>
 
 <style scoped>
+    .btn-move {
+        border-radius: 3px;
+        padding: 1px 7px;
+        font-size: 14px;
+        font-weight: 500;
+        color: black;
+        border: 1px solid white;
+    }  
+    
+    .btn-move:hover {
+        color: white;
+    }
+
+    .btns-vertical {
+        display: inline-block;
+        width: 10%;
+        vertical-align: middle;
+    }
+
     .btn-delete-node {
         display: inline-block;
-        width: 30%;
+        width: 25%;
         vertical-align: middle;
         border: 1px solid white;
     }
 
     .node-delete-input {
         display: inline-block;
-        width: 70%;
+        width: 65%;
         vertical-align: middle;
     }
 </style>
