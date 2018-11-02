@@ -8,13 +8,13 @@ import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import Notifications from 'vue-notification'
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
-Vue.use(VueQuillEditor, /* { default global options } */ )
-Vue.use(Notifications)
+Vue.use(VueQuillEditor, /* { default global options } */);
+Vue.use(Notifications);
 
 new Vue({
     router,
     store,
     render: h => h(App)
-}).$mount('#app')
+}).$mount('#app');

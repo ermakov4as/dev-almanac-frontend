@@ -1,5 +1,5 @@
 <template>
-    <div class="block-container">
+    <div>
         <!--Пользователей не должно волновать, какие айдишники использовать-->
         <h1 class="component-title">Редактирование урока "{{ lesson.name }}"</h1>
         <!--<h2 class="component-subtitle">Дисциплина {{ lesson.science }}</h2>-->
@@ -14,18 +14,11 @@
                         <input
                                 type="text"
                                 id="name"
-                                class="form-control save-cancel-input"
+                                class="form-control save-cancel-input mr-1"
                                 v-model="lesson.name">
-                        <div
-                                @click="saveLesson"
-                                class="btn btn-green btn-common save-cancel-btn"
-                        >       SAVE
-                        </div> <!-- Button -->
-                        <router-link
-                                :to="`/sciences/${ lesson.science }/`"
-                                tag="button"
-                                class="btn btn-red btn-common save-cancel-btn"
-                                >CANCEL
+                        <div @click="saveLesson" class="btn btn-success mr-1">Сохранить</div>
+                        <router-link :to="`/sciences/${ lesson.science }/`" tag="button"
+                                     class="btn btn-danger">Отмена
                         </router-link>
                     </div>
                 </div>
@@ -48,13 +41,15 @@
                         <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' :
                             'Показать' }}</p>
                     </div>
-                    <div class="form-element" v-if="showContent">
+                    <div class="form-element-complex" v-if="showContent">
                         <editor-block
                                 id="content"
                                 :articleOut="lesson.content"
                                 :dataReady="dataReady"
-                                @editorUpdated="editorUpdated"></editor-block>
+                                @editorUpdated="editorUpdated">
+                        </editor-block>
                     </div>
+
                 </div>
             </form>
             <!-- Разделённая на 2 колонки часть -->
@@ -116,15 +111,7 @@
                     </p>
                 </div>
             </div>
-            <name-desc-list
-                    v-if="showCards"
-                    v-for="(card, index) in lesson.cards"
-                    :key="card.id"
-                    id="cards"
-                    :index="index"
-                    :element="card"
-                    :delProps="delProps"
-                    @elementRemoved="elementRemoved"></name-desc-list>
+            <items-list-editor v-model="lesson.cards" :props="delProps"></items-list-editor>
             <div class="create-btn-right">
                 <!-- Кнопка создания новой карточки -->
                 <create-btn
@@ -140,12 +127,19 @@
     import CreateBtn from '../components/Elements/CreateBtn.vue';
     import NameDescList from '../components/Elements/NameDescList.vue';
     import EditorBlock from '../components/Elements/EditorBlock.vue';
-    import NodesDelList from '../components/Elements/NodesDelList.vue';
+    import ItemsListEditor from '../components/Elements/ItemsListEditor'
     import Tree from '../components/LessonEditor/Tree.vue';
     import {HTTP} from '../http-common.js';
     import {mapMutations, mapGetters} from 'vuex';
 
     export default {
+        components: {
+            CreateBtn,
+            NameDescList,
+            EditorBlock,
+            Tree,
+            ItemsListEditor
+        },
         data() {
             return {
                 treeData: {
@@ -195,19 +189,12 @@
                             [{'font': []}],
                             [{'color': []}, {'background': []}],
                             [{'align': []}],
-                            ['image', 'video']
                         ]
                     }
                 }
             }
         },
-        components: {
-            CreateBtn,
-            NameDescList,
-            EditorBlock,
-            NodesDelList,
-            Tree
-        },
+
         computed: {
             ...mapGetters([
                 'nodesSelected'
@@ -226,23 +213,23 @@
                 console.log(this.nodesNotInList);
                 if (!branch.object.is_property) {
                     this.nodesNotInList.push(branch.object);
-                };
+                }
                 if (branch.children) {
                     let branchLenght = branch.children.length;
                     let childrenVisited = 0;
                     while (branchLenght > childrenVisited) {
                         this.treeInspect(branch.children[childrenVisited]);
                         childrenVisited += 1;
-                    };
-                };
+                    }
+                }
             },
             addNodeToLesson() {
-                if (this.nodeAdding != 0) {
+                if (this.nodeAdding !== 0) {
                     let currentNode = this.nodesNotInList.find(x => x.id === this.nodeAdding); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     this.nodeAdding = 0;
                     this.toggleNode(currentNode);
                     this.changeNodeSelection(currentNode.id);
-                };
+                }
                 console.log('Attention_1');
                 console.log(this.nodesSelected);
             },
@@ -263,8 +250,8 @@
                 this.lesson.cards.splice(index, 1)
             },
             nodeRemoved(index, node) {
-                this.toggleNode(node)
-                this.changeNodeSelection(node.id)
+                this.toggleNode(node);
+                this.changeNodeSelection(node.id);
             },
             // Получение данных с сервера (изначально)
             getData() {
@@ -306,7 +293,6 @@
                 console.log(this.lesson);
                 HTTP.put(`lessons/${ this.$route.params.id }/`, this.lesson)
                     .then(response => {
-                        alert('Сохранено!');
                         this.$notify({
                             group: 'foo',
                             type: "success",
