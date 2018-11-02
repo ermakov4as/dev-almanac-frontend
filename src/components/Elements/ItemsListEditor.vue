@@ -1,6 +1,6 @@
 <template>
-    <div class="row mx-1">
-        <div v-for="(element, index) in elements" class="col-12 mb-3">
+    <transition-group name="flip-list" class="row mx-1">
+        <div v-for="(element, index) in elements" class="col-12 mb-3" :key="element.id">
             <div class="card d-flex flex-row">
                 <div class="order-controls d-flex flex-column mx-2">
                     <div class="btn btn-vsm btn-success" @click="switch_up(index)">
@@ -27,7 +27,7 @@
                 <div class="description" v-html="element.description"></div>
             </div>
         </div>
-    </div>
+    </transition-group>
 </template>
 
 <script>
@@ -97,6 +97,10 @@
     /*.card {*/
     /*padding: 5px;*/
     /*}*/
+    .flip-list-move {
+        transition: transform 0.5s;
+    }
+
     .material-icons {
         font-size: 21px;
         line-height: 21px;

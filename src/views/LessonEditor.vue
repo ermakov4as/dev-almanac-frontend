@@ -7,33 +7,54 @@
             <form>
                 <!-- Блок редактирования названия урока, кнопок сохранить на сервере и вернуться назад -->
                 <div class="form-group">
-                    <div class="label-subtitle">
-                        <label for="name">Название</label>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="label-subtitle">
+                                <label for="name">Название</label>
+                            </div>
+                            <div class="d-flex">
+                                <input
+                                        type="text"
+                                        id="name"
+                                        class="form-control mr-1"
+                                        v-model="lesson.name">
+                                <div @click="saveLesson" class="btn btn-success mr-1">Сохранить</div>
+                                <router-link :to="`/sciences/${ lesson.science }/`" tag="button"
+                                             class="btn btn-danger">Отмена
+                                </router-link>
+                            </div>
+                            <!-- Блок редактирования описания урока, редактор Quill -->
+                            <div class="form-group">
+                                <div class="label-subtitle">
+                                    <label for="description">Описание</label>
+                                    <p></p>
+                                </div>
+                                <quill-editor
+                                        v-model="lesson.description"
+                                        :options="customToolbar"></quill-editor>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Картинка урока:</h5>
+                            <div v-if="image_url">
+                                <img :src="image_url" alt="..." class="img-thumbnail">
+                            </div>
+                            <div v-else-if="lesson.image">
+                                <img :src="lesson.image" alt="..." class="img-thumbnail">
+                            </div>
+
+                            <label class="btn btn-default btn-file btn-primary mr-1">
+                                Выберите файл <input type="file" style="display: none;"
+                                                     @change="process_image($event)">
+                            </label>
+                            <div class="btn btn-default btn-success" @click="upload_image">
+                                Загрузить
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-element">
-                        <input
-                                type="text"
-                                id="name"
-                                class="form-control save-cancel-input mr-1"
-                                v-model="lesson.name">
-                        <div @click="saveLesson" class="btn btn-success mr-1">Сохранить</div>
-                        <router-link :to="`/sciences/${ lesson.science }/`" tag="button"
-                                     class="btn btn-danger">Отмена
-                        </router-link>
-                    </div>
+
                 </div>
-                <!-- Блок редактирования описания урока, редактор Quill -->
-                <div class="form-group">
-                    <div class="label-subtitle">
-                        <label for="description">Описание</label>
-                        <p></p>
-                    </div>
-                    <div class="form-element">
-                        <quill-editor
-                                v-model="lesson.description"
-                                :options="customToolbar"></quill-editor>
-                    </div>
-                </div>
+
                 <!-- Блок редактирования содержания урока, блочный редактор -->
                 <div class="form-group">
                     <div class="label-subtitle">
@@ -129,7 +150,7 @@
     import EditorBlock from '../components/Elements/EditorBlock.vue';
     import ItemsListEditor from '../components/Elements/ItemsListEditor'
     import Tree from '../components/LessonEditor/Tree.vue';
-    import {HTTP} from '../http-common.js';
+    import {HTTP, HTTP_UPLOAD} from '../http-common.js';
     import {mapMutations, mapGetters} from 'vuex';
 
     export default {
@@ -191,7 +212,9 @@
                             [{'align': []}],
                         ]
                     }
-                }
+                },
+                image_file: "",
+                image_url: ""
             }
         },
 
@@ -310,6 +333,60 @@
                             text: 'Sorry'
                         });
                     });
+            },
+            process_image(event) {
+                if (event.target.files[0]) {
+                    let reader = new FileReader();
+                    let app = this;
+                    reader.onload = function (e) {
+                        app.image_url = e.target.result;
+                    };
+                    app.image_file = event.target.files[0];
+                    reader.readAsDataURL(event.target.files[0]);
+                }
+            },
+            upload_image() {
+                if (this.image_file) {
+                    if (this.image_file.size < 3000000) {
+                        this.$notify({
+                            group: 'foo',
+                            type: "warn",
+                            title: 'Пожалуйста, подождите',
+                            text: 'Загрузка файла на сервер'
+                        });
+                        let formData = new FormData();
+                        formData.append("file", this.image_file);
+                        HTTP_UPLOAD.put(`lessons/${this.lesson.id}/upload_image/`, formData)
+                            .then((response) => {
+                                this.$notify({
+                                    group: 'foo',
+                                    type: "success",
+                                    title: 'Успешно загружено',
+                                    text: 'Изображение загружено на сервер'
+                                });
+                                this.image_url = "";
+                                this.lesson.image = response.data;
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                                this.$notify({
+                                    group: 'foo',
+                                    type: "error",
+                                    title: 'Произошла ошибка',
+                                    text: 'Sorry'
+                                });
+                            });
+                    }
+                    else {
+                        this.$notify({
+                            group: 'foo',
+                            type: "warn",
+                            title: 'Слишком большой файл',
+                            text: 'Уменьшите изображение'
+                        });
+                    }
+                }
+
             }
         },
         created() {

@@ -2,7 +2,7 @@
     <div>
         <h1 class="component-title">Редактирование карточки "{{ card.name }}"</h1>
         <!--h2 class="component-subtitle">Урок {{ card.lesson }}  Дисциплина {{ card.science }}</h2-->
-        <div class="component-content">
+        <div class="component-content mb-3">
             <form>
                 <!-- Блок редактирования названия карточки, кнопок сохранить на сервере и вернуться назад -->
                 <div class="form-group">
@@ -125,11 +125,30 @@
                     </p>
                 </div>
             </div>
-            <h3 v-if="showTrainer">Здесь будут тренажёры карточек...</h3>
-            <div class="create-btn-right">
-                <!-- Кнопка создания нового тренажёра карточки -->
-                <div @click="createNewTrainer" class="btn btn-green btn-oval create-btn">Добавить тренажёр</div>
+            <div v-if="showTrainer" class="mb-5">
+                <div class="d-flex mb-2">
+                    <h3>AAM:</h3>
+                    <div v-if="card.aam_name" class="d-flex ml-5">
+                        <h3 class="green mr-5">{{card.aam_name}}</h3>
+                        <div class="btn btn-danger" @click="remove_aam">Удалить</div>
+                    </div>
+                    <h3 v-else class="red">нет данных</h3>
+
+                </div>
+                <div>
+                    <!-- Кнопка создания нового тренажёра карточки -->
+                    <div class="row">
+                        <div class="col-4">
+                            <input type="file" name="file" id="file" class="inputfile" @change="process_file($event)"/>
+                        </div>
+                        <div class="col-4">
+                            <div @click="upload_aam" class="btn btn-green btn-oval">Добавить тренажёр
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </template>
@@ -138,7 +157,7 @@
     import EditorBlock from '../components/Elements/EditorBlock.vue';
     import NodesDelList from '../components/Elements/NodesDelList.vue';
     import TreeRegister from '../components/CardEditor/TreeRegister.vue';
-    import {HTTP} from '../http-common.js';
+    import {HTTP, HTTP_UPLOAD} from '../http-common.js';
     import {mapMutations, mapGetters} from 'vuex';
 
     export default {
@@ -173,10 +192,11 @@
                 lessonTreeData: [],
                 dataReady: false,
                 showContent: true,
-                showTrainer: false,
+                showTrainer: true,
                 treeStartReady: false,
                 //editorDataReady: false,
                 treeDataReady: 0,
+                aam_file: undefined
             };
         },
         components: {
@@ -331,6 +351,63 @@
                             text: 'Sorry'
                         });
                     });
+            },
+            process_file(event) {
+                this.aam_file = event.target.files[0];
+            },
+            upload_aam() {
+                if (this.aam_file) {
+                    this.$notify({
+                        group: 'foo',
+                        type: "waring",
+                        title: 'Пожалуйста, подождите',
+                        text: 'Производится загрузка на сервер'
+                    });
+                    let formData = new FormData();
+                    formData.append("file", this.aam_file);
+                    HTTP_UPLOAD.put(`cards/${this.card.id}/upload_aam/`, formData)
+                        .then((response) => {
+                            this.$notify({
+                                group: 'foo',
+                                type: "success",
+                                title: 'Успешно загружено',
+                                text: 'Архив загружен на сервер'
+                            });
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            this.$notify({
+                                group: 'foo',
+                                type: "error",
+                                title: 'Произошла ошибка',
+                                text: 'Sorry'
+                            });
+                        });
+                }
+            },
+            remove_aam() {
+                if (confirm("Удалить тренажер?")) {
+                    HTTP.post(`cards/${this.card.id}/remove_aam/`)
+                        .then((response) => {
+                            this.$notify({
+                                group: 'foo',
+                                type: "success",
+                                title: 'Успешно удалено',
+                                text: 'Тренажеры удалены с сервера'
+                            });
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            this.$notify({
+                                group: 'foo',
+                                type: "error",
+                                title: 'Произошла ошибка',
+                                text: 'Sorry'
+                            });
+                        });
+                }
+
+
             }
         },
         created() {
@@ -399,5 +476,9 @@
     .selected {
         background-color: lightgreen;
         border-color: black
+    }
+
+    .green {
+        color: forestgreen;
     }
 </style>

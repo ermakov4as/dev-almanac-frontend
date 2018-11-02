@@ -15,5 +15,6 @@ export const HTTP_UPLOAD = axios.create({
     baseURL: API_URL,
     headers: {
         "Content-Type": "multipart/form-data",
+        "Authorization": "Bearer b21efd0f70aaf0d428a49cb1f4c51288f7c99b5e"
     }
 });
