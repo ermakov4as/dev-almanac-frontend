@@ -1,8 +1,8 @@
 <template>
-    <div class="block-container">
+    <div>
         <h1 class="component-title">Редактирование карточки "{{ card.name }}"</h1>
         <!--h2 class="component-subtitle">Урок {{ card.lesson }}  Дисциплина {{ card.science }}</h2-->
-        <div class="component-content">
+        <div class="component-content mb-3">
             <form>
                 <!-- Блок редактирования названия карточки, кнопок сохранить на сервере и вернуться назад -->
                 <div class="form-group">
@@ -13,18 +13,11 @@
                         <input
                                 type="text"
                                 id="name"
-                                class="form-control save-cancel-input"
+                                class="form-control save-cancel-input mr-1"
                                 v-model="card.name">
-                        <div
-                                @click="saveCard"
-                                class="btn btn-green btn-common save-cancel-btn"
-                        >SAVE
-                        </div>
-                        <router-link
-                                :to="`/sciences/${ card.science }/lessons/${ card.lesson }/`"
-                                tag="button"
-                                class="btn btn-red btn-common save-cancel-btn"
-                        >CANCEL
+                        <div @click="saveCard" class="btn btn-success mr-1">Сохранить</div>
+                        <router-link :to="`/sciences/${ card.science }/lessons/${ card.lesson }/`"
+                                     tag="button" class="btn btn-danger">Отмена
                         </router-link>
                     </div>
                 </div>
@@ -38,6 +31,7 @@
                                 v-model="card.description"
                                 :options="customToolbar"></quill-editor>
                     </div>
+
                 </div>
                 <!-- Разделённая на 2 колонки часть -->
                 <div class="row form-group multi-cols-border">
@@ -55,9 +49,7 @@
                                     :node="node"
                                     @nodeRemoved="nodeRemoved"></nodes-del-list>
                             <div class="add-node-line">
-                                <select
-                                        class="form-control add-node-select"
-                                        v-model="nodeAdding">
+                                <select class="form-control add-node-select" v-model="nodeAdding">
                                     <option
                                             v-for="node in treeList"
                                             v-if="nodesSelected.indexOf(node) == -1"
@@ -65,30 +57,12 @@
                                             :key="node.id">{{ node.name }}
                                     </option>
                                 </select>
-                                <div
-                                        class="btn btn-green btn-common save-cancel-btn add-node-btn"
-                                        @click="addNodeToLesson">Добавить
+                                <div class="btn btn-green btn-common save-cancel-btn add-node-btn"
+                                     @click="addNodeToLesson">Добавить
                                 </div>
                             </div>
                         </div>
                         <!-- Блок редактирования содержания карточки, блочный редактор -->
-                        <div class="form-group">
-                            <div class="label-subtitle">
-                                <label for="content">Содержимое</label>
-                                <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' :
-                                    'Показать' }}</p>
-                            </div>
-                            <div class="form-element injected-content-place" v-if="showContent">
-                                <button
-                                        class="btn btn-orange btn-common btn-generate"
-                                        >Сгенерировать из вершин</button>
-                                <editor-block
-                                        id="content"
-                                        :articleOut="card.content"
-                                        :dataReady="dataReady"
-                                        @editorUpdated="editorUpdated"></editor-block>
-                            </div>
-                        </div>
                     </div>
                     <!-- Блок древа урока -->
                     <div class="col-4">
@@ -98,8 +72,8 @@
                         <div class="form-element nodes-place tree-place">
                             <!-- ТЕСТ СПИСКА ВЕРШИН ДРЕВА -->
                             <ul>
-                                <tree-register 
-                                        v-for="node in treeList" 
+                                <tree-register
+                                        v-for="node in treeList"
                                         :key="node.id"
                                         id="tree"
                                         class="item"
@@ -110,6 +84,21 @@
                         </div>
                     </div>
                 </div>
+                <!--<div class="form-group">-->
+                <div class="label-subtitle">
+                    <label for="content">Содержимое</label>
+                    <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' :
+                        'Показать' }}</p>
+                </div>
+                <div class="form-element-complex" v-if="showContent">
+                    <button class="btn btn-orange btn-common btn-generate">Сгенерировать из вершин</button>
+                    <editor-block
+                            id="content"
+                            :articleOut="card.content"
+                            :dataReady="dataReady"
+                            @editorUpdated="editorUpdated"></editor-block>
+                </div>
+                <!--</div>-->
                 <!-- Блок редактирования времени на изучение карточки -->
                 <div class="form-group">
                     <div class="label-subtitle">
@@ -136,22 +125,30 @@
                     </p>
                 </div>
             </div>
-            <h3 v-if="showTrainer">Здесь будут тренажёры карточек...</h3>
-            <!--name-desc-list
-                    v-if="showTrainer"
-                    v-for="(card, index) in lesson.cards"
-                    :key="card.id"
-                    id="cards"
-                    :index="index"
-                    :element="card"
-                    :delProps="delProps"
-                    @elementRemoved="elementRemoved"></name-desc-list-->
-            <div class="create-btn-right">
-                <!-- Кнопка создания нового тренажёра карточки -->
-                <div
-                        @click="createNewTrainer"
-                        class="btn btn-green btn-oval create-btn">Добавить тренажёр</div>
+            <div v-if="showTrainer" class="mb-5">
+                <div class="d-flex mb-2">
+                    <h3>AAM:</h3>
+                    <div v-if="card.aam_name" class="d-flex ml-5">
+                        <h3 class="green mr-5">{{card.aam_name}}</h3>
+                        <div class="btn btn-danger" @click="remove_aam">Удалить</div>
+                    </div>
+                    <h3 v-else class="red">нет данных</h3>
+
+                </div>
+                <div>
+                    <!-- Кнопка создания нового тренажёра карточки -->
+                    <div class="row">
+                        <div class="col-4">
+                            <input type="file" name="file" id="file" class="inputfile" @change="process_file($event)"/>
+                        </div>
+                        <div class="col-4">
+                            <div @click="upload_aam" class="btn btn-green btn-oval">Добавить тренажёр
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </template>
@@ -160,7 +157,7 @@
     import EditorBlock from '../components/Elements/EditorBlock.vue';
     import NodesDelList from '../components/Elements/NodesDelList.vue';
     import TreeRegister from '../components/CardEditor/TreeRegister.vue';
-    import {HTTP} from '../http-common.js';
+    import {HTTP, HTTP_UPLOAD} from '../http-common.js';
     import {mapMutations, mapGetters} from 'vuex';
 
     export default {
@@ -194,11 +191,12 @@
                 scienceTreeData: {},
                 lessonTreeData: [],
                 dataReady: false,
-                showContent: false,
-                showTrainer: false,
+                showContent: true,
+                showTrainer: true,
                 treeStartReady: false,
                 //editorDataReady: false,
                 treeDataReady: 0,
+                aam_file: undefined
             };
         },
         components: {
@@ -216,13 +214,13 @@
         watch: {
             treeDataReady: {
                 handler(val, oldVal) {
-                    if (this.treeDataReady == 2) {
+                    if (this.treeDataReady === 2) {
                         this.treeStartReady = true;
                         if (this.lessonTreeData.length > 0) {
                             this.treeNodesToBuild(this.scienceTreeData, this.lessonTreeData.map(x => x.id));
-                        };
+                        }
                         this.treeDataReady = 0;
-                    };
+                    }
                 }
             }/*,
             showContent: {
@@ -234,19 +232,21 @@
             }*/
         },
         methods: {
-            createNewTrainer() {}, ///////////////////////////////////////////////////////////////////////////////////
+            createNewTrainer() {
+            }, ///////////////////////////////////////////////////////////////////////////////////
             treeNodesToBuild(branch, storage) {
-                if (storage.indexOf(branch.object.id) != -1) {
+                if (storage.indexOf(branch.object.id) !== -1) {
                     this.treeList.push(branch.object);
-                };
+                }
                 if (branch.children) {
                     let branchLenght = branch.children.length;
                     let childrenVisited = 0;
                     while (branchLenght > childrenVisited) {
                         this.treeNodesToBuild(branch.children[childrenVisited], storage);
                         childrenVisited += 1;
-                    };
-                };
+                    }
+
+                }
             },
             /*cardTimeCorrect() {
                 let hours = Math.floor(this.card.time / 60 / 60 % 60).toString();
@@ -259,15 +259,16 @@
             addNodeToLesson() {
                 //console.log(this.nodeAdding);
                 //console.log(this.treeList);
-                if (this.nodeAdding != 0) {
+                if (this.nodeAdding !== 0) {
                     let currentNode = this.treeList.find(x => x.id === this.nodeAdding); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     this.nodeAdding = 0;
                     this.toggleNode(currentNode);
                     this.changeNodeSelection(currentNode.id);
-                };
+                }
+
             },
             nodeRemoved(index, node) {
-                this.toggleNode(node)
+                this.toggleNode(node);
                 this.changeNodeSelection(node.id)
             },
             ...mapMutations([
@@ -283,7 +284,6 @@
                 //console.log(this.card);
                 HTTP.put(`cards/${ this.$route.params.id }/`, this.card)
                     .then(response => {
-                        alert('Сохранено!');
                         this.$notify({
                             group: 'foo',
                             type: "success",
@@ -351,6 +351,63 @@
                             text: 'Sorry'
                         });
                     });
+            },
+            process_file(event) {
+                this.aam_file = event.target.files[0];
+            },
+            upload_aam() {
+                if (this.aam_file) {
+                    this.$notify({
+                        group: 'foo',
+                        type: "waring",
+                        title: 'Пожалуйста, подождите',
+                        text: 'Производится загрузка на сервер'
+                    });
+                    let formData = new FormData();
+                    formData.append("file", this.aam_file);
+                    HTTP_UPLOAD.put(`cards/${this.card.id}/upload_aam/`, formData)
+                        .then((response) => {
+                            this.$notify({
+                                group: 'foo',
+                                type: "success",
+                                title: 'Успешно загружено',
+                                text: 'Архив загружен на сервер'
+                            });
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            this.$notify({
+                                group: 'foo',
+                                type: "error",
+                                title: 'Произошла ошибка',
+                                text: 'Sorry'
+                            });
+                        });
+                }
+            },
+            remove_aam() {
+                if (confirm("Удалить тренажер?")) {
+                    HTTP.post(`cards/${this.card.id}/remove_aam/`)
+                        .then((response) => {
+                            this.$notify({
+                                group: 'foo',
+                                type: "success",
+                                title: 'Успешно удалено',
+                                text: 'Тренажеры удалены с сервера'
+                            });
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            this.$notify({
+                                group: 'foo',
+                                type: "error",
+                                title: 'Произошла ошибка',
+                                text: 'Sorry'
+                            });
+                        });
+                }
+
+
             }
         },
         created() {
@@ -419,5 +476,9 @@
     .selected {
         background-color: lightgreen;
         border-color: black
+    }
+
+    .green {
+        color: forestgreen;
     }
 </style>

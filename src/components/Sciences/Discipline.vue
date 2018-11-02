@@ -19,10 +19,12 @@
                     class="btn btn-orange btn-common disc-btn"
                     >РЕДАКТИРОВАТЬ</router-link>
             <!-- УДАЛЕНИЕ ДИСЦИПЛИНЫ. ВРЕМЕННАЯ КНОПКА ДЛЯ ОТЛАДКИ. -->
+            <!--
             <button
                     @click="deleteScience"
                     class="btn btn-red btn-common disc-btn"
                     >X</button>
+                    -->
         </div>
     </div>
 </template>

@@ -17,6 +17,9 @@
                                      data-toggle="modal"
                                      data-target="#imageModal" @click="edit_index=index" alt="...">
                             </div>
+                            <div v-else-if="block.type===contentType.YOUTUBE">
+                                <input class="form-control" v-model="block.content">
+                            </div>
                             <div v-else-if="block.type===contentType.LABELED_TEXT">
                                 <div class="row">
                                     <div class="col-6">
@@ -24,7 +27,9 @@
                                     </div>
                                     <div class="col-6">
                                         <h3>Выбранная эмодзи:</h3>
-                                        <p><emoji :emoji="block.emoji" :size="40" v-if="block.emoji"/></p>
+                                        <p>
+                                            <emoji :emoji="block.emoji" :size="40" v-if="block.emoji"/>
+                                        </p>
 
                                         <button class="btn btn-outline-danger" @click="removeEmoji">Удалить</button>
                                     </div>
@@ -37,12 +42,12 @@
                             </div>
                             <div class="mt-1">
                                 <div v-if="index===0" class="btn btn-outline-primary mr-1" @click="insertIndex=-1"
-                                        data-toggle="modal"
-                                        data-target="#exampleModal">Вставить предыдущий блок
+                                     data-toggle="modal"
+                                     data-target="#exampleModal">Вставить предыдущий блок
                                 </div>
                                 <div class="btn btn-outline-primary mr-1" @click="insertIndex=index"
-                                        data-toggle="modal"
-                                        data-target="#exampleModal">Вставить следующий блок
+                                     data-toggle="modal"
+                                     data-target="#exampleModal">Вставить следующий блок
                                 </div>
                                 <div class="btn btn-outline-danger" @click="deleteBlock(index)">Удалить</div>
                             </div>
@@ -53,7 +58,10 @@
                                 <img v-if="block.content" class="img-fluid" :src="block.content"/>
                                 <img v-else class="img-fluid" :src="DEFAULT_IMAGE_URL"/>
                             </div>
-
+                            <div v-else-if="block.type===contentType.YOUTUBE" @click="showEditor(index)">
+                                <div v-html="block.content" v-if="block.content"></div>
+                                <div v-html="DEFAULT_YOUTUBE_URL" v-else></div>
+                            </div>
 
                             <div v-else-if="block.type===contentType.LABELED_TEXT" :class="block.type"
                                  @click="showEditor(index)">
@@ -71,8 +79,8 @@
                         </div>
                     </div>
                     <div class="btn btn-outline-primary mr-1" @click="insertIndex=blocks.length-1"
-                            data-toggle="modal"
-                            data-target="#exampleModal">Добавить блок
+                         data-toggle="modal"
+                         data-target="#exampleModal">Добавить блок
                     </div>
                 </div>
             </div>
@@ -153,9 +161,9 @@
 </template>
 
 <script>
-    import { VueEditor } from 'vue2-editor'
-    import { HTTP_UPLOAD } from "../../http-common.js";
-    import { Picker, Emoji } from 'emoji-mart-vue'
+    import {VueEditor} from 'vue2-editor'
+    import {HTTP_UPLOAD} from "../../http-common.js";
+    import {Picker, Emoji} from 'emoji-mart-vue'
 
     export default {
         props: [
@@ -181,15 +189,14 @@
                     "EXAMPLE": "example",
                     "TEXT": "text",
                     "LABELED_TEXT": "labeled_text",
+                    "YOUTUBE": "youtube"
                 },
                 content: '',
                 customToolbar: [
                     [{header: [false, 1, 2, 3]}],
                     ['bold', 'italic', 'underline'],
-                    /*[{ 'align': [] }],*/
                     [{'list': 'ordered'}, {'list': 'bullet'}],
                     [{color: 'red'}],
-                    [/*'link', */'image', 'video']
                 ],
                 blocks: [],
                 image_file: "",
@@ -197,6 +204,7 @@
                 image_url: "",
                 edit_index: 0,
                 DEFAULT_IMAGE_URL: "http://www.independentmediators.co.uk/wp-content/uploads/2016/02/placeholder-image.jpg",
+                DEFAULT_YOUTUBE_URL: "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&amp;showinfo=0\" frameborder=\"0\" allow=\"autoplay; encrypted-media\" allowfullscreen></iframe>",
                 firstDataReady: true
             }
         },
@@ -229,6 +237,9 @@
                 if (type === this.contentType.IMAGE) {
                     this.blocks.splice(index + 1, 0, {"type": type, "content": this.image_url})
                 }
+                else if (type === this.contentType.YOUTUBE) {
+                    this.blocks.splice(index + 1, 0, {"type": type, "content": this.DEFAULT_YOUTUBE_URL})
+                }
                 else {
                     this.blocks.splice(index + 1, 0, {"type": type, "content": "<p>Default Content</p>"})
                 }
@@ -245,10 +256,10 @@
             },
             // Парсим строку для разбиения по блокам
             prepareForUse() {
-                this.article = this.articleOut
+                this.article = this.articleOut;
                 try {
                     console.log('PrepareForUse!');
-                    this.blocks = JSON.parse(this.article)
+                    this.blocks = JSON.parse(this.article);
                     console.log(this.blocks);
                 } catch (err) {
                     console.log(err);
@@ -273,7 +284,7 @@
                         formData.append("file", this.image_file);
                         HTTP_UPLOAD.post('upload_image/', formData)
                             .then((response) => {
-                                this.image_url = response.data;
+                                this.image_url = response.data.url;
                             })
                             .catch((error) => {
                                 console.log(error);
@@ -316,7 +327,7 @@
             console.log('Editor created!');
             if (this.dataReady) {
                 this.prepareForUse();
-            };
+            }
         }
     }
 </script>
@@ -334,10 +345,6 @@
         padding-bottom: 10px;
     }
 
-    .editor-border:hover {
-        border: 1px solid lightsalmon;
-    }
-    
     body {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;

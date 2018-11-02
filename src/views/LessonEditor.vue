@@ -1,5 +1,5 @@
 <template>
-    <div class="block-container">
+    <div>
         <!--Пользователей не должно волновать, какие айдишники использовать-->
         <h1 class="component-title">Редактирование урока "{{ lesson.name }}"</h1>
         <!--<h2 class="component-subtitle">Дисциплина {{ lesson.science }}</h2>-->
@@ -7,40 +7,54 @@
             <form>
                 <!-- Блок редактирования названия урока, кнопок сохранить на сервере и вернуться назад -->
                 <div class="form-group">
-                    <div class="label-subtitle">
-                        <label for="name">Название</label>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="label-subtitle">
+                                <label for="name">Название</label>
+                            </div>
+                            <div class="d-flex">
+                                <input
+                                        type="text"
+                                        id="name"
+                                        class="form-control mr-1"
+                                        v-model="lesson.name">
+                                <div @click="saveLesson" class="btn btn-success mr-1">Сохранить</div>
+                                <router-link :to="`/sciences/${ lesson.science }/`" tag="button"
+                                             class="btn btn-danger">Отмена
+                                </router-link>
+                            </div>
+                            <!-- Блок редактирования описания урока, редактор Quill -->
+                            <div class="form-group">
+                                <div class="label-subtitle">
+                                    <label for="description">Описание</label>
+                                    <p></p>
+                                </div>
+                                <quill-editor
+                                        v-model="lesson.description"
+                                        :options="customToolbar"></quill-editor>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Картинка урока:</h5>
+                            <div v-if="image_url">
+                                <img :src="image_url" alt="..." class="img-thumbnail">
+                            </div>
+                            <div v-else-if="lesson.image">
+                                <img :src="lesson.image" alt="..." class="img-thumbnail">
+                            </div>
+
+                            <label class="btn btn-default btn-file btn-primary mr-1">
+                                Выберите файл <input type="file" style="display: none;"
+                                                     @change="process_image($event)">
+                            </label>
+                            <div class="btn btn-default btn-success" @click="upload_image">
+                                Загрузить
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-element">
-                        <input
-                                type="text"
-                                id="name"
-                                class="form-control save-cancel-input"
-                                v-model="lesson.name">
-                        <div
-                                @click="saveLesson"
-                                class="btn btn-green btn-common save-cancel-btn"
-                        >       SAVE
-                        </div> <!-- Button -->
-                        <router-link
-                                :to="`/sciences/${ lesson.science }/`"
-                                tag="button"
-                                class="btn btn-red btn-common save-cancel-btn"
-                                >CANCEL
-                        </router-link>
-                    </div>
+
                 </div>
-                <!-- Блок редактирования описания урока, редактор Quill -->
-                <div class="form-group">
-                    <div class="label-subtitle">
-                        <label for="description">Описание</label>
-                        <p></p>
-                    </div>
-                    <div class="form-element">
-                        <quill-editor
-                                v-model="lesson.description"
-                                :options="customToolbar"></quill-editor>
-                    </div>
-                </div>
+
                 <!-- Блок редактирования содержания урока, блочный редактор -->
                 <div class="form-group">
                     <div class="label-subtitle">
@@ -48,13 +62,15 @@
                         <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' :
                             'Показать' }}</p>
                     </div>
-                    <div class="form-element" v-if="showContent">
+                    <div class="form-element-complex" v-if="showContent">
                         <editor-block
                                 id="content"
                                 :articleOut="lesson.content"
                                 :dataReady="dataReady"
-                                @editorUpdated="editorUpdated"></editor-block>
+                                @editorUpdated="editorUpdated">
+                        </editor-block>
                     </div>
+
                 </div>
             </form>
             <!-- Разделённая на 2 колонки часть -->
@@ -116,15 +132,7 @@
                     </p>
                 </div>
             </div>
-            <name-desc-list
-                    v-if="showCards"
-                    v-for="(card, index) in lesson.cards"
-                    :key="card.id"
-                    id="cards"
-                    :index="index"
-                    :element="card"
-                    :delProps="delProps"
-                    @elementRemoved="elementRemoved"></name-desc-list>
+            <items-list-editor v-model="lesson.cards" :props="delProps"></items-list-editor>
             <div class="create-btn-right">
                 <!-- Кнопка создания новой карточки -->
                 <create-btn
@@ -140,12 +148,19 @@
     import CreateBtn from '../components/Elements/CreateBtn.vue';
     import NameDescList from '../components/Elements/NameDescList.vue';
     import EditorBlock from '../components/Elements/EditorBlock.vue';
-    import NodesDelList from '../components/Elements/NodesDelList.vue';
+    import ItemsListEditor from '../components/Elements/ItemsListEditor'
     import Tree from '../components/LessonEditor/Tree.vue';
-    import {HTTP} from '../http-common.js';
+    import {HTTP, HTTP_UPLOAD} from '../http-common.js';
     import {mapMutations, mapGetters} from 'vuex';
 
     export default {
+        components: {
+            CreateBtn,
+            NameDescList,
+            EditorBlock,
+            Tree,
+            ItemsListEditor
+        },
         data() {
             return {
                 treeData: {
@@ -195,19 +210,14 @@
                             [{'font': []}],
                             [{'color': []}, {'background': []}],
                             [{'align': []}],
-                            ['image', 'video']
                         ]
                     }
-                }
+                },
+                image_file: "",
+                image_url: ""
             }
         },
-        components: {
-            CreateBtn,
-            NameDescList,
-            EditorBlock,
-            NodesDelList,
-            Tree
-        },
+
         computed: {
             ...mapGetters([
                 'nodesSelected'
@@ -226,23 +236,23 @@
                 console.log(this.nodesNotInList);
                 if (!branch.object.is_property) {
                     this.nodesNotInList.push(branch.object);
-                };
+                }
                 if (branch.children) {
                     let branchLenght = branch.children.length;
                     let childrenVisited = 0;
                     while (branchLenght > childrenVisited) {
                         this.treeInspect(branch.children[childrenVisited]);
                         childrenVisited += 1;
-                    };
-                };
+                    }
+                }
             },
             addNodeToLesson() {
-                if (this.nodeAdding != 0) {
+                if (this.nodeAdding !== 0) {
                     let currentNode = this.nodesNotInList.find(x => x.id === this.nodeAdding); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     this.nodeAdding = 0;
                     this.toggleNode(currentNode);
                     this.changeNodeSelection(currentNode.id);
-                };
+                }
                 console.log('Attention_1');
                 console.log(this.nodesSelected);
             },
@@ -263,8 +273,8 @@
                 this.lesson.cards.splice(index, 1)
             },
             nodeRemoved(index, node) {
-                this.toggleNode(node)
-                this.changeNodeSelection(node.id)
+                this.toggleNode(node);
+                this.changeNodeSelection(node.id);
             },
             // Получение данных с сервера (изначально)
             getData() {
@@ -306,7 +316,6 @@
                 console.log(this.lesson);
                 HTTP.put(`lessons/${ this.$route.params.id }/`, this.lesson)
                     .then(response => {
-                        alert('Сохранено!');
                         this.$notify({
                             group: 'foo',
                             type: "success",
@@ -324,6 +333,60 @@
                             text: 'Sorry'
                         });
                     });
+            },
+            process_image(event) {
+                if (event.target.files[0]) {
+                    let reader = new FileReader();
+                    let app = this;
+                    reader.onload = function (e) {
+                        app.image_url = e.target.result;
+                    };
+                    app.image_file = event.target.files[0];
+                    reader.readAsDataURL(event.target.files[0]);
+                }
+            },
+            upload_image() {
+                if (this.image_file) {
+                    if (this.image_file.size < 3000000) {
+                        this.$notify({
+                            group: 'foo',
+                            type: "warn",
+                            title: 'Пожалуйста, подождите',
+                            text: 'Загрузка файла на сервер'
+                        });
+                        let formData = new FormData();
+                        formData.append("file", this.image_file);
+                        HTTP_UPLOAD.put(`lessons/${this.lesson.id}/upload_image/`, formData)
+                            .then((response) => {
+                                this.$notify({
+                                    group: 'foo',
+                                    type: "success",
+                                    title: 'Успешно загружено',
+                                    text: 'Изображение загружено на сервер'
+                                });
+                                this.image_url = "";
+                                this.lesson.image = response.data;
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                                this.$notify({
+                                    group: 'foo',
+                                    type: "error",
+                                    title: 'Произошла ошибка',
+                                    text: 'Sorry'
+                                });
+                            });
+                    }
+                    else {
+                        this.$notify({
+                            group: 'foo',
+                            type: "warn",
+                            title: 'Слишком большой файл',
+                            text: 'Уменьшите изображение'
+                        });
+                    }
+                }
+
             }
         },
         created() {

@@ -1,5 +1,5 @@
 <template>
-    <div class="block-container">
+    <div>
         <h1 class="component-title">Список дисциплин</h1>
         <div class="component-content">
             <!-- Блок-строка дисциплины -->
@@ -11,8 +11,8 @@
                     @scienceRemoved="scienceRemoved"></discipline>
         </div>
         <div>
-            <create-btn 
-                    :createBtn="createBtn" 
+            <create-btn
+                    :createBtn="createBtn"
                     :requestId="''"
                     @createBtnUsed="createBtnUsed"></create-btn>
         </div>
@@ -22,7 +22,7 @@
 <script>
     import Discipline from '../components/Sciences/Discipline.vue';
     import CreateBtn from '../components/Elements/CreateBtn.vue';
-    import { HTTP } from '../http-common.js';
+    import {HTTP} from '../http-common.js';
 
     export default {
         data() {
@@ -49,24 +49,24 @@
         methods: {
             // Получение данных с сервера
             getData() {
-      		    HTTP.get('sciences/')
+                HTTP.get('sciences/')
                     .then(response => {
                         this.disciplines = response.data;
                     })
                     .catch(error => {
                         console.log(error);
                     });
-                },
-                createBtnUsed(newLesson) {
-                    this.disciplines.push(newLesson)
-                },
-                // УДАЛЕНИЕ ДИСЦИПЛИНЫ. ВРЕМЕННО ДЛЯ ОТЛАДКИ.
-                scienceRemoved(index) {
-                    this.disciplines.splice(index, 1)
-                },
+            },
+            createBtnUsed(newLesson) {
+                this.disciplines.push(newLesson)
+            },
+            // УДАЛЕНИЕ ДИСЦИПЛИНЫ. ВРЕМЕННО ДЛЯ ОТЛАДКИ.
+            scienceRemoved(index) {
+                this.disciplines.splice(index, 1)
+            },
         },
         mounted() {
-    	    this.getData();
+            this.getData();
         }
     }
 </script>

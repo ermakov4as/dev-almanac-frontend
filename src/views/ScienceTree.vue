@@ -24,6 +24,11 @@
                     <form>
                         <div class="form-group">
                             <div class="form-element">
+                                <div @click="saveTree" class="btn btn-success mr-1">Сохранить</div>
+                                <router-link :to="`/sciences/`" tag="button"
+                                             class="btn btn-danger">Отмена
+                                </router-link>
+                                <!--
                                 <div
                                         @click="saveTree"
                                         class="btn btn-green btn-common btn-half-place"
@@ -33,6 +38,7 @@
                                         tag="button"
                                         class="btn btn-red btn-common btn-half-place"
                                         >CANCEL</router-link>
+                                        -->
                             </div>
                         </div>
                         <template v-if="editingNode != -1">   

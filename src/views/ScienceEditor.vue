@@ -1,5 +1,5 @@
 <template>
-    <div class="block-container">
+    <div>
         <h1 class="component-title">Редактирование дисциплины "{{ science.name }}"</h1>
         <div class="component-content">
             <form>
@@ -12,17 +12,12 @@
                         <input
                                 type="text"
                                 id="name"
-                                class="form-control save-cancel-input"
+                                class="form-control save-cancel-input mr-1"
                                 v-model="science.name">
-                        <div
-                                @click="saveScience"
-                                class="btn btn-green btn-common save-cancel-btn"
-                                >SAVE</div>
-                        <router-link
-                                to="/sciences/"
-                                tag="button"
-                                class="btn btn-red btn-common save-cancel-btn"
-                                >CANCEL</router-link>
+                        <div @click="saveScience" class="btn btn-success mr-1">Сохранить</div>
+                        <router-link to="/sciences/" tag="button"
+                                     class="btn btn-danger">Отмена
+                        </router-link>
                     </div>
                 </div>
                 <!-- Блок редактирования описания дисциплины, редактор Quill -->
@@ -31,7 +26,7 @@
                         <label for="description">Описание</label>
                     </div>
                     <div class="form-element">
-                        <quill-editor 
+                        <quill-editor
                                 v-model="science.description"
                                 :options="customToolbar"></quill-editor>
                     </div>
@@ -40,7 +35,8 @@
                 <div class="form-group">
                     <div class="label-subtitle">
                         <label for="content">Содержимое</label>
-                        <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' : 'Показать' }}</p>
+                        <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' :
+                            'Показать' }}</p>
                     </div>
                     <div class="form-element-complex" v-if="showContent">
                         <editor-block
@@ -60,19 +56,11 @@
                     </p>
                 </div>
             </div>
-            <name-desc-list
-                    v-if="showLessons"
-                    v-for="(lesson, index) in science.lessons"
-                    :key="lesson.id"
-                    id="lessons"
-                    :index="index"
-                    :element="lesson"
-                    :delProps="delProps"
-                    @elementRemoved="elementRemoved"></name-desc-list>
+            <items-list-editor v-model="science.lessons" :props="delProps"></items-list-editor>
             <!-- Кнопка создания нового урока -->
             <div class="create-btn-right">
-                <create-btn 
-                        :createBtn="createBtn" 
+                <create-btn
+                        :createBtn="createBtn"
                         :requestId="{'science_id': science.id}"
                         @createBtnUsed="createBtnUsed"></create-btn>
             </div>
@@ -84,10 +72,17 @@
     import CreateBtn from '../components/Elements/CreateBtn.vue';
     import NameDescList from '../components/Elements/NameDescList.vue';
     import EditorBlock from '../components/Elements/EditorBlock.vue';
-    import { HTTP } from '../http-common.js';
+    import ItemsListEditor from "../components/Elements/ItemsListEditor"
+    import {HTTP} from '../http-common.js';
 
     export default {
         name: 'ScienceEditor',
+        components: {
+            CreateBtn,
+            NameDescList,
+            EditorBlock,
+            ItemsListEditor
+        },
         data() {
             return {
                 science: {
@@ -119,20 +114,14 @@
                         toolbar: [
                             ['bold', 'italic', 'underline'],
                             [{header: [false, 1, 2, 3]}],
-                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                            [{ 'font': [] }],
-                            [{ 'color': [] }, { 'background': [] }],
-                            [{ 'align': [] }],
-                            ['image', 'video']
+                            [{'list': 'ordered'}, {'list': 'bullet'}],
+                            [{'font': []}],
+                            [{'color': []}, {'background': []}],
+                            [{'align': []}],
                         ]
                     }
                 }
             }
-        },
-        components: {
-            CreateBtn,
-            NameDescList,
-            EditorBlock,
         },
         methods: {
             // Функции-обработчики действий из дочерних компонентов
@@ -147,7 +136,7 @@
             },
             // Получение данных с сервера (изначально)
             getData() {
-      		    HTTP.get(`sciences/${ this.$route.params.id }/`)
+                HTTP.get(`sciences/${ this.$route.params.id }/`)
                     .then(response => {
                         this.science = response.data;
                         console.log(this.science);
@@ -168,7 +157,6 @@
                 console.log(this.science);
                 HTTP.put(`sciences/${ this.$route.params.id }/`, this.science)
                     .then(response => {
-                        alert('Сохранено!');
                         this.$notify({
                             group: 'foo',
                             type: "success",
