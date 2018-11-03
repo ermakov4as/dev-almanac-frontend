@@ -266,12 +266,24 @@
                     if (branch.children.find(x => x.object.id === node.object.id)) {
                         let index = branch.children.indexOf(node);
                         if (mode === 'up') {
-                            branch.children[index] = branch.children[index - 1];
-                            branch.children[index - 1] = node;
+                            branch.children.splice(index - 1, 2, branch.children[index], branch.children[index - 1]);
+                            this.clearEditing();
+                            setTimeout(() => {
+                                this.toggleEditing(branch.children[index - 1].object.id);
+                            }, 4);
+                            this.currentNode = node;
+                            //branch.children[index] = branch.children[index - 1];
+                            //branch.children[index - 1] = node;
                         };
                         if (mode === 'down') {
-                            branch.children[index] = branch.children[index + 1];
-                            branch.children[index + 1] = node;
+                            branch.children.splice(index, 2, branch.children[index + 1], branch.children[index]);
+                            this.clearEditing();
+                            setTimeout(() => {
+                                this.toggleEditing(branch.children[index + 1].object.id);
+                            }, 4);
+                            this.currentNode = node;
+                            //branch.children[index] = branch.children[index + 1];
+                            //branch.children[index + 1] = node;
                         };
                         //this.clearEditing();                        
                         /*if (mode === 'down') {
@@ -439,7 +451,8 @@
                 this.currentNode.object.content = content
             },
             ...mapMutations([
-                'clearEditing'
+                'clearEditing',
+                'toggleEditing'
             ]),
             // Получение данных с сервера (изначально)
             getData() {
