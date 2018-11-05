@@ -49,11 +49,19 @@
                                         <div 
                                                 class="btn btn-blue btn-move"
                                                 :class="{disabled: !moveAccess.up}"
-                                                @click="nodeMove('up')">Выше</div>
+                                                @click="nodeMove('up')">
+                                                    <i class="material-icons">
+                                                        keyboard_arrow_up
+                                                    </i>
+                                                </div>
                                         <div 
                                                 class="btn btn-blue btn-move"
                                                 :class="{disabled: !moveAccess.down}"
-                                                @click="nodeMove('down')">Ниже</div>
+                                                @click="nodeMove('down')">
+                                                    <i class="material-icons">
+                                                        keyboard_arrow_down
+                                                    </i>
+                                                </div>
                                     </div>
                                     <input
                                             type="text"
@@ -66,6 +74,37 @@
                                         Удалить {{ currentNode.object.is_property ? 'вершину' : 'свойство' }}</div>
                                 </div>
                             </div>
+
+                            <!--
+                            <div class="card d-flex flex-row">
+                                <div class="order-controls d-flex flex-column mx-2">
+                                    <div class="btn btn-vsm btn-success" @click="nodeMove('up')">
+                                        <i class="material-icons">
+                                            keyboard_arrow_up
+                                        </i>
+                                    </div>
+                                    <div class="btn btn-vsm btn-success" @click="nodeMove('down')">
+                                        <i class="material-icons">
+                                            keyboard_arrow_down
+                                        </i>
+                                    </div>
+                                </div>
+                                <div class="element-body flex-grow-1 d-flex align-items-center justify-content-center">
+                                    <input
+                                            type="text"
+                                            id="name"
+                                            class="form-control node-delete-input"
+                                            v-model="currentNode.object.name">
+                                </div>
+                                <div class="element-controls d-flex align-items-end p-1">
+                                    <div 
+                                            class="btn btn-red btn-common btn-delete-node"
+                                            @click="deleteNode">
+                                        Удалить {{ currentNode.object.is_property ? 'вершину' : 'свойство' }}</div>
+                                </div>
+                            </div>
+                            -->
+                            
                             <!-- Блок перемещения ноды в другое место -->
                             <div class="form-group">
                                 <div class="label-subtitle">
@@ -73,8 +112,18 @@
                                 </div>
                                 <div class="form-element">
 
-                                <!-- вверх/вних???
+                                    <!--  
                                     <div class="add-node-line">
+                                        <select
+                                                class="form-control add-node-select"
+                                                v-model="nodeAdding">
+                                            <option
+                                                    v-for="node in nodesNotInList"
+                                                    v-if="!(nodesSelected.find(x => x.id === node.id))"
+                                                    :value="node.id"
+                                                    :key="node.id">{{ node.name }}
+                                            </option>
+                                        </select>
                                         <select
                                                 class="form-control add-node-select"
                                                 v-model="nodeAdding">
@@ -90,7 +139,7 @@
                                                 @click="addNodeToLesson">Добавить
                                         </div>
                                     </div>
-                                -->
+                                     -->
 
                                 </div>
                             </div>
@@ -510,6 +559,37 @@
 </script>
 
 <style scoped>
+    .add-node-line {
+        text-align: center;
+        border: 1px solid gray;
+        padding: 0;
+    }
+
+    .add-node-line:before {
+        height: 100%;
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    .add-node-btn {
+        display: inline-block;
+        width: 20%;
+        vertical-align: middle;
+        border: 1px solid white;
+    }
+
+    .add-node-select {
+        display: inline-block;
+        width: 80%;
+        vertical-align: middle;
+        margin: 0;
+    }
+
+    .node {
+        counter-reset: item;
+        padding-left: 0;
+    }
+
     .btn-move {
         border-radius: 3px;
         padding: 1px 7px;
