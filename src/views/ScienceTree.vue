@@ -73,73 +73,45 @@
                                             @click="deleteNode">
                                         Удалить {{ currentNode.object.is_property ? 'вершину' : 'свойство' }}</div>
                                 </div>
-                            </div>
-
-                            <!--
-                            <div class="card d-flex flex-row">
-                                <div class="order-controls d-flex flex-column mx-2">
-                                    <div class="btn btn-vsm btn-success" @click="nodeMove('up')">
-                                        <i class="material-icons">
-                                            keyboard_arrow_up
-                                        </i>
-                                    </div>
-                                    <div class="btn btn-vsm btn-success" @click="nodeMove('down')">
-                                        <i class="material-icons">
-                                            keyboard_arrow_down
-                                        </i>
-                                    </div>
-                                </div>
-                                <div class="element-body flex-grow-1 d-flex align-items-center justify-content-center">
-                                    <input
-                                            type="text"
-                                            id="name"
-                                            class="form-control node-delete-input"
-                                            v-model="currentNode.object.name">
-                                </div>
-                                <div class="element-controls d-flex align-items-end p-1">
-                                    <div 
-                                            class="btn btn-red btn-common btn-delete-node"
-                                            @click="deleteNode">
-                                        Удалить {{ currentNode.object.is_property ? 'вершину' : 'свойство' }}</div>
-                                </div>
-                            </div>
-                            -->
-                            
+                            </div>                            
                             <!-- Блок перемещения ноды в другое место -->
-                            <div class="form-group">
+                            <div class="form-group" v-if="!currentNode.object.is_property">
                                 <div class="label-subtitle">
                                     <label for="move">Переместить в другое место</label>
                                 </div>
                                 <div class="form-element">
 
-                                    <!--  
                                     <div class="add-node-line">
                                         <select
                                                 class="form-control add-node-select"
-                                                v-model="nodeAdding">
+                                                v-model="moveToOther.node">
                                             <option
-                                                    v-for="node in nodesNotInList"
-                                                    v-if="!(nodesSelected.find(x => x.id === node.id))"
-                                                    :value="node.id"
-                                                    :key="node.id">{{ node.name }}
+                                                    v-if="nodesToMoveExist"
+                                                    v-for="node in allNodes"
+                                                    :value="node"
+                                                    :key="node.object.id">{{ node.object.name }}
                                             </option>
                                         </select>
                                         <select
                                                 class="form-control add-node-select"
-                                                v-model="nodeAdding">
+                                                v-model="moveToOther.prop">
                                             <option
-                                                    v-for="node in nodesNotInList"
-                                                    v-if="!(nodesSelected.find(x => x.id === node.id))"
-                                                    :value="node.id"
-                                                    :key="node.id">{{ node.name }}
+                                                    v-for="node in moveToOther.node.children"
+                                                    :value="node"
+                                                    :key="node.object.id">{{ node.object.name }}
                                             </option>
                                         </select>
+                                        <!--
                                         <div
                                                 class="btn btn-green btn-common save-cancel-btn add-node-btn"
-                                                @click="addNodeToLesson">Добавить
+                                                @click="test = !test">test
+                                        </div>
+                                        -->
+                                        <div
+                                                class="btn btn-green btn-common save-cancel-btn add-node-btn"
+                                                @click="changeNodeLocation">Ok
                                         </div>
                                     </div>
-                                     -->
 
                                 </div>
                             </div>
@@ -241,6 +213,23 @@
                 showContent: false,
                 editDataReady: false,
                 newNodeDetected: false,
+                nodesToMoveExist: false,
+                moveToOther: {
+                    node: {
+                        object: {},
+                        children: [
+                            {
+                                object: {},
+                                children: []
+                            }
+                        ]
+                    },
+                    prop: {
+                        object: {},
+                        children: []
+                    } 
+                },
+                allNodes: [],
                 newNodeName: {
                     core: "",
                     child: ""
@@ -296,10 +285,33 @@
                         if (this.currentNode.object.id != 0) {
                             this.science.nodes = this.nodeSaveToNodes(this.science.nodes, this.currentNode);
                         };
+                        this.allNodes = [];
+                        /*setTimeout(() => {
+                                this.toggleEditing(branch.children[index + 1].object.id);
+                            }, 4);*/
                         this.nodeSearch(this.science.nodes, this.editingNode);
+                        this.moveToOther = {
+                            node: {
+                                object: {},
+                                children: [
+                                    {
+                                        object: {},
+                                        children: []
+                                    }
+                                ]
+                            },
+                            prop: {
+                                object: {},
+                                children: []
+                            }
+                        },
+                        //console.log(this.editingNode);
+                        //console.log(this.allNodes);
                         this.editDataReady = !this.editDataReady;
                         this.checkEditorState();
                         this.checkMoveAccess(this.science.nodes, this.currentNode);
+                        //console.log('Ch5');
+                        //console.log(this.editingNode);
                     }
                 }
             },
@@ -307,9 +319,70 @@
                 handler(val, oldVal) {
                     this.checkEditorState();
                 }
+            },
+            allNodes: {
+                handler(val, oldVal) {
+                    if (this.allNodes.length > 0) {
+                        //console.log('+++');
+                         setTimeout(() => {
+                                this.nodesToMoveExist = true;
+                        }, 4);
+                    } else {
+                        //console.log('---');
+                        this.nodesToMoveExist = false;
+                    };
+                }
             }
         },
         methods: {
+            nodeLocationPush(branch, node) {
+                if (branch.children) {
+                    if (branch.children.find(x => x.object.id === this.moveToOther.prop.object.id)) {
+                        let index = branch.children.indexOf(this.moveToOther.prop);
+                        branch.children[index].children.push(node);
+                        console.log('Ch0');
+                        //console.log(branch.children[index].children);
+                        console.log('Ch1');
+                        setTimeout(() => {
+                                this.toggleEditing(branch.children[index].children[branch.children[index].children.length - 1].object.id);
+                                console.log('Ch2');
+                            }, 4);
+                        this.currentNode = node;
+                    };
+                    let branchLenght = branch.children.length;
+                    let childrenVisited = 0;
+                    while (branchLenght > childrenVisited) {
+                        this.nodeLocationPush(branch.children[childrenVisited], node);
+                        childrenVisited += 1;
+                    };
+                };
+                return branch;
+            },
+            nodeLocationRemove(branch, node) {
+                if (branch.children) {
+                    if (branch.children.find(x => x.object.id === node.object.id)) {
+                        let index = branch.children.indexOf(node);
+                        branch.children.splice(index, 1);
+                        this.clearEditing();
+                    };
+                    let branchLenght = branch.children.length;
+                    let childrenVisited = 0;
+                    while (branchLenght > childrenVisited) {
+                        this.nodeLocationRemove(branch.children[childrenVisited], node);
+                        childrenVisited += 1;
+                    };
+                };
+                return branch;
+            },
+            changeNodeLocation() {
+                if(this.moveToOther.prop != 0) {
+                    let tmpCurrentNode = this.currentNode;
+                    this.science.nodes = this.nodeLocationRemove(this.science.nodes, this.currentNode);
+                    console.log('Ch3');
+                    this.science.nodes = this.nodeLocationPush(this.science.nodes, tmpCurrentNode);
+                    console.log('Ch4');
+                };
+            },
             moveNode(branch, node, mode) {
                 if (branch.children) {
                     if (branch.children.find(x => x.object.id === node.object.id)) {
@@ -490,6 +563,9 @@
                 if (branch.children) {
                     let branchLenght = branch.children.length;
                     let childrenVisited = 0;
+                    if ((branch.object.id != id) && (!branch.object.is_property) && (branchLenght > 0)) {
+                        this.allNodes.push(branch);
+                    };
                     while (branchLenght > childrenVisited) {
                         this.nodeSearch(branch.children[childrenVisited], id);
                         childrenVisited += 1;
@@ -573,14 +649,14 @@
 
     .add-node-btn {
         display: inline-block;
-        width: 20%;
+        width: 10%;
         vertical-align: middle;
         border: 1px solid white;
     }
 
     .add-node-select {
         display: inline-block;
-        width: 80%;
+        width: 45%;
         vertical-align: middle;
         margin: 0;
     }
