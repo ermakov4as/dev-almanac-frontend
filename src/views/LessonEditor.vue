@@ -209,7 +209,7 @@
                             [{'list': 'ordered'}, {'list': 'bullet'}],
                             [{'font': []}],
                             [{'color': []}, {'background': []}],
-                            [{'align': []}],
+                            [{'align': []}]
                         ]
                     }
                 },
