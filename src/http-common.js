@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 //const API_URL = 'http://127.0.0.1:8081/';
-const API_URL = 'http://almanacredactortest-dev.us-east-2.elasticbeanstalk.com/api/v1/';
+const API_URL = 'http://almanacredactortest-dev.us-east-2.elasticbeanstalk.com/api/v1/editor/';
 
 export const HTTP = axios.create({
     baseURL: API_URL,

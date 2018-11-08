@@ -10,6 +10,7 @@
                     :discipline="discipline"
                     @scienceRemoved="scienceRemoved"></discipline>
         </div>
+        <!-- Кнопка создания новой дисциплины -->
         <div>
             <create-btn
                     :createBtn="createBtn"
@@ -40,7 +41,7 @@
                     requestPath: 'sciences/',
                     requestId: ''
                 }
-            }
+            };
         },
         components: {
             Discipline,
@@ -60,12 +61,12 @@
             createBtnUsed(newLesson) {
                 this.disciplines.push(newLesson)
             },
-            // УДАЛЕНИЕ ДИСЦИПЛИНЫ. ВРЕМЕННО ДЛЯ ОТЛАДКИ.
+            // Удаление дисциплины. ВНИМАНИЕ!!! Отключено (закомменчено) в компоненте Discipline
             scienceRemoved(index) {
                 this.disciplines.splice(index, 1)
             },
         },
-        mounted() {
+        created() {
             this.getData();
         }
     }

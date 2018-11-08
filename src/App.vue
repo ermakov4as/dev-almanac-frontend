@@ -21,7 +21,7 @@
         components: {
             appHeader: Header
         }
-    }
+    };
 </script>
 
 <style>

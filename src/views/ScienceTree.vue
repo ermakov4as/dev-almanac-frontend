@@ -62,7 +62,7 @@
                                     <div    
                                             class="btn btn-red btn-common btn-delete-node"
                                             @click="deleteNode">
-                                        Удалить {{ currentNode.object.is_property ? 'вершину' : 'свойство' }}</div>
+                                        Удалить {{ !currentNode.object.is_property ? 'вершину' : 'свойство' }}</div>
                                 </div>
                             </div>                            
                             <!-- Блок перемещения вершины под другое свойство. Работает только для вершин. Не работает для корневой вершины -->
@@ -465,14 +465,16 @@
                         childrenVisited += 1;
                     };
                 };
+                this.currentTmpId = -2;
                 return branch;
             },
             // Выдача временный id (до сохранения) свежесозданной ноде
             giveTmpId(node) {
                 node.object.id = this.currentTmpId;
                 this.currentTmpId -= 1;
+                return node;
             },
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // Добавление ноды
             addNode(mode) {
                 let newNode = {
                     children: [],
@@ -482,12 +484,14 @@
                         is_property: true
                     }
                 };
+                // Добавление свойства в корень
                 if (mode === 'core' && this.newNodeName.core != "") {
                     newNode.object.name = this.newNodeName.core;
-                    this.giveTmpId(newNode);
+                    newNode = this.giveTmpId(newNode);
                     this.science.nodes.children.push(newNode);
                     this.newNodeName.core = "";
                 };
+                // Добавление ноды "под" активную
                 if (mode === 'child' && this.newNodeName.child != "") {
                     if (this.currentNode.object.is_property) {
                         newNode.object.is_property = false;
@@ -496,19 +500,21 @@
                         newNode.object.content = "";
                     };
                     newNode.object.name = this.newNodeName.child;
-                    this.giveTmpId(newNode);
+                    newNode = this.giveTmpId(newNode);
                     this.currentNode.children.push(newNode);
                     this.science.nodes = this.nodeSaveToNodes(this.science.nodes, this.currentNode);
                     this.newNodeName.child = "";
                 };
                 this.newNodeDetected = true;
             },
+            // Определение готовности данных для передачи в блочный редуктор
             checkEditorState() {
                 if (this.showContent && this.editingNode != -1) {
                     this.editDataReady = true;
                 }
             },
-             nodeSaveToNodes(branch, node) {
+            // Сохранение активной ноды в science.nodes
+            nodeSaveToNodes(branch, node) {
                 if (branch.object.id === node.object.id) {
                     branch = node;
                 };
@@ -522,6 +528,7 @@
                 };
                 return branch;
             },
+            // Поиск новой активной ноды в science.nodes
             nodeSearch(branch, id) {
                 if (branch.object.id === id) {
                     this.currentNode = branch;
@@ -538,6 +545,7 @@
                     };
                 };
             },
+            // Фиксация данных блочного редактора
             editorUpdated(content) {
                 this.currentNode.object.content = content
             },
@@ -562,17 +570,19 @@
                         });
                     });
             },
-             saveTree() {
-                 if (this.currentNode.object.id != 0) {
+            // Сохранение science.nodes на сервере
+            saveTree() {
+                if (this.currentNode.object.id != 0) {
                     this.science.nodes = this.nodeSaveToNodes(this.science.nodes, this.currentNode);
                 };
+                // Удаление временных id, если они есть
                 if (this.newNodeDetected) {
-                    //console.log(this.science.nodes);
                     this.science.nodes = this.deleteTmpIds(this.science.nodes);
                 };
                 HTTP.put(`sciences/${ this.$route.params.id }/upload_tree/`, this.science)
                     .then(response => {
                         alert('Сохранено!');
+                        // Обновление science.nodes лишь в случае, если были добавлены новые ноды
                         if (this.newNodeDetected) {
                             this.science.nodes = response.data.nodes;
                             this.newNodeDetected = false;
