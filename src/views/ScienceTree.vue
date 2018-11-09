@@ -2,8 +2,10 @@
     <div class="block-container">
         <h1 class="component-title">Дисциплина "{{ science.name }}"</h1>
         <div class="component-content">
+
             <!-- Разделённая на 2 колонки часть -->
             <div class="row form-group multi-cols-border">
+
                 <!-- Блок древа урока -->
                 <div class="col-4 border-right bottom-places">
                     <div class="label-subtitle-center">
@@ -12,25 +14,23 @@
                     <div class="form-element nodes-place tree-place">
                         <!-- Отображение древа -->
                         <ol class="node">
-                            <tree-edit
-                                    class="item"
-                                    :node="science.nodes">
-                            </tree-edit>
+                            <tree-edit class="item" :node="science.nodes"></tree-edit>
                         </ol>
                     </div>
                 </div>
+
                 <!-- Блок редактирования древа -->
                 <div class="col-8 top-bottom-places">
                     <form>
+
                         <!-- Кнопки сохранения древа и возврата на страницу списка дисциплин -->
                         <div class="form-group">
                             <div class="form-element">
                                 <div @click="saveTree" class="btn btn-success mr-1">Сохранить</div>
-                                <router-link :to="`/sciences/`" tag="button"
-                                             class="btn btn-danger">Отмена
-                                </router-link>
+                                <router-link :to="`/sciences/`" tag="button" class="btn btn-danger">Отмена</router-link>
                             </div>
                         </div>
+
                         <!-- Блок редактирования ноды показывается только если нода выбрана -->
                         <template v-if="editingNode != -1">   
                             <!-- Блок названия, перемещения вверх-вниз и удаления ноды. Не работает для корневой вершины --> 
@@ -64,7 +64,8 @@
                                             @click="deleteNode">
                                         Удалить {{ !currentNode.object.is_property ? 'вершину' : 'свойство' }}</div>
                                 </div>
-                            </div>                            
+                            </div>
+
                             <!-- Блок перемещения вершины под другое свойство. Работает только для вершин. Не работает для корневой вершины -->
                             <div class="form-group" v-if="!currentNode.object.is_property &&  (currentNode.object.id != science.nodes.object.id)">
                                 <div class="label-subtitle">
@@ -72,6 +73,7 @@
                                 </div>
                                 <div class="form-element">
                                     <div class="add-node-line">
+
                                         <!-- Выбор вершины, под свойство которой переместить текущую --> 
                                         <select
                                                 class="form-control add-node-select"
@@ -83,6 +85,7 @@
                                                     :key="node.object.id">{{ node.object.name }}
                                             </option>
                                         </select>
+
                                         <!-- Выбор свойства, под которое переместить текущую вершину -->
                                         <select
                                                 class="form-control add-node-select"
@@ -97,15 +100,18 @@
                                                 class="btn btn-green btn-common save-cancel-btn add-node-btn"
                                                 @click="changeNodeLocation">Ok
                                         </div>
+
                                     </div>
 
                                 </div>
                             </div>
+
                             <!-- Блок создания новой ноды: в текущем месте или в конце списка -->
                             <div class="form-group">
                                 <div class="label-subtitle">
                                     <label for="create">Добавление вершины</label>
                                 </div>
+
                                 <!-- Добавление свойства в корень -->
                                 <div class="form-element-nf">
                                     <input
@@ -117,6 +123,7 @@
                                             class="btn btn-green btn-oval btn-half-place"
                                             @click="addNode('core')">Добавить свойство в корень</div>
                                 </div>
+
                                 <!-- Добавление ноды "под" текущую -->
                                 <div class="form-element">
                                     <input
@@ -129,16 +136,21 @@
                                             @click="addNode('child')">
                                         Добавить {{ currentNode.object.is_property ? 'дочернюю вершину' : 'дочернее свойство' }}</div>
                                 </div>
+
                             </div>
+
                             <!-- Блок редактирования содержимого вершины. Не работает для свойств  -->
                             <div class="form-group" v-if="!currentNode.object.is_property">
                                 <div class="label-subtitle">
                                     <label for="content">Редактирование содержимого</label>
-                                    <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' :
-                                        'Показать' }}</p>
+                                    <p @click="showContent = !showContent" class="show-element">
+                                        {{ showContent ? 'Скрыть' : 'Показать' }}
+                                    </p>
                                 </div>
+
                                 <!-- Работает при выборе раскрытия -->
                                 <div class="component-content bottom-places" v-if="showContent">
+
                                     <!-- Редактирование свойства вершины tmp -->
                                     <div class="form-group">
                                         <div class="label-subtitle">
@@ -150,6 +162,7 @@
                                                     :options="customToolbar"></quill-editor>
                                         </div>
                                     </div>
+
                                     <!-- Редактирование описания вершины -->
                                     <div class="form-group">
                                         <div class="label-subtitle">
@@ -161,6 +174,7 @@
                                                     :options="customToolbar"></quill-editor>
                                         </div>
                                     </div>
+
                                     <!-- Редактирование содержания вершины через блочный редактор -->
                                     <div class="form-group">
                                         <div class="label-subtitle">
@@ -173,12 +187,16 @@
                                                 @editorUpdated="editorUpdated"></editor-block>
                                         </div>
                                     </div>
+                                    
                                 </div>
+
                             </div>
                         </template>
                     </form>
                 </div>
+
             </div>
+
         </div>
     </div>
 </template>
@@ -255,15 +273,18 @@
                 }
             };
         },
+
         components: {
             EditorBlock,
             TreeEdit
         },
+
         computed: {
             ...mapGetters([
                 'editingNode'
             ])
         },
+
         watch: {
             // Отслеживание выбранной ноды
             editingNode: {
@@ -303,12 +324,14 @@
                     }
                 }
             },
+
             // Отслеживаем включение/отключение режима показа редактирования дополнительных свойств ноды
             showContent: {
                 handler(val, oldVal) {
                     this.checkEditorState();
                 }
             },
+
             // Отслеживание изменений массива вершин, в которые потенциально можно переместить другую вершину
             allNodes: {
                 handler(val, oldVal) {
@@ -323,6 +346,7 @@
                 }
             }
         },
+
         methods: {
             // Добавление перемещаемой вершины в новое место
             nodeLocationPush(branch, node) {
@@ -345,6 +369,7 @@
                 };
                 return branch;
             },
+
             // Исключение перемещаемой вершины из старого места
             nodeLocationRemove(branch, node) {
                 if (branch.children) {
@@ -362,6 +387,7 @@
                 };
                 return branch;
             },
+
             // Перемещение активной вершины в выбранное новое место в science.nodes
             changeNodeLocation() {
                 if(this.moveToOther.prop != 0) {
@@ -370,6 +396,7 @@
                     this.science.nodes = this.nodeLocationPush(this.science.nodes, tmpCurrentNode);
                 };
             },
+
             // Перемещение ноды вверх/вниз
             moveNode(branch, node, mode) {
                 if (branch.children) {
@@ -403,6 +430,7 @@
                 };
                 return branch;
             },
+
             // Перемещение ноды вверх/вниз в science.nodes
             nodeMove(mode) {
                 if ((mode === 'up' && this.moveAccess.up) || (mode === 'down' && this.moveAccess.down)) {
@@ -431,10 +459,12 @@
                     };
                 };
             },
+
             // Удаление ноды из science.nodes
             deleteNode() {
                 this.science.nodes = this.deleteCurrentNode(this.science.nodes, this.currentNode);
             },
+
             // Удаление ноды
             deleteCurrentNode(branch, node) {
                 if (branch.children) {
@@ -452,6 +482,7 @@
                 };
                 return branch;
             },
+
             // Удаление id, выданных временно (до сохранения) новым нодам (нужно для выдачи id сервером)
             deleteTmpIds(branch) {
                 if (branch.object.id < -1) {
@@ -468,12 +499,14 @@
                 this.currentTmpId = -2;
                 return branch;
             },
+
             // Выдача временный id (до сохранения) свежесозданной ноде
             giveTmpId(node) {
                 node.object.id = this.currentTmpId;
                 this.currentTmpId -= 1;
                 return node;
             },
+
             // Добавление ноды
             addNode(mode) {
                 let newNode = {
@@ -507,12 +540,14 @@
                 };
                 this.newNodeDetected = true;
             },
+
             // Определение готовности данных для передачи в блочный редуктор
             checkEditorState() {
                 if (this.showContent && this.editingNode != -1) {
                     this.editDataReady = true;
                 }
             },
+
             // Сохранение активной ноды в science.nodes
             nodeSaveToNodes(branch, node) {
                 if (branch.object.id === node.object.id) {
@@ -528,6 +563,7 @@
                 };
                 return branch;
             },
+
             // Поиск новой активной ноды в science.nodes
             nodeSearch(branch, id) {
                 if (branch.object.id === id) {
@@ -545,14 +581,17 @@
                     };
                 };
             },
+
             // Фиксация данных блочного редактора
             editorUpdated(content) {
                 this.currentNode.object.content = content
             },
+
             ...mapMutations([
                 'clearEditing',
                 'toggleEditing'
             ]),
+
             // Получение данных с сервера (изначально)
             getData() {
       		    HTTP.get(`sciences/${ this.$route.params.id }/`)
@@ -570,6 +609,7 @@
                         });
                     });
             },
+
             // Сохранение science.nodes на сервере
             saveTree() {
                 if (this.currentNode.object.id != 0) {
@@ -581,7 +621,6 @@
                 };
                 HTTP.put(`sciences/${ this.$route.params.id }/upload_tree/`, this.science)
                     .then(response => {
-                        alert('Сохранено!');
                         // Обновление science.nodes лишь в случае, если были добавлены новые ноды
                         if (this.newNodeDetected) {
                             this.science.nodes = response.data.nodes;
@@ -595,7 +634,6 @@
                         });
                     })
                     .catch(error => {
-                        alert('Ошибка сохранения :( \n Попробуйте ещё раз...');
                         console.log(error);
                         this.$notify({
                             group: 'foo',
@@ -606,6 +644,7 @@
                     });
             }
         },
+
         created() {
             this.clearEditing();
             this.getData();

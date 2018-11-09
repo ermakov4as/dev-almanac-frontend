@@ -18,35 +18,32 @@
             'node',
             'ready'
         ],
+
         data() {
             return {
                 isSelected: false,
                 firstNodesGetting: true
             };
         },
+
         computed: {
             ...mapGetters([
                 'nodeSelected'
             ])
         },
+
         methods: {
-            /*initSelestedNodes() {
-                console.log('1st - test');
-                console.log(this.nodesSelected);
-                console.log(this.node.object.id);
-                if (this.nodesSelected.find(x => x.id === this.node.object.id)) {
-                    this.isSelected = !this.isSelected;
-                };
-            },*/
             toggle(node) {
                 this.toggleNode(node);
                 this.isSelected = !this.isSelected
             },
+
             ...mapMutations([
                 'toggleNode',
                 'changeNodeSelection'
-            ]),
+            ])
         },
+
         watch: {
             nodeSelected: {
                 handler(val, oldVal) {
@@ -55,17 +52,7 @@
                         this.changeNodeSelection(-1)
                     }
                 }
-            }/*,
-            ready: {
-                handler(val, oldVal) {
-                    if (this.firstNodesGetting) {
-                        this.initSelestedNodes();
-                        console.log('1st');
-                        this.firstNodesGetting = false;
-                    };
-                    console.log('ready...ready...');
-                }
-            }*/
+            }
         }
     }
 </script>

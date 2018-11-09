@@ -16,11 +16,13 @@
             'createBtn',
             'requestId'
         ],
+
         data() {
             return {
                 newItem: {}
             }
         },
+
         methods: {
             // Создаём новый элемент (урок, карточку, вершину)
             createNew() {
@@ -37,7 +39,3 @@
         }
     }
 </script>
-
-<style scoped>
-
-</style>

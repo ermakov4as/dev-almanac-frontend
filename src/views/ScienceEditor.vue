@@ -3,6 +3,7 @@
         <h1 class="component-title">Редактирование дисциплины "{{ science.name }}"</h1>
         <div class="component-content">
             <form>
+
                 <!-- Блок редактирования названия дисциплины, кнопок сохранить на сервере и вернуться назад -->
                 <div class="form-group">
                     <div class="label-subtitle">
@@ -20,6 +21,7 @@
                         </router-link>
                     </div>
                 </div>
+
                 <!-- Блок редактирования описания дисциплины, редактор Quill -->
                 <div class="form-group">
                     <div class="label-subtitle">
@@ -31,6 +33,7 @@
                                 :options="customToolbar"></quill-editor>
                     </div>
                 </div>
+
                 <!-- Блок редактирования содержания дисциплины, блочный редактор -->
                 <div class="form-group">
                     <div class="label-subtitle">
@@ -47,6 +50,7 @@
                     </div>
                 </div>
             </form>
+
             <!-- Блок списка уроков -->
             <div class="form-group elements-list-margin">
                 <div class="label-subtitle">
@@ -57,6 +61,7 @@
                 </div>
             </div>
             <items-list-editor v-model="science.lessons" :props="delProps"></items-list-editor>
+
             <!-- Кнопка создания нового урока -->
             <div class="create-btn-right">
                 <create-btn
@@ -123,23 +128,28 @@
                 }
             }
         },
+
         methods: {
             // Функции-обработчики действий из дочерних компонентов
             editorUpdated(content) {
                 this.science.content = content
             },
+
+            // Добавление урока в список уроков
             createBtnUsed(newLesson) {
                 this.science.lessons.push(newLesson)
             },
+
+            // Удаление урока из списка уроков
             elementRemoved(index) {
                 this.science.lessons.splice(index, 1)
             },
+
             // Получение данных с сервера (изначально)
             getData() {
                 HTTP.get(`sciences/${ this.$route.params.id }/`)
                     .then(response => {
                         this.science = response.data;
-                        console.log(this.science);
                         this.dataReady = true;
                     })
                     .catch(error => {
@@ -152,9 +162,9 @@
                         });
                     });
             },
+
             // Сохранение данных на сервере
             saveScience() {
-                console.log(this.science);
                 HTTP.put(`sciences/${ this.$route.params.id }/`, this.science)
                     .then(response => {
                         this.$notify({
@@ -174,14 +184,11 @@
                             text: 'Sorry'
                         });
                     });
-            },
+            }
         },
+
         created() {
             this.getData();
         }
     }
 </script>
-
-<style scoped>
-
-</style>

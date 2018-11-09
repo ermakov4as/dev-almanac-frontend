@@ -1,13 +1,14 @@
 <template>
     <div>
-        <!--Пользователей не должно волновать, какие айдишники использовать-->
         <h1 class="component-title">Редактирование урока "{{ lesson.name }}"</h1>
-        <!--<h2 class="component-subtitle">Дисциплина {{ lesson.science }}</h2>-->
         <div class="component-content">
             <form>
-                <!-- Блок редактирования названия урока, кнопок сохранить на сервере и вернуться назад -->
+
+                <!-- Блок названия, сохранения, картинки -->
                 <div class="form-group">
                     <div class="row">
+
+                        <!-- Блок редактирования названия урока, кнопок сохранить на сервере и вернуться назад -->
                         <div class="col-md-8">
                             <div class="label-subtitle">
                                 <label for="name">Название</label>
@@ -23,6 +24,7 @@
                                              class="btn btn-danger">Отмена
                                 </router-link>
                             </div>
+
                             <!-- Блок редактирования описания урока, редактор Quill -->
                             <div class="form-group">
                                 <div class="label-subtitle">
@@ -34,6 +36,8 @@
                                         :options="customToolbar"></quill-editor>
                             </div>
                         </div>
+
+                        <!-- Блок загрузки картинки урока -->
                         <div class="col-md-4">
                             <h5>Картинка урока:</h5>
                             <div v-if="image_url">
@@ -51,16 +55,17 @@
                                 Загрузить
                             </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
 
                 <!-- Блок редактирования содержания урока, блочный редактор -->
                 <div class="form-group">
                     <div class="label-subtitle">
                         <label for="content">Содержимое</label>
-                        <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' :
-                            'Показать' }}</p>
+                        <p @click="showContent = !showContent" class="show-element">
+                            {{ showContent ? 'Скрыть' : 'Показать' }}
+                        </p>
                     </div>
                     <div class="form-element-complex" v-if="showContent">
                         <editor-block
@@ -70,17 +75,21 @@
                                 @editorUpdated="editorUpdated">
                         </editor-block>
                     </div>
-
                 </div>
+
             </form>
+
             <!-- Разделённая на 2 колонки часть -->
             <div class="row form-group multi-cols-border">
+
                 <!-- Блок списка вершин урока с возможностью исключить и списка и добавить в него -->
                 <div class="col-7">
                     <div class="label-subtitle">
                         <label for="nodes">Вершины урока</label>
                     </div>
                     <div class="form-element nodes-place">
+
+                        <!-- Список вершин с возможностью исключить из списка -->
                         <nodes-del-list
                                 v-for="(node, index) in nodesSelected"
                                 :key="node.index"
@@ -88,6 +97,8 @@
                                 :index="index"
                                 :node="node"
                                 @nodeRemoved="nodeRemoved"></nodes-del-list>
+
+                        <!-- Добавление вершины в список -->
                         <div class="add-node-line">
                             <select
                                     class="form-control add-node-select"
@@ -104,25 +115,24 @@
                                     @click="addNodeToLesson">Добавить
                             </div>
                         </div>
+
                     </div>
                 </div>
+
                 <!-- Блок древа дисциплины -->
                 <div class="col-5">
                     <div class="label-subtitle">
                         <label for="tree">Дерево дисциплины</label>
                     </div>
                     <div class="form-element nodes-place tree-place">
-                        <!-- ТЕСТ ДРЕВА -->
                         <ol class="node">
-                            <tree
-                                    class="item"
-                                    :node="treeData"
-                                    :ready="treeDataReady">
-                            </tree>
+                            <tree class="item" :node="treeData" :ready="treeDataReady"></tree>
                         </ol>
                     </div>
                 </div>
+
             </div>
+
             <!-- Блок списка карточек -->
             <div class="form-group elements-list-margin">
                 <div class="label-subtitle">
@@ -133,8 +143,9 @@
                 </div>
             </div>
             <items-list-editor v-model="lesson.cards" :props="delProps"></items-list-editor>
+
+            <!-- Кнопка создания новой карточки -->
             <div class="create-btn-right">
-                <!-- Кнопка создания новой карточки -->
                 <create-btn
                         :createBtn="createBtn"
                         :requestId="{'lesson_id': lesson.id}"
@@ -223,17 +234,19 @@
                 'nodesSelected'
             ])
         },
+
         watch: {
+            // Отслеживание готовности данных для передачи в компонент древа
             treeDataReady: {
                 handler(val, oldVal) {
                     this.treeInspect(this.treeData);
                 }
             }
         },
+
         methods: {
+            // Заполнение списка вершин без указания дочерних свойств из всех нод
             treeInspect(branch) {
-                console.log('nodesNotInList');
-                console.log(this.nodesNotInList);
                 if (!branch.object.is_property) {
                     this.nodesNotInList.push(branch.object);
                 }
@@ -246,49 +259,56 @@
                     }
                 }
             },
+
+            // Добавление выбранной ноды в список нод урока
             addNodeToLesson() {
                 if (this.nodeAdding !== 0) {
-                    let currentNode = this.nodesNotInList.find(x => x.id === this.nodeAdding); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    let currentNode = this.nodesNotInList.find(x => x.id === this.nodeAdding);
                     this.nodeAdding = 0;
                     this.toggleNode(currentNode);
                     this.changeNodeSelection(currentNode.id);
-                }
-                console.log('Attention_1');
-                console.log(this.nodesSelected);
+                };
             },
+
             ...mapMutations([
                 'clearState',
                 'toggleNode',
                 'changeNodeSelection',
                 'initNodes'
             ]),
-            // Функции-обработчики действий из дочерних компонентов
+
+            // Считывание информации из блочного редактора
             editorUpdated(content) {
                 this.lesson.content = content
             },
+
+            // Создание новой карточки урока
             createBtnUsed(newCard) {
                 this.lesson.cards.push(newCard)
             },
+
+            // Удаление карточки урока из списка карточек
             elementRemoved(index) {
                 this.lesson.cards.splice(index, 1)
             },
+
+            // Удаление ноды из списка нод урока
             nodeRemoved(index, node) {
                 this.toggleNode(node);
                 this.changeNodeSelection(node.id);
             },
+
             // Получение данных с сервера (изначально)
             getData() {
                 HTTP.get(`lessons/${ this.$route.params.id }/`)
                     .then(response => {
                         this.lesson = response.data;
                         this.dataReady = true;
-                        console.log(this.lesson);
                         this.initNodes(this.lesson.nodes);
                         HTTP.get(`sciences/${ this.lesson.science }/`)
                             .then(response => {
                                 this.treeData = response.data.nodes;
                                 this.treeDataReady = true;
-                                //this.initNodes(this.lesson.nodes);
                             })
                             .catch(error => {
                                 console.log(error);
@@ -310,10 +330,10 @@
                         });
                     });
             },
+
             // Сохранение данных на сервере
             saveLesson() {
                 this.lesson.nodes = this.nodesSelected;
-                console.log(this.lesson);
                 HTTP.put(`lessons/${ this.$route.params.id }/`, this.lesson)
                     .then(response => {
                         this.$notify({
@@ -334,6 +354,8 @@
                         });
                     });
             },
+
+            // Подготовка к загрузке изображения урока
             process_image(event) {
                 if (event.target.files[0]) {
                     let reader = new FileReader();
@@ -343,8 +365,10 @@
                     };
                     app.image_file = event.target.files[0];
                     reader.readAsDataURL(event.target.files[0]);
-                }
+                };
             },
+
+            // Загрузка изображения урока на сервер
             upload_image() {
                 if (this.image_file) {
                     if (this.image_file.size < 3000000) {
@@ -376,8 +400,7 @@
                                     text: 'Sorry'
                                 });
                             });
-                    }
-                    else {
+                    } else {
                         this.$notify({
                             group: 'foo',
                             type: "warn",
@@ -385,10 +408,10 @@
                             text: 'Уменьшите изображение'
                         });
                     }
-                }
-
+                };
             }
         },
+        
         created() {
             this.clearState();
             this.getData();

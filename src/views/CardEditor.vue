@@ -1,9 +1,9 @@
 <template>
     <div>
         <h1 class="component-title">Редактирование карточки "{{ card.name }}"</h1>
-        <!--h2 class="component-subtitle">Урок {{ card.lesson }}  Дисциплина {{ card.science }}</h2-->
         <div class="component-content mb-3">
             <form>
+
                 <!-- Блок редактирования названия карточки, кнопок сохранить на сервере и вернуться назад -->
                 <div class="form-group">
                     <div class="label-subtitle">
@@ -21,6 +21,7 @@
                         </router-link>
                     </div>
                 </div>
+
                 <!-- Блок редактирования описания карточки, редактор Quill -->
                 <div class="form-group">
                     <div class="label-subtitle">
@@ -31,16 +32,19 @@
                                 v-model="card.description"
                                 :options="customToolbar"></quill-editor>
                     </div>
-
                 </div>
+
                 <!-- Разделённая на 2 колонки часть -->
                 <div class="row form-group multi-cols-border">
-                    <!-- Блок списка вершин урока с возможностью исключить и списка и добавить в него -->
+
+                    <!-- Блок списка вершин карточки с возможностью исключить и списка и добавить в него -->
                     <div class="col-8">
                         <div class="label-subtitle">
                             <label for="nodes">Вершины карточки</label>
                         </div>
                         <div class="form-element nodes-place">
+
+                            <!-- Список вершин карточки с возможностью исключения из него-->
                             <nodes-del-list
                                     v-for="(node, index) in nodesSelected"
                                     :key="node.index"
@@ -48,6 +52,8 @@
                                     :index="index"
                                     :node="node"
                                     @nodeRemoved="nodeRemoved"></nodes-del-list>
+
+                            <!-- Выбор вершины для добавления в список вершин карточки -->
                             <div class="add-node-line">
                                 <select class="form-control add-node-select" v-model="nodeAdding">
                                     <option
@@ -61,16 +67,18 @@
                                      @click="addNodeToLesson">Добавить
                                 </div>
                             </div>
+
                         </div>
-                        <!-- Блок редактирования содержания карточки, блочный редактор -->
                     </div>
+
                     <!-- Блок древа урока -->
                     <div class="col-4">
                         <div class="label-subtitle">
                             <label for="tree">Дерево урока</label>
                         </div>
                         <div class="form-element nodes-place tree-place">
-                            <!-- ТЕСТ СПИСКА ВЕРШИН ДРЕВА -->
+
+                            <!-- Древо урока -->
                             <ul>
                                 <tree-register
                                         v-for="node in treeList"
@@ -81,15 +89,21 @@
                                         :node="node">
                                 </tree-register>
                             </ul>
+
                         </div>
                     </div>
+
                 </div>
-                <!--<div class="form-group">-->
+
+                <!-- Блок редактирования содержания карточки и времени на её изучение -->
                 <div class="label-subtitle">
                     <label for="content">Содержимое</label>
-                    <p @click="showContent = !showContent" class="show-element">{{ showContent ? 'Скрыть' :
-                        'Показать' }}</p>
+                    <p @click="showContent = !showContent" class="show-element">
+                        {{ showContent ? 'Скрыть' : 'Показать' }}
+                    </p>
                 </div>
+
+                <!-- Блок редактирования содержания карточки -->
                 <div class="form-element-complex" v-if="showContent">
                     <button class="btn btn-orange btn-common btn-generate">Сгенерировать из вершин</button>
                     <editor-block
@@ -98,7 +112,7 @@
                             :dataReady="dataReady"
                             @editorUpdated="editorUpdated"></editor-block>
                 </div>
-                <!--</div>-->
+
                 <!-- Блок редактирования времени на изучение карточки -->
                 <div class="form-group">
                     <div class="label-subtitle">
@@ -115,7 +129,9 @@
                                 v-model="card.time">
                     </div>
                 </div>
+
             </form>
+
             <!-- Блок тренажёров карточек -->
             <div class="form-group elements-list-margin">
                 <div class="label-subtitle">
@@ -126,27 +142,33 @@
                 </div>
             </div>
             <div v-if="showTrainer" class="mb-5">
+
+                <!-- ААМ -->
                 <div class="d-flex mb-2">
                     <h3>AAM:</h3>
                     <div v-if="card.aam_name" class="d-flex ml-5">
                         <h3 class="green mr-5">{{card.aam_name}}</h3>
                         <div class="btn btn-danger" @click="remove_aam">Удалить</div>
                     </div>
-                    <h3 v-else class="red">нет данных</h3>
-
+                    <h3 v-else class="red"> нет данных</h3>
                 </div>
+
                 <div>
-                    <!-- Кнопка создания нового тренажёра карточки -->
                     <div class="row">
+                        
+                        <!-- Загрузка файла -->
                         <div class="col-4">
                             <input type="file" name="file" id="file" class="inputfile" @change="process_file($event)"/>
                         </div>
+
+                        <!-- Кнопка создания нового тренажёра крточки -->
                         <div class="col-4">
-                            <div @click="upload_aam" class="btn btn-green btn-oval">Добавить тренажёр
-                            </div>
+                            <div @click="upload_aam" class="btn btn-green btn-oval">Добавить тренажёр</div>
                         </div>
+
                     </div>
                 </div>
+
             </div>
 
         </div>
@@ -194,23 +216,23 @@
                 showContent: true,
                 showTrainer: true,
                 treeStartReady: false,
-                //editorDataReady: false,
                 treeDataReady: 0,
                 aam_file: undefined
             };
         },
+
         components: {
-            //CreateBtn,
-            //NameDescList,
             EditorBlock,
             NodesDelList,
             TreeRegister
         },
+
         computed: {
             ...mapGetters([
                 'nodesSelected'
             ])
         },
+
         watch: {
             treeDataReady: {
                 handler(val, oldVal) {
@@ -218,70 +240,56 @@
                         this.treeStartReady = true;
                         if (this.lessonTreeData.length > 0) {
                             this.treeNodesToBuild(this.scienceTreeData, this.lessonTreeData.map(x => x.id));
-                        }
+                        };
                         this.treeDataReady = 0;
-                    }
-                }
-            }/*,
-            showContent: {
-                handler(val, oldVal) {
-                    if (this.dataReady && this.showContent) {
-                        this.editorDataReady = true;
                     };
                 }
-            }*/
+            }
         },
+
         methods: {
-            createNewTrainer() {
-            }, ///////////////////////////////////////////////////////////////////////////////////
             treeNodesToBuild(branch, storage) {
                 if (storage.indexOf(branch.object.id) !== -1) {
                     this.treeList.push(branch.object);
-                }
+                };
                 if (branch.children) {
                     let branchLenght = branch.children.length;
                     let childrenVisited = 0;
                     while (branchLenght > childrenVisited) {
                         this.treeNodesToBuild(branch.children[childrenVisited], storage);
                         childrenVisited += 1;
-                    }
+                    };
+                };
+            },
 
-                }
-            },
-            /*cardTimeCorrect() {
-                let hours = Math.floor(this.card.time / 60 / 60 % 60).toString();
-                let minutes = Math.floor(this.card.time / 60 % 60).toString();
-                this.card.time = `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
-            },*/
             editorUpdated(content) {
-                this.card.content = content
+                this.card.content = content;
             },
+
             addNodeToLesson() {
-                //console.log(this.nodeAdding);
-                //console.log(this.treeList);
                 if (this.nodeAdding !== 0) {
-                    let currentNode = this.treeList.find(x => x.id === this.nodeAdding); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    let currentNode = this.treeList.find(x => x.id === this.nodeAdding);
                     this.nodeAdding = 0;
                     this.toggleNode(currentNode);
                     this.changeNodeSelection(currentNode.id);
-                }
-
+                };
             },
+
             nodeRemoved(index, node) {
                 this.toggleNode(node);
-                this.changeNodeSelection(node.id)
+                this.changeNodeSelection(node.id);
             },
+
             ...mapMutations([
                 'clearState',
                 'toggleNode',
                 'changeNodeSelection',
                 'initNodes'
             ]),
+
             saveCard() {
                 this.card.nodes = this.nodesSelected;
                 this.card.time = parseInt(this.card.time);
-                //console.log(typeof(this.card.time));
-                //console.log(this.card);
                 HTTP.put(`cards/${ this.$route.params.id }/`, this.card)
                     .then(response => {
                         this.$notify({
@@ -302,20 +310,17 @@
                         });
                     });
             },
+
             getData() {
                 HTTP.get(`cards/${ this.$route.params.id }/`)
                     .then(response => {
-                        //console.log('response_data_check');
-                        //console.log(response.data);
                         this.card = response.data;
-                        //this.cardTimeCorrect();
                         this.dataReady = true;
                         this.initNodes(this.card.nodes);
                         HTTP.get(`sciences/${ this.card.science }/`)
                             .then(response => {
                                 this.scienceTreeData = response.data.nodes;
                                 this.treeDataReady += 1;
-                                //console.log(this.scienceTreeData);
                             })
                             .catch(error => {
                                 console.log(error);
@@ -330,7 +335,6 @@
                             .then(response => {
                                 this.lessonTreeData = response.data.nodes;
                                 this.treeDataReady += 1;
-                                //console.log(this.lessonTreeData);
                             })
                             .catch(error => {
                                 console.log(error);
@@ -352,9 +356,11 @@
                         });
                     });
             },
+
             process_file(event) {
                 this.aam_file = event.target.files[0];
             },
+
             upload_aam() {
                 if (this.aam_file) {
                     this.$notify({
@@ -385,6 +391,7 @@
                         });
                 }
             },
+
             remove_aam() {
                 if (confirm("Удалить тренажер?")) {
                     HTTP.post(`cards/${this.card.id}/remove_aam/`)
@@ -406,10 +413,9 @@
                             });
                         });
                 }
-
-
             }
         },
+
         created() {
             this.clearState();
             this.getData();

@@ -2,6 +2,7 @@
     <div>
         <h1 class="component-title">Список дисциплин</h1>
         <div class="component-content">
+
             <!-- Блок-строка дисциплины -->
             <discipline
                     v-for="(discipline, index) in disciplines"
@@ -10,6 +11,7 @@
                     :discipline="discipline"
                     @scienceRemoved="scienceRemoved"></discipline>
         </div>
+
         <!-- Кнопка создания новой дисциплины -->
         <div>
             <create-btn
@@ -17,6 +19,7 @@
                     :requestId="''"
                     @createBtnUsed="createBtnUsed"></create-btn>
         </div>
+
     </div>
 </template>
 
@@ -43,10 +46,12 @@
                 }
             };
         },
+
         components: {
             Discipline,
             CreateBtn
         },
+
         methods: {
             // Получение данных с сервера
             getData() {
@@ -58,20 +63,20 @@
                         console.log(error);
                     });
             },
+
+            // Добавление дисциплины в список дисциплин
             createBtnUsed(newLesson) {
                 this.disciplines.push(newLesson)
             },
+
             // Удаление дисциплины. ВНИМАНИЕ!!! Отключено (закомменчено) в компоненте Discipline
             scienceRemoved(index) {
                 this.disciplines.splice(index, 1)
-            },
+            }
         },
+
         created() {
             this.getData();
         }
     }
 </script>
-
-<style scoped>
-
-</style>
