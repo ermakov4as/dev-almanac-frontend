@@ -1,10 +1,6 @@
 <template>
     <div>
-        <div
-                @click="createNew"
-                class="btn btn-green btn-oval create-btn">
-            {{ createBtn.name }}
-        </div>
+        <div @click="createNew" class="btn btn-green btn-oval create-btn">{{ createBtn.name }}</div>
     </div>
 </template>
 
@@ -20,7 +16,7 @@
         data() {
             return {
                 newItem: {}
-            }
+            };
         },
 
         methods: {
@@ -29,8 +25,10 @@
                 HTTP.post(this.createBtn.requestPath, this.requestId)
                     .then(response => {
                         this.newItem = response.data;
+
                         // Возвращаем новый элемент компоненту-родителю
                         this.$emit('createBtnUsed', this.newItem);
+                        
                     })
                     .catch(error => {
                         console.log(error);

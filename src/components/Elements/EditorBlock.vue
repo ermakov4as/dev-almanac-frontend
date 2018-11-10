@@ -4,6 +4,7 @@
             <div class="row">
                 <div class="col-12">
                     <div v-for="(block, index) in blocks" :key="index">
+
                         <!--Если включен редактор-->
                         <div class="content-block" v-if="index===show">
                             <div v-if="block.type===contentType.IMAGE">
@@ -52,6 +53,7 @@
                                 <div class="btn btn-outline-danger" @click="deleteBlock(index)">Удалить</div>
                             </div>
                         </div>
+
                         <!--Обычное отображение-->
                         <div class="m-1" v-else style="cursor: pointer">
                             <div v-if="block.type===contentType.IMAGE" @click="editImage(index)">
@@ -77,6 +79,7 @@
                                 <div v-html="block.content"></div>
                             </div>
                         </div>
+
                     </div>
                     <div class="btn btn-outline-primary mr-1" @click="insertIndex=blocks.length-1"
                          data-toggle="modal"
@@ -118,6 +121,7 @@
                 </div>
             </div>
         </div>
+
         <!--Загрузка изображения-->
         <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModal"
              aria-hidden="true">
@@ -157,6 +161,7 @@
                 </div>
             </div>
         </div>
+        
     </div>
 </template>
 
@@ -208,67 +213,81 @@
                 firstDataReady: true
             }
         },
+
         methods: {
+            // Добавить эмоджи
             addEmoji(emoji) {
                 this.$set(this.blocks[this.show], 'emoji', emoji.colons);
-                console.log(emoji);
             },
+
+            // Удалить эмоджи
             removeEmoji() {
                 this.$set(this.blocks[this.show], 'emoji', null);
             },
+
+            // Проверить, не пустой ли путь к изображению
             checkURL(url) {
                 return (url.match(/\.(jpeg|jpg|gif|png)$/) != null);
             },
+
+            // Закрыть редактор
             closeEditor() {
                 this.show = -1;
-                console.log("close");
             },
+
+            // Редактировать изображение
             editImage(index) {
                 this.show = index;
-                console.log("Popup for upload Image")
             },
+
+            // Вставить изображение
             insertImage(index) {
                 this.blocks[index].content = this.image_url;
-                this.image_url = ""
+                this.image_url = "";
             },
+
+
+            // Вставить блок
             insertBlock(index, type) {
-                console.log("Insert Block");
                 this.show = -1;
                 if (type === this.contentType.IMAGE) {
-                    this.blocks.splice(index + 1, 0, {"type": type, "content": this.image_url})
-                }
-                else if (type === this.contentType.YOUTUBE) {
-                    this.blocks.splice(index + 1, 0, {"type": type, "content": this.DEFAULT_YOUTUBE_URL})
-                }
-                else {
-                    this.blocks.splice(index + 1, 0, {"type": type, "content": "<p>Default Content</p>"})
-                }
+                    this.blocks.splice(index + 1, 0, {"type": type, "content": this.image_url});
+                } else if (type === this.contentType.YOUTUBE) {
+                    this.blocks.splice(index + 1, 0, {"type": type, "content": this.DEFAULT_YOUTUBE_URL});
+                } else {
+                    this.blocks.splice(index + 1, 0, {"type": type, "content": "<p>Default Content</p>"});
+                };
             },
+
+            // Удалить блок
             deleteBlock(index) {
                 let conf = confirm("Удалить блок?");
                 if (conf) {
                     this.blocks.splice(index, 1);
-                }
+                };
             },
+
+            // Активный блок
             showEditor(index) {
                 this.show = index;
-                console.log("show")
             },
+
             // Парсим строку для разбиения по блокам
             prepareForUse() {
                 this.article = this.articleOut;
                 try {
-                    console.log('PrepareForUse!');
                     this.blocks = JSON.parse(this.article);
-                    console.log(this.blocks);
                 } catch (err) {
                     console.log(err);
-                }
+                };
             },
+
             // Собираем строку для отправки из блоков
             prepareForSave() {
                 this.article = JSON.stringify(this.blocks);
             },
+
+            // Обработка загрузки файла
             process_file(event) {
                 if (event.target.files[0]) {
                     this.image_file = event.target.files[0];
@@ -295,25 +314,25 @@
                                     text: 'Sorry'
                                 });
                             });
-                    }
-                    else {
+                    } else {
                         this.$notify({
                             group: 'foo',
                             type: "warn",
                             title: 'Слишком большой файл',
                             text: 'Уменьшите изображение'
                         });
-                    }
+                    };
                     console.log(this.image_file);
-                }
-            },
+                };
+            }
         },
+
         watch: {
             // Отслеживаем получение данных с сервера в родительском компоненте
             dataReady() {
-                console.log('dataReady!');
                 this.prepareForUse();
             },
+
             // Отслеживаем все изменения контента и возвращаем их в родительский компонент
             blocks: {
                 handler(val, oldVal) {
@@ -323,11 +342,11 @@
                 deep: true
             }
         },
+
         created() {
-            console.log('Editor created!');
             if (this.dataReady) {
                 this.prepareForUse();
-            }
+            };
         }
     }
 </script>

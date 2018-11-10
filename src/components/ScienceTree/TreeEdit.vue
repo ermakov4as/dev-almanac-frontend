@@ -1,5 +1,7 @@
 <template type="text/x-template" id="item-template">
     <li :class="{'node-item': !node.object.is_property}">
+
+        <!-- Отображаем ноду как элемент древа -->
         <span
                 class="btn-tree btn-tree-node"
                 v-if="node.object.id"
@@ -7,13 +9,17 @@
                 @click="toggleEditing(node.object.id)">
             {{ node.object.name }}
         </span>
+
         <ol :class="{'node': !node.object.is_property}">
+            
+            <!-- Блок дочерних нод -->
             <tree-edit
                     class="item"
                     v-for="(node, index) in node.children"
                     :key="index"
                     :node="node">
             </tree-edit>
+
         </ol>
     </li>
 </template>
@@ -25,23 +31,28 @@
     export default {
         name: "tree-edit",
         props: ['node'],
+
         data() {
             return {
                 open: false,
                 isSelected: false
             }
         },
+
         computed: {
             ...mapGetters([
                 'editingNode'
             ])
         },
+
         methods: {
             ...mapMutations([
                 'toggleEditing'
-            ]),
+            ])
         },
+
         watch: {
+            // Отслеживаем изменение редактируемой ноды и, в соответствии с этим, меняем выделенную
             editingNode: {
                 handler(val, oldVal) {
                     if (this.editingNode === this.node.object.id) {
@@ -52,6 +63,7 @@
                 } 
             }
         },
+
         components: {
             Tree
         }
@@ -100,5 +112,4 @@
         background-color: lightgreen;
         border-color: black
     }
-
 </style>

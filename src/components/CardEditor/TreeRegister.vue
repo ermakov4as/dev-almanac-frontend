@@ -1,11 +1,14 @@
 <template type="text/x-template" id="item-template">
     <li>
+
+        <!-- Отображаем ноду как элемент списка нод -->
         <span
                 class="btn-tree btn-tree-node"
                 :class="{selected: isSelected}"
                 @click="toggle(node)">
             {{ node.name }}
         </span>
+
     </li>
 </template>
 
@@ -33,6 +36,7 @@
         },
 
         methods: {
+            // Выбор (отмена выбора) ноды
             toggle(node) {
                 this.toggleNode(node);
                 this.isSelected = !this.isSelected
@@ -45,6 +49,7 @@
         },
 
         watch: {
+            // Отслеживание изменений списка выбранных нод
             nodeSelected: {
                 handler(val, oldVal) {
                     if (this.nodeSelected == this.node.id) {

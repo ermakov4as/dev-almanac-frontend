@@ -64,7 +64,7 @@
                                     </option>
                                 </select>
                                 <div class="btn btn-green btn-common save-cancel-btn add-node-btn"
-                                     @click="addNodeToLesson">Добавить
+                                     @click="addNodeToCard">Добавить
                                 </div>
                             </div>
 
@@ -105,7 +105,7 @@
 
                 <!-- Блок редактирования содержания карточки -->
                 <div class="form-element-complex" v-if="showContent">
-                    <button class="btn btn-orange btn-common btn-generate">Сгенерировать из вершин</button>
+                    <div class="btn btn-orange btn-common btn-generate" @click="generateFromNodes">Сгенерировать из вершин</div>
                     <editor-block
                             id="content"
                             :articleOut="card.content"
@@ -234,6 +234,7 @@
         },
 
         watch: {
+            // Отслеживание готовности данных для работы с древом
             treeDataReady: {
                 handler(val, oldVal) {
                     if (this.treeDataReady === 2) {
@@ -248,6 +249,20 @@
         },
 
         methods: {
+            // Сгенерировать содержание карточки из content вершин карточки
+            generateFromNodes() {
+                let permission = true;
+                if (this.card.content != "") {
+                    if (!confirm('При создании описании карточки из вершины текущее описание будет удалено.\nПродолжить всё равно?')) {
+                        permission = false;
+                    };
+                };
+                if (permission) {
+                    // ADD FUNCTION BODY
+                };
+            },
+
+            // Получения списка нод из древа
             treeNodesToBuild(branch, storage) {
                 if (storage.indexOf(branch.object.id) !== -1) {
                     this.treeList.push(branch.object);
@@ -262,11 +277,13 @@
                 };
             },
 
+            // Считывание информации из блочного редактора
             editorUpdated(content) {
                 this.card.content = content;
             },
 
-            addNodeToLesson() {
+            // Добавление ноды в список нод карточки
+            addNodeToCard() {
                 if (this.nodeAdding !== 0) {
                     let currentNode = this.treeList.find(x => x.id === this.nodeAdding);
                     this.nodeAdding = 0;
@@ -274,7 +291,8 @@
                     this.changeNodeSelection(currentNode.id);
                 };
             },
-
+            
+            // Удаление ноды из списка нод карточки
             nodeRemoved(index, node) {
                 this.toggleNode(node);
                 this.changeNodeSelection(node.id);
@@ -287,6 +305,7 @@
                 'initNodes'
             ]),
 
+            // Сохранение данных карточки на сервере
             saveCard() {
                 this.card.nodes = this.nodesSelected;
                 this.card.time = parseInt(this.card.time);
@@ -311,12 +330,15 @@
                     });
             },
 
+            // Получение данных карточки с сервера
             getData() {
                 HTTP.get(`cards/${ this.$route.params.id }/`)
                     .then(response => {
                         this.card = response.data;
                         this.dataReady = true;
                         this.initNodes(this.card.nodes);
+                        
+                        // Получение данных для древа с сервера
                         HTTP.get(`sciences/${ this.card.science }/`)
                             .then(response => {
                                 this.scienceTreeData = response.data.nodes;
@@ -331,6 +353,8 @@
                                     text: 'Sorry'
                                 });
                             });
+
+                        // Получение с сервера нод, задействованных в уроке
                         HTTP.get(`lessons/${ this.card.lesson }/`)
                             .then(response => {
                                 this.lessonTreeData = response.data.nodes;
@@ -345,6 +369,7 @@
                                     text: 'Sorry'
                                 });
                             });
+                            
                     })
                     .catch(error => {
                         console.log(error);
@@ -357,10 +382,12 @@
                     });
             },
 
+            // Обработка загрузки файла
             process_file(event) {
                 this.aam_file = event.target.files[0];
             },
 
+            // Загрузка ААМ файла
             upload_aam() {
                 if (this.aam_file) {
                     this.$notify({
@@ -392,6 +419,7 @@
                 }
             },
 
+            // Удаление ААМ файла
             remove_aam() {
                 if (confirm("Удалить тренажер?")) {
                     HTTP.post(`cards/${this.card.id}/remove_aam/`)

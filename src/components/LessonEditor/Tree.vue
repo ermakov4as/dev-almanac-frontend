@@ -1,12 +1,17 @@
 <template type="text/x-template" id="item-template">
     <li :class="{'node-item': !node.object.is_property}">
+        
+        <!-- Отображаем ноду как элемент древа -->
         <span
                 class="btn-tree btn-tree-node"
                 :class="{property: node.object.is_property,  selected: isSelected}"
                 @click="toggle(node)">
             {{ node.object.name }}
         </span>
+
         <ol :class="{'node': !node.object.is_property}">
+            
+            <!-- Блок дочерних нод -->
             <tree
                     class="item"
                     v-for="(node, index) in node.children"
@@ -14,6 +19,7 @@
                     :ready="ready"
                     :node="node">
             </tree>
+
         </ol>
     </li>
 </template>
@@ -28,6 +34,7 @@
             'node', 
             'ready'
         ],
+
         data() {
             return {
                 open: false,
@@ -35,30 +42,38 @@
                 firstNodesGetting: true
             };
         },
+
         computed: {
             ...mapGetters([
                 'nodeSelected',
                 'nodesSelected'
             ])
         },
+
         methods: {
-            initSelestedNodes() {
+            // Поиск и выделение выбранной ноды
+            initSelestedNode() {
                 if (this.nodesSelected.find(x => x.id === this.node.object.id)) {
                     this.isSelected = !this.isSelected;
                 };
             },
+
+            // Выбор (отмена выбора) ноды
             toggle(node) {
                 if (!this.node.object.is_property) {
                     this.toggleNode(node.object);
                     this.isSelected = !this.isSelected
-                }
+                };
             },
+
             ...mapMutations([
                 'toggleNode',
                 'changeNodeSelection'
-            ]),
+            ])
         },
+
         watch: {
+            // Отслеживание изменений списка выбранных нод
             nodeSelected: {
                 handler(val, oldVal) {
                     if (this.nodeSelected == this.node.object.id) {
@@ -67,15 +82,18 @@
                     };
                 }
             },
+
+            // Отслеживание готовности данных
             ready: {
                 handler(val, oldVal) {
                     if (this.firstNodesGetting) {
-                        this.initSelestedNodes();
+                        this.initSelestedNode();
                         this.firstNodesGetting = false;
                     };
                 }
             }
         },
+
         components: {
             Tree
         }
@@ -124,5 +142,4 @@
         background-color: lightgreen;
         border-color: black
     }
-
 </style>

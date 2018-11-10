@@ -1,24 +1,29 @@
 <template>
     <div class="discipline">
+
         <!-- Слева располагаем название дисциплины -->
         <div class="disc-float-left">
 	        <h3>{{ discipline.name }}</h3>
         </div>
+
         <!-- Справа располагаем кнопки -->
         <div class="disc-float-right">
+
             <!--Переход на страницу редактирования древа этой дисциплины -->
             <router-link
                     :to="discTreeLink"
                     tag="button"
                     class="btn btn-green btn-common disc-btn"
                     >ДРЕВО</router-link>
+
             <!-- Переход на страницу редактирования этой дисциплины-->
             <router-link
                     :to="editDiscLink"
                     tag="button"
                     class="btn btn-orange btn-common disc-btn"
                     >РЕДАКТИРОВАТЬ</router-link>
-            <!-- УДАЛЕНИЕ ДИСЦИПЛИНЫ. ВРЕМЕННАЯ КНОПКА ДЛЯ ОТЛАДКИ. -->
+
+            <!-- УДАЛЕНИЕ ДИСЦИПЛИНЫ. КНОПКА ДЛЯ ОТЛАДКИ. ПРИ НЕОБХОДИМОСТИ РАСКОММЕНТИТЬ.-->
             <!--
             <button
                     @click="deleteScience"
@@ -26,6 +31,7 @@
                     >X</button>
                     -->
         </div>
+
     </div>
 </template>
 
@@ -45,12 +51,14 @@
                 }
             }
         },
+
         props: [
             'discipline',
             'index'
         ],
-        // УДАЛЕНИЕ ДИСЦИПЛИНЫ. ВРЕМЕННАЯ КНОПКА ДЛЯ ОТЛАДКИ.
+
         methods: {
+            // УДАЛЕНИЕ ДИСЦИПЛИНЫ. КНОПКА ДЛЯ ОТЛАДКИ. ПРИ НЕОБХОДИМОСТИ ИСПОЛЬЗОВАНИЯ - РАСКОММЕНТИТЬ В ЧАСТИ HTML
             deleteScience() {
                 if (confirm(`Удалить дисциплину (опция доступна только на этапе отладки)?`)) {
                      HTTP.delete('sciences/' + this.discipline.id)
@@ -61,13 +69,15 @@
                                 title: 'Успешно удалено',
                                 text: 'Дисциплина удалена с сервера'
                             });
+
                             // Возврат родителю информации о том, какой (по порядку) элемент был удалён
                             this.$emit('scienceRemoved', this.index);
+
                         })
                         .catch((error) => {
                             console.log(error)
                         })
-                }
+                };
             }
         }
     }
