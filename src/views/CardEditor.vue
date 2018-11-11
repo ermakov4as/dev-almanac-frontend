@@ -217,7 +217,7 @@
                 showTrainer: true,
                 treeStartReady: false,
                 treeDataReady: 0,
-                aam_file: undefined
+                aam_file: undefined,
             };
         },
 
@@ -258,7 +258,20 @@
                     };
                 };
                 if (permission) {
-                    // ADD FUNCTION BODY
+                    let contentToEditor = ""
+                    let nodesArr = this.card.nodes;
+                    nodesArr.forEach((node, i, nodesArr) => {
+                        if (node.content != "") {
+                            contentToEditor = contentToEditor + node.content.slice(1, -1) + ",";
+                        };
+                    });
+                    if (contentToEditor != "") {
+                        // Выглядит как костыль, но JSON.stringify здесь работает некорректно
+                        contentToEditor = contentToEditor.slice(0, -1);
+                        contentToEditor = '[' + contentToEditor + ']';
+                        this.card.content = contentToEditor;
+                        this.dataReady =! this.dataReady;
+                    };
                 };
             },
 
@@ -319,7 +332,6 @@
                         });
                     })
                     .catch(error => {
-                        alert('Ошибка сохранения :( \n Попробуйте ещё раз...');
                         console.log(error);
                         this.$notify({
                             group: 'foo',

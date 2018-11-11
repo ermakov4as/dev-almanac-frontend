@@ -75,7 +75,7 @@
 
 <script>
     import CreateBtn from '../components/Elements/CreateBtn.vue';
-    import NameDescList from '../components/Elements/NameDescList.vue';
+    import NodesDelList from '../components/Elements/NodesDelList.vue';
     import EditorBlock from '../components/Elements/EditorBlock.vue';
     import ItemsListEditor from "../components/Elements/ItemsListEditor"
     import {HTTP} from '../http-common.js';
@@ -84,7 +84,7 @@
         name: 'ScienceEditor',
         components: {
             CreateBtn,
-            NameDescList,
+            NodesDelList,
             EditorBlock,
             ItemsListEditor
         },
@@ -175,7 +175,6 @@
                         });
                     })
                     .catch(error => {
-                        alert('Ошибка сохранения :( \n Попробуйте ещё раз...');
                         console.log(error);
                         this.$notify({
                             group: 'foo',

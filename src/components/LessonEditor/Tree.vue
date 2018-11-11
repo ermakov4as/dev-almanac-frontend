@@ -16,7 +16,7 @@
                     class="item"
                     v-for="(node, index) in node.children"
                     :key="index"
-                    :ready="ready"
+                    :ready="readyChild"
                     :node="node">
             </tree>
 
@@ -39,7 +39,8 @@
             return {
                 open: false,
                 isSelected: false,
-                firstNodesGetting: true
+                firstNodesGetting: true,
+                readyChild: false
             };
         },
 
@@ -56,6 +57,7 @@
                 if (this.nodesSelected.find(x => x.id === this.node.object.id)) {
                     this.isSelected = !this.isSelected;
                 };
+                console.log(this.node.object.id);
             },
 
             // Выбор (отмена выбора) ноды
@@ -89,6 +91,8 @@
                     if (this.firstNodesGetting) {
                         this.initSelestedNode();
                         this.firstNodesGetting = false;
+                        console.log(this.nodesSelected);
+                        this.readyChild = true;
                     };
                 }
             }

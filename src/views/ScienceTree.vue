@@ -150,7 +150,7 @@
 
                                 <!-- Работает при выборе раскрытия -->
                                 <div class="component-content bottom-places" v-if="showContent">
-
+                                    
                                     <!-- Редактирование свойства вершины tmp -->
                                     <div class="form-group">
                                         <div class="label-subtitle">
@@ -162,7 +162,7 @@
                                                     :options="customToolbar"></quill-editor>
                                         </div>
                                     </div>
-
+                            
                                     <!-- Редактирование описания вершины -->
                                     <div class="form-group">
                                         <div class="label-subtitle">
@@ -174,7 +174,7 @@
                                                     :options="customToolbar"></quill-editor>
                                         </div>
                                     </div>
-
+                                
                                     <!-- Редактирование содержания вершины через блочный редактор -->
                                     <div class="form-group">
                                         <div class="label-subtitle">
@@ -187,7 +187,7 @@
                                                 @editorUpdated="editorUpdated"></editor-block>
                                         </div>
                                     </div>
-                                    
+  
                                 </div>
 
                             </div>
@@ -320,8 +320,8 @@
                         },
                         this.editDataReady = !this.editDataReady;
                         this.checkEditorState();
-                        this.checkMoveAccess(this.science.nodes, this.currentNode);
-                    }
+                        //this.checkMoveAccess(this.science.nodes, this.currentNode);
+                    };
                 }
             },
 
@@ -543,9 +543,9 @@
 
             // Определение готовности данных для передачи в блочный редуктор
             checkEditorState() {
-                if (this.showContent && this.editingNode != -1) {
+                if (this.showContent && this.editingNode != -1 && this.treeDataReady) {
                     this.editDataReady = true;
-                }
+                };
             },
 
             // Сохранение активной ноды в science.nodes
@@ -597,6 +597,7 @@
       		    HTTP.get(`sciences/${ this.$route.params.id }/`)
                     .then(response => {
                         this.science = response.data;
+                        //this.editDataReady = true;
                         this.treeDataReady = true;
                     })
                     .catch(error => {
