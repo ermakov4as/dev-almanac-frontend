@@ -303,8 +303,8 @@
                 HTTP.get(`lessons/${ this.$route.params.id }/`)
                     .then(response => {
                         this.lesson = response.data;
-                        this.dataReady = true;
                         this.initNodes(this.lesson.nodes);
+                        this.dataReady = true;
                         HTTP.get(`sciences/${ this.lesson.science }/`)
                             .then(response => {
                                 this.treeData = response.data.nodes;

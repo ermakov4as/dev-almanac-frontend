@@ -347,8 +347,8 @@
                 HTTP.get(`cards/${ this.$route.params.id }/`)
                     .then(response => {
                         this.card = response.data;
-                        this.dataReady = true;
                         this.initNodes(this.card.nodes);
+                        this.dataReady = true;
                         
                         // Получение данных для древа с сервера
                         HTTP.get(`sciences/${ this.card.science }/`)

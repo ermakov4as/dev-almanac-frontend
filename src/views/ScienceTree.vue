@@ -291,6 +291,13 @@
                 handler(val, oldVal) {
                     // Только для ноды, существующей в древе
                     if (this.editingNode != -1) {
+                        // showContentFlag и связанная с ней задержка - для обеспечения корректной синхронизации работы 
+                        // дочерних элементов при переключении
+                        let showContentFlag = false;
+                        if (this.showContent) {
+                            this.showContent = false;
+                            showContentFlag = true;
+                        };
                         // По умолчанию блокируем возможность перемещения новы вверх/вниз 
                         this.moveAccess = {
                             up: false,
@@ -320,7 +327,13 @@
                         },
                         this.editDataReady = !this.editDataReady;
                         this.checkEditorState();
-                        //this.checkMoveAccess(this.science.nodes, this.currentNode);
+                        this.checkMoveAccess(this.science.nodes, this.currentNode);
+                        if (showContentFlag) {
+                            setTimeout(() => {
+                                showContentFlag = false;
+                                this.showContent = true;
+                            }, 4);
+                        };
                     };
                 }
             },

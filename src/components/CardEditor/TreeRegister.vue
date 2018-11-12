@@ -31,11 +31,25 @@
 
         computed: {
             ...mapGetters([
-                'nodeSelected'
+                'nodeSelected',
+                'nodesSelected'
             ])
         },
 
         methods: {
+            // Поиск и выделение выбранной ноды
+            /*initSelestedNodes() {
+                    nodesSelected.forEach((node, i, nodesSelected) => {
+                if (node.id === payload.id) {
+                    state.chozenNodes.splice(i, 1);
+                };
+            });
+                
+                if (this.nodesSelected.find(x => x.id === this.node.object.id)) {
+                    this.isSelected = !this.isSelected;
+                };
+            },*/
+
             // Выбор (отмена выбора) ноды
             toggle(node) {
                 this.toggleNode(node);
@@ -57,7 +71,17 @@
                         this.changeNodeSelection(-1)
                     }
                 }
-            }
+            },
+
+            // Отслеживание готовности данных
+            /*ready: {
+                handler(val, oldVal) {
+                    if (this.firstNodesGetting) {
+                        this.initSelestedNodes();
+                        this.firstNodesGetting = false;
+                    };
+                }
+            }*/
         }
     }
 </script>

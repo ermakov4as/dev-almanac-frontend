@@ -36,11 +36,15 @@ const mutations = {
 
     // Добавляем нод в список выбранных (если ещё нет) или удаляем из него (если уже есть)
     toggleNode: (state, payload) => {
-        if (!state.chozenNodes.find(x => x.id === payload.id)) {
-            state.chozenNodes.push(payload);
+        if (state.chozenNodes.find(x => x.id === payload.id)) {
+            let chozenNodesArr = state.chozenNodes;
+            chozenNodesArr.forEach((node, i, chozenNodesArr) => {
+                if (node.id === payload.id) {
+                    state.chozenNodes.splice(i, 1);
+                };
+            });
         } else {
-            let index = state.chozenNodes.indexOf(payload);
-            state.chozenNodes.splice(index, 1);
+            state.chozenNodes.push(payload);
         };
     },
 

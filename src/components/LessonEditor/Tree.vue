@@ -57,7 +57,6 @@
                 if (this.nodesSelected.find(x => x.id === this.node.object.id)) {
                     this.isSelected = !this.isSelected;
                 };
-                console.log(this.node.object.id);
             },
 
             // Выбор (отмена выбора) ноды
@@ -91,8 +90,9 @@
                     if (this.firstNodesGetting) {
                         this.initSelestedNode();
                         this.firstNodesGetting = false;
-                        console.log(this.nodesSelected);
-                        this.readyChild = true;
+                        setTimeout(() => {
+                            this.readyChild = true;
+                        }, 4);
                     };
                 }
             }
