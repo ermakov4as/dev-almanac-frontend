@@ -294,6 +294,11 @@
                         // showContentFlag и связанная с ней задержка - для обеспечения корректной синхронизации работы 
                         // дочерних элементов при переключении
                         let showContentFlag = false;
+                        let nodesToMoveExistFlag = false;
+                        if (this.nodesToMoveExist) {
+                            this.nodesToMoveExist = false;
+                            nodesToMoveExistFlag = true;
+                        };
                         if (this.showContent) {
                             this.showContent = false;
                             showContentFlag = true;
@@ -330,8 +335,12 @@
                         this.checkMoveAccess(this.science.nodes, this.currentNode);
                         if (showContentFlag) {
                             setTimeout(() => {
-                                showContentFlag = false;
                                 this.showContent = true;
+                            }, 4);
+                        };
+                        if (nodesToMoveExistFlag) {
+                            setTimeout(() => {
+                                this.nodesToMoveExist = true;
                             }, 4);
                         };
                     };
