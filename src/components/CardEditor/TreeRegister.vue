@@ -16,7 +16,7 @@
     import {mapMutations, mapGetters} from 'vuex';
 
     export default {
-        name: "tree-list",
+        name: "tree-register",
         props: [
             'node',
             'ready'
@@ -38,17 +38,11 @@
 
         methods: {
             // Поиск и выделение выбранной ноды
-            /*initSelestedNodes() {
-                    nodesSelected.forEach((node, i, nodesSelected) => {
-                if (node.id === payload.id) {
-                    state.chozenNodes.splice(i, 1);
+            initSelestedNode() {                
+                if (this.nodesSelected.find(x => x.id === this.node.id)) {
+                    this.isSelected = true;
                 };
-            });
-                
-                if (this.nodesSelected.find(x => x.id === this.node.object.id)) {
-                    this.isSelected = !this.isSelected;
-                };
-            },*/
+            },
 
             // Выбор (отмена выбора) ноды
             toggle(node) {
@@ -74,14 +68,25 @@
             },
 
             // Отслеживание готовности данных
-            /*ready: {
+            ready: {
                 handler(val, oldVal) {
-                    if (this.firstNodesGetting) {
-                        this.initSelestedNodes();
-                        this.firstNodesGetting = false;
+                    if (this.ready) {
+                        if (this.firstNodesGetting) {
+                            this.initSelestedNode();
+                            this.firstNodesGetting = false;
+                        };
                     };
                 }
-            }*/
+            }
+        },
+
+        created() {
+            if (this.ready) {
+                if (this.firstNodesGetting) {
+                    this.initSelestedNode();
+                    this.firstNodesGetting = false;
+                };
+            };
         }
     }
 </script>
