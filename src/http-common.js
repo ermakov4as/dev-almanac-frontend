@@ -2,12 +2,11 @@ import axios from 'axios';
 import store from './store/store';
 import router from './router';
 
-//const API_URL = 'http://127.0.0.1:8081/';
-//const API_URL = 'http://almanacredactortest-dev.us-east-2.elasticbeanstalk.com/api/v1/editor/';
 const API_URL = 'http://almanacredactortest-dev.us-east-2.elasticbeanstalk.com/api/v1/';
 
+// Стандартный HTTP запрос для редактора
 export const HTTP = axios.create({
-    baseURL: API_URL + 'editor/',
+    baseURL: API_URL,
     headers: {
         "Accept": "application/json",
         "Content-Type": "application/json",
@@ -16,14 +15,16 @@ export const HTTP = axios.create({
     }
 });
 
+// Стандартный HTTP запрос для загрузки в редактор
 export const HTTP_UPLOAD = axios.create({
-    baseURL: API_URL + 'editor/',
+    baseURL: API_URL,
     headers: {
         "Content-Type": "multipart/form-data",
         "Authorization": `Bearer ${store.getters.token}`
     }
 });
 
+// HTTP запрос для авторизации
 export const LOGIN_HTTP = axios.create({
     baseURL: API_URL + 'users/',
     headers: {
@@ -32,28 +33,31 @@ export const LOGIN_HTTP = axios.create({
     }
 });
 
-export const USERS_HTTP = axios.create({
+// HTTP запрос для доступа к данным пользователя
+/*export const USERS_HTTP = axios.create({
     baseURL: API_URL + 'users/',
     headers: {
         "Accept": "application/json",
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${store.getters.token}` //'Bearer 48a8283100d31c2e17891bfcec67ae9d34dd4791' //`Bearer ${store.getters.token}`
+        "Authorization": `Bearer ${store.getters.token}`
     }
-});
+});*/
 
+// HTTP запрос для доступа к данным пользователя
 // ЗДЕСЬ КОСТЫЛЬ
 export function usersHttpStrange(token) {
-    const USERS_HTTP = axios.create({
+    const USERS_HTTP_STRANGE = axios.create({
         baseURL: API_URL + 'users/',
         headers: {
             "Accept": "application/json",
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}` //'Bearer 48a8283100d31c2e17891bfcec67ae9d34dd4791' //`Bearer ${store.getters.token}`
+            "Authorization": `Bearer ${token}`
         }
     });
-    return USERS_HTTP;
+    return USERS_HTTP_STRANGE;
 };
 
+// Проверка авторизации при HTTP запросе
 HTTP.interceptors.request.use(
     function(config) {
         const token = store.getters.token;
@@ -67,6 +71,7 @@ HTTP.interceptors.request.use(
     }
 );
 
+// Действия при ошибки авторизации
 HTTP.interceptors.response.use(null, function(error) {
     console.log(error);
     if (error.response.status === 401 || error.response.status === 403) {

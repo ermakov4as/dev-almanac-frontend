@@ -322,7 +322,7 @@
             saveCard() {
                 this.card.nodes = this.nodesSelected;
                 this.card.time = parseInt(this.card.time);
-                HTTP.put(`cards/${ this.$route.params.id }/`, this.card)
+                HTTP.put(`editor/cards/${ this.$route.params.id }/`, this.card)
                     .then(response => {
                         this.$notify({
                             group: 'foo',

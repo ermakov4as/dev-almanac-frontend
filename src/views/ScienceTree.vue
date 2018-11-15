@@ -616,7 +616,7 @@
 
             // Получение данных с сервера (изначально)
             getData() {
-      		    HTTP.get(`sciences/${ this.$route.params.id }/`)
+      		    HTTP.get(`editor/sciences/${ this.$route.params.id }/`)
                     .then(response => {
                         this.science = response.data;
                         //this.editDataReady = true;
@@ -642,7 +642,7 @@
                 if (this.newNodeDetected) {
                     this.science.nodes = this.deleteTmpIds(this.science.nodes);
                 };
-                HTTP.put(`sciences/${ this.$route.params.id }/upload_tree/`, this.science)
+                HTTP.put(`editor/sciences/${ this.$route.params.id }/upload_tree/`, this.science)
                     .then(response => {
                         // Обновление science.nodes лишь в случае, если были добавлены новые ноды
                         if (this.newNodeDetected) {

@@ -300,12 +300,12 @@
 
             // Получение данных с сервера (изначально)
             getData() {
-                HTTP.get(`lessons/${ this.$route.params.id }/`)
+                HTTP.get(`editor/lessons/${ this.$route.params.id }/`)
                     .then(response => {
                         this.lesson = response.data;
                         this.initNodes(this.lesson.nodes);
                         this.dataReady = true;
-                        HTTP.get(`sciences/${ this.lesson.science }/`)
+                        HTTP.get(`editor/sciences/${ this.lesson.science }/`)
                             .then(response => {
                                 this.treeData = response.data.nodes;
                                 this.treeDataReady = true;
@@ -334,7 +334,7 @@
             // Сохранение данных на сервере
             saveLesson() {
                 this.lesson.nodes = this.nodesSelected;
-                HTTP.put(`lessons/${ this.$route.params.id }/`, this.lesson)
+                HTTP.put(`editor/lessons/${ this.$route.params.id }/`, this.lesson)
                     .then(response => {
                         this.$notify({
                             group: 'foo',
@@ -379,7 +379,7 @@
                         });
                         let formData = new FormData();
                         formData.append("file", this.image_file);
-                        HTTP_UPLOAD.put(`lessons/${this.lesson.id}/upload_image/`, formData)
+                        HTTP_UPLOAD.put(`editor/lessons/${this.lesson.id}/upload_image/`, formData)
                             .then((response) => {
                                 this.$notify({
                                     group: 'foo',

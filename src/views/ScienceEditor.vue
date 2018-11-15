@@ -147,7 +147,7 @@
 
             // Получение данных с сервера (изначально)
             getData() {
-                HTTP.get(`sciences/${ this.$route.params.id }/`)
+                HTTP.get(`editor/sciences/${ this.$route.params.id }/`)
                     .then(response => {
                         this.science = response.data;
                         this.dataReady = true;
@@ -165,7 +165,7 @@
 
             // Сохранение данных на сервере
             saveScience() {
-                HTTP.put(`sciences/${ this.$route.params.id }/`, this.science)
+                HTTP.put(`editor/sciences/${ this.$route.params.id }/`, this.science)
                     .then(response => {
                         this.$notify({
                             group: 'foo',

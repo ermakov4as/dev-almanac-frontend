@@ -4,19 +4,26 @@
             <div class="col-md-6 offset-md-3">
                 <div class="login-form">
                     <div class="main-div">
+
                         <div class="panel">
                             <h2>Вход в систему</h2>
                             <p>Пожалуйста, введите ваши email и пароль</p>
                         </div>
+
+                        <!-- Блок отображенря общих ошибок -->
                         <div class="form-group" v-if="errors.non_field_errors">
                             <label class="input-label" v-for="(error, index) in errors.non_field_errors" :key="index">{{error}}</label>
                         </div>
+
+                        <!-- Блок ввода адреса электронной почты -->
                         <div class="form-group">
                             <label class="input-label" v-if="errors.email"
                                    v-for="(error, index) in errors.email" :key="index">{{error}}</label>
                             <input type="email" class="form-control" :class="{'error-input': errors.email.length}"
                                    placeholder="Email" v-model="email" @change="clear_errors('email')">
                         </div>
+
+                        <!-- Блок ввода пароля -->
                         <div class="form-group">
                             <label class="input-label" v-if="errors.password"
                                    v-for="(error, index) in errors.password" :key="index">{{error}}</label>
@@ -24,11 +31,16 @@
                                    :class="{'error-input': errors.password.length}" placeholder="Пароль"
                                    v-model="password" @change="clear_errors('password')">
                         </div>
+
+                        <!-- Блок "Забыли пароль?" -->
+                        <!-- ПОКА ЧТО НЕ РАБОТАЕТ -->
                         <div class="forgot">
-                            <a href="reset.html">Забыли пароль?</a>
+                            <a>Забыли пароль?</a>
                         </div>
-                        <div class="btn bg-black btn-primary" @click="login" v-html="loggin_button_text[state]">
-                        </div>
+
+                        <!-- Кнопка запроса на авторизацию -->
+                        <div class="btn bg-black btn-primary" @click="login" v-html="loggin_button_text[state]"></div>
+
                     </div>
                 </div>
             </div>
@@ -37,9 +49,8 @@
 </template>
 
 <script>
-    import {LOGIN_HTTP, USERS_HTTP, usersHttpStrange} from "../http-common";
+    import {HTTP, LOGIN_HTTP/*, usersHttpStrange*/} from "../http-common";
     import Cookies from "js-cookie";
-
 
     export default {
         name: "login",
@@ -57,14 +68,16 @@
                     "default": "Войти",
                     "entering": "<i class='fa fa-spinner fa-pulse'></i> Производится вход"
                 }
-            }
+            };
         },
+
         methods: {
+            // Авторизация
             login(event) {
                 for (let field_name in this.errors) {
                     if (this.errors.hasOwnProperty(field_name)) {
                         this.clear_errors(field_name);
-                    }
+                    };
                 };
                 if (this.email === "") {
                     this.errors.email.push("Необходимое поле");
@@ -75,31 +88,29 @@
                 if (this.email !== "" && this.password !== "") {
                     this.state = "entering";
                     console.log(`Передаю: "email": ${this.email}, "password": ${this.password}`);
-                    LOGIN_HTTP.post('login/', {
-                    //HTTP.post('login/', {   
+
+                    // Запрос на авторизацию
+                    LOGIN_HTTP.post('login/', {  
                         "email": this.email,
                         "password": this.password
                     })
                         .then((response) => {
-                            console.log('good response1');
                             this.$store.commit('token', response.data['key']);
-                            //this.$router.push('/sciences/');
-                            console.log(this.$store.getters.token);
-                            
-                            /*USERS_HTTP.get('user/')
+                            HTTP.get('users/user/')
                                 .then((response) => {
                                     this.$store.commit('user', response.data);
                                     this.$router.push('/sciences/');
-                            });*/
+                            });
+
                             // ЗДЕСЬ КОСТЫЛЬ
-                            usersHttpStrange(this.$store.getters.token).get('user/')
+                            /*usersHttpStrange(this.$store.getters.token).get('user/')
                                 .then((response) => {
                                         this.$store.commit('user', response.data);
                                         this.$router.push('/sciences/');
-                                });
+                            });*/
+
                         })
                         .catch((error) => {
-                            console.log('bad response1');
                             console.log(error);
                             this.set_errors(error.response.data);
                             this.password = "";
@@ -107,6 +118,8 @@
                         })
                 };
             },
+
+            // Очистка списка ошибок
             clear_errors(field_name) {
                 if (this.errors.hasOwnProperty(field_name)) {
                     while (this.errors[field_name].length > 0) {
@@ -114,6 +127,8 @@
                     };
                 };
             },
+
+            // Добавление ошибок в выводимый список
             set_errors(errors_dict) {
                 for (let field_name in this.errors) {
                     if (this.errors.hasOwnProperty(field_name)) {
@@ -128,6 +143,7 @@
                 };
             }
         },
+
         mounted() {
             if (this.$store.getters.token) {
                 this.$router.push('/');
@@ -225,5 +241,4 @@
         font-size: 13px;
         padding-left: 5px;
     }
-
 </style>

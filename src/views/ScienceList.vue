@@ -55,7 +55,7 @@
         methods: {
             // Получение данных с сервера
             getData() {
-                HTTP.get('sciences/')
+                HTTP.get('editor/sciences/')
                     .then(response => {
                         this.disciplines = response.data;
                     })
