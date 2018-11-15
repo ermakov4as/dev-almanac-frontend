@@ -39,6 +39,7 @@
                         </div>
 
                         <!-- Кнопка запроса на авторизацию -->
+                        <!-- Спиннер: тот, что был - вообще не работает, этот - не работал корректно, потому выключен -->
                         <div class="btn bg-black btn-primary" @click="login" v-html="loggin_button_text[state]"></div>
 
                     </div>
@@ -49,7 +50,7 @@
 </template>
 
 <script>
-    import {HTTP, LOGIN_HTTP/*, usersHttpStrange*/} from "../http-common";
+    import {HTTP, LOGIN_HTTP} from "../http-common";
     import Cookies from "js-cookie";
 
     export default {
@@ -66,7 +67,7 @@
                 state: "default",
                 loggin_button_text: {
                     "default": "Войти",
-                    "entering": "<i class='fa fa-spinner fa-pulse'></i> Производится вход"
+                    "entering": '<clip-loader class="custom-class" :size="30"></clip-loader> Производится вход'
                 }
             };
         },
@@ -87,7 +88,6 @@
                 };
                 if (this.email !== "" && this.password !== "") {
                     this.state = "entering";
-                    console.log(`Передаю: "email": ${this.email}, "password": ${this.password}`);
 
                     // Запрос на авторизацию
                     LOGIN_HTTP.post('login/', {  
@@ -101,14 +101,6 @@
                                     this.$store.commit('user', response.data);
                                     this.$router.push('/sciences/');
                             });
-
-                            // ЗДЕСЬ КОСТЫЛЬ
-                            /*usersHttpStrange(this.$store.getters.token).get('user/')
-                                .then((response) => {
-                                        this.$store.commit('user', response.data);
-                                        this.$router.push('/sciences/');
-                            });*/
-
                         })
                         .catch((error) => {
                             console.log(error);

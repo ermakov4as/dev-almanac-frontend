@@ -4,7 +4,7 @@ import router from './router';
 
 const API_URL = 'http://almanacredactortest-dev.us-east-2.elasticbeanstalk.com/api/v1/';
 
-// Стандартный HTTP запрос для редактора
+// Стандартный HTTP запрос
 export const HTTP = axios.create({
     baseURL: API_URL,
     headers: {
@@ -15,7 +15,7 @@ export const HTTP = axios.create({
     }
 });
 
-// Стандартный HTTP запрос для загрузки в редактор
+// Стандартный HTTP запрос для загрузки
 export const HTTP_UPLOAD = axios.create({
     baseURL: API_URL,
     headers: {
@@ -32,30 +32,6 @@ export const LOGIN_HTTP = axios.create({
         "Content-Type": "application/json"
     }
 });
-
-// HTTP запрос для доступа к данным пользователя
-/*export const USERS_HTTP = axios.create({
-    baseURL: API_URL + 'users/',
-    headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${store.getters.token}`
-    }
-});*/
-
-// HTTP запрос для доступа к данным пользователя
-// ЗДЕСЬ КОСТЫЛЬ
-export function usersHttpStrange(token) {
-    const USERS_HTTP_STRANGE = axios.create({
-        baseURL: API_URL + 'users/',
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        }
-    });
-    return USERS_HTTP_STRANGE;
-};
 
 // Проверка авторизации при HTTP запросе
 HTTP.interceptors.request.use(
