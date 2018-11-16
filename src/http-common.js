@@ -49,9 +49,14 @@ HTTP.interceptors.request.use(
 
 // Действия при ошибки авторизации
 HTTP.interceptors.response.use(null, function(error) {
+    console.log('eee');
+    if (error.name == 'NetworkError') {
+        console.log('There was a network error.');
+    }
     console.log(error);
+    console.log('eee1');
     if (error.response.status === 401 || error.response.status === 403) {
-        console.log('Failed to login');
+        console.log(`Failed to login (error: ${error.response.status})`);
         router.push('/login');
     };
     return Promise.reject(error)

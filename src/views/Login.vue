@@ -67,7 +67,8 @@
                 state: "default",
                 loggin_button_text: {
                     "default": "Войти",
-                    "entering": '<clip-loader class="custom-class" :size="30"></clip-loader> Производится вход'
+                    //"entering": '<clip-loader class="custom-class" :size="30"></clip-loader> Производится вход'
+                    "entering": "<i class='fa fa-spinner fa-pulse'></i> Производится вход"
                 }
             };
         },

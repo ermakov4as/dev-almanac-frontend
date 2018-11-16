@@ -24,7 +24,7 @@
             <!-- ПОКА НЕ РАБОТАЕТ: НЕ ОПИСАНЫ СИТУАЦИИ, В КОТОРЫХ БУДЕТ ЗАСЧИТАНО ОТСУТСТВИЕ ПОДКЛЮЧЕНИЯ -->
             <ul class="navbar-nav" v-if="!connected_to_server">
                 <li class="nav-item">
-                    <clip-loader class="custom-class" :size="30"></clip-loader>
+                    <i class='fa fa-spinner fa-pulse fa-2x'></i>
                 </li>
             </ul>
 
@@ -60,7 +60,7 @@
 </template>
 
 <script>
-    import {LOGIN_HTTP} from "../http-common";
+    import {LOGIN_HTTP} from "../../http-common";
     import Cookies from 'js-cookie';
 
     export default {

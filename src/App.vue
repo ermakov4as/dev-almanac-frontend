@@ -15,7 +15,7 @@
 
 <script>
     import './styles.css';
-    import Header from './views/Header.vue';
+    import Header from './components/Header/Header.vue';
     import {HTTP} from "./http-common";
 
     export default {
