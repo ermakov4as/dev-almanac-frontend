@@ -3,9 +3,7 @@ import Cookies from 'js-cookie';
 const state = {
     _user: null,
     _token: null,
-    //_connected_to_server: false
-    // ПОКА НЕ РАБОТАЕТ
-    _connected_to_server: true
+    _connected_to_server: false
 };
 
 const getters = {
