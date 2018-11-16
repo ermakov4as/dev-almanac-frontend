@@ -16,10 +16,24 @@
 <script>
     import './styles.css';
     import Header from './views/Header.vue';
+    import {HTTP} from "./http-common";
 
     export default {
         components: {
             appHeader: Header
+        },
+        created() {
+            HTTP.get('/users/user/')
+                .then((response) => {
+                    this.$store.commit('user', response.data);
+                    this.$store.commit('connected_to_server', true);
+                })
+                .catch((error) => {
+                    if (error.response.status === 401) {
+                        this.$store.commit('connected_to_server', true);
+                    }
+                })
+
         }
     };
 </script>

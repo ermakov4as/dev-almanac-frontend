@@ -344,14 +344,14 @@
 
             // Получение данных карточки с сервера
             getData() {
-                HTTP.get(`cards/${ this.$route.params.id }/`)
+                HTTP.get(`editor/cards/${ this.$route.params.id }/`)
                     .then(response => {
                         this.card = response.data;
                         this.initNodes(this.card.nodes);
                         this.dataReady = true;
                         
                         // Получение данных для древа с сервера
-                        HTTP.get(`sciences/${ this.card.science }/`)
+                        HTTP.get(`editor/sciences/${ this.card.science }/`)
                             .then(response => {
                                 this.scienceTreeData = response.data.nodes;
                                 this.treeDataReady += 1;
@@ -367,7 +367,7 @@
                             });
 
                         // Получение с сервера нод, задействованных в уроке
-                        HTTP.get(`lessons/${ this.card.lesson }/`)
+                        HTTP.get(`editor/lessons/${ this.card.lesson }/`)
                             .then(response => {
                                 this.lessonTreeData = response.data.nodes;
                                 this.treeDataReady += 1;
@@ -410,7 +410,7 @@
                     });
                     let formData = new FormData();
                     formData.append("file", this.aam_file);
-                    HTTP_UPLOAD.put(`cards/${this.card.id}/upload_aam/`, formData)
+                    HTTP_UPLOAD.put(`editor/cards/${this.card.id}/upload_aam/`, formData)
                         .then((response) => {
                             this.$notify({
                                 group: 'foo',
@@ -434,7 +434,7 @@
             // Удаление ААМ файла
             remove_aam() {
                 if (confirm("Удалить тренажер?")) {
-                    HTTP.post(`cards/${this.card.id}/remove_aam/`)
+                    HTTP.post(`editor/cards/${this.card.id}/remove_aam/`)
                         .then((response) => {
                             this.$notify({
                                 group: 'foo',

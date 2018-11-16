@@ -1,6 +1,6 @@
 <template>
     <nav class="navbar navbar-expand-md navbar-light bg-light mb-2">
-        
+
         <!-- Ссылка на домашнюю страницу -->
         <router-link to="/">
             <a class="navbar-brand" href="#">Almanac <span class="red">20/80</span> Editor</a>
@@ -31,7 +31,7 @@
             <!-- Ссылка на вхо в аккаунт, если вход не выполнен -->
             <ul class="navbar-nav" v-else-if="!is_logged_in">
                 <li class="nav-item">
-                    <router-link to="/login"><span class="nav-link">Войти</span></router-link>
+                    <router-link to="/login/"><span class="nav-link">Войти</span></router-link>
                 </li>
             </ul>
 
