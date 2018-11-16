@@ -1,8 +1,17 @@
 <template>
     <div class="container">
         <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <div class="login-form">
+
+            <!-- Отображение спиннера, если нет соединения с сервером -->
+            <div class="main-div" v-if="!connected_to_server">
+                <div class="nav-item">
+                    <i class='fa fa-spinner fa-pulse fa-4x'></i>
+                </div>
+            </div>
+
+            <!-- Страница авторизации, если есть соединение с сервером -->
+            <div class="col-md-6 offset-md-3" v-else>
+                <div class="login-form">              
                     <div class="main-div">
 
                         <div class="panel">
@@ -39,7 +48,6 @@
                         </div>
 
                         <!-- Кнопка запроса на авторизацию -->
-                        <!-- Спиннер: тот, что был - вообще не работает, этот - не работал корректно, потому выключен -->
                         <div class="btn bg-black btn-primary" @click="login" v-html="loggin_button_text[state]"></div>
 
                     </div>
@@ -67,7 +75,6 @@
                 state: "default",
                 loggin_button_text: {
                     "default": "Войти",
-                    //"entering": '<clip-loader class="custom-class" :size="30"></clip-loader> Производится вход'
                     "entering": "<i class='fa fa-spinner fa-pulse'></i> Производится вход"
                 }
             };
@@ -134,6 +141,12 @@
                         };
                     };
                 };
+            }
+        },
+
+        computed: {
+            connected_to_server() {
+                return this.$store.getters.connected_to_server;
             }
         },
 

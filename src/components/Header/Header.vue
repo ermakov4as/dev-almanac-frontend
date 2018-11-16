@@ -21,7 +21,6 @@
             </ul>
 
             <!-- Отображение спиннера, если нет соединения с сервером -->
-            <!-- ПОКА НЕ РАБОТАЕТ: НЕ ОПИСАНЫ СИТУАЦИИ, В КОТОРЫХ БУДЕТ ЗАСЧИТАНО ОТСУТСТВИЕ ПОДКЛЮЧЕНИЯ -->
             <ul class="navbar-nav" v-if="!connected_to_server">
                 <li class="nav-item">
                     <i class='fa fa-spinner fa-pulse fa-2x'></i>
