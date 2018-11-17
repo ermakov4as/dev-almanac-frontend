@@ -1,7 +1,15 @@
 <template>
     <div>
         <h1 class="component-title">Список дисциплин</h1>
-        <div class="component-content">
+        
+        <!-- Отображение спиннера, если нет соединения с сервером -->
+        <!-- При div почему-то не работает... -->
+        <p class="text-center" v-if="!dataReady">
+            <i class='fa fa-spinner fa-pulse fa-4x'></i>
+        </p>
+        
+        <!-- Страница списка дисциплин, если есть соединение с сервером -->
+        <div class="component-content" v-else>
 
             <!-- Блок-строка дисциплины -->
             <discipline
@@ -41,9 +49,10 @@
                 createBtn: {
                     name: 'СОЗДАТЬ НОВУЮ',
                     btnPath: '/sciences/',
-                    requestPath: 'sciences/',
+                    requestPath: 'editor/sciences/',
                     requestId: ''
-                }
+                },
+                dataReady: false
             };
         },
 
@@ -58,6 +67,7 @@
                 HTTP.get('editor/sciences/')
                     .then(response => {
                         this.disciplines = response.data;
+                        this.dataReady = true;
                     })
                     .catch(error => {
                         console.log(error);

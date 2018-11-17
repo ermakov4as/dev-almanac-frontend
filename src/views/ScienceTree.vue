@@ -1,7 +1,15 @@
 <template>
     <div class="block-container">
         <h1 class="component-title">Дисциплина "{{ science.name }}"</h1>
-        <div class="component-content">
+        
+        <!-- Отображение спиннера, если нет соединения с сервером -->
+        <!-- При div почему-то не работает... -->
+        <p class="text-center" v-if="!treeDataReady">
+            <i class='fa fa-spinner fa-pulse fa-4x'></i>
+        </p>
+        
+        <!-- Страница редактирования древа дисциплины, если есть соединение с сервером -->
+        <div class="component-content" v-else>
 
             <!-- Разделённая на 2 колонки часть -->
             <div class="row form-group multi-cols-border">

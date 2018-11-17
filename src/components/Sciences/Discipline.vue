@@ -23,7 +23,7 @@
                     class="btn btn-orange btn-common disc-btn"
                     >РЕДАКТИРОВАТЬ</router-link>
 
-            <!-- УДАЛЕНИЕ ДИСЦИПЛИНЫ. КНОПКА ДЛЯ ОТЛАДКИ. ПРИ НЕОБХОДИМОСТИ РАСКОММЕНТИТЬ.-->
+            <!-- УДАЛЕНИЕ ДИСЦИПЛИНЫ. КНОПКА ДЛЯ ОТЛАДКИ. ПРИ НЕОБХОДИМОСТИ РАСКОММЕНТИТЬ ЗДЕСЬ И В ЧАСТИ JS.-->
             <!--
             <button
                     @click="deleteScience"
@@ -58,10 +58,10 @@
         ],
 
         methods: {
-            // УДАЛЕНИЕ ДИСЦИПЛИНЫ. КНОПКА ДЛЯ ОТЛАДКИ. ПРИ НЕОБХОДИМОСТИ ИСПОЛЬЗОВАНИЯ - РАСКОММЕНТИТЬ В ЧАСТИ HTML
-            deleteScience() {
+            // УДАЛЕНИЕ ДИСЦИПЛИНЫ. КНОПКА ДЛЯ ОТЛАДКИ. ПРИ НЕОБХОДИМОСТИ ИСПОЛЬЗОВАНИЯ - РАСКОММЕНТИТЬ ЗДЕСЬ И В ЧАСТИ HTML.
+            /*deleteScience() {
                 if (confirm(`Удалить дисциплину (опция доступна только на этапе отладки)?`)) {
-                     HTTP.delete('sciences/' + this.discipline.id)
+                     HTTP.delete('editor/sciences/' + this.discipline.id)
                         .then((response) => {
                             this.$notify({
                                 group: 'foo',
@@ -78,7 +78,7 @@
                             console.log(error)
                         })
                 };
-            }
+            }*/
         }
     }
 </script>

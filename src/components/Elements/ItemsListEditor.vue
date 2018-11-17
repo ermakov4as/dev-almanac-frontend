@@ -30,7 +30,7 @@
                 <div class="element-controls d-flex align-items-end p-1">
                     <router-link :to="editElementLink(element)" class="btn h100 btn-warning mr-1">Редактировать
                     </router-link>
-                    <div class="btn btn-danger" @click="deleteElement(index)">Удалить</div>
+                    <div class="btn btn-danger" @click="deleteElement(index, element.name)">Удалить</div>
                 </div>
                 
             </div>
@@ -71,8 +71,8 @@
             },
 
             // Удаление элемента (урока, карточки) из списка
-            deleteElement(index) {
-                if (confirm(`Удалить ${ this.props.name }?`)) {
+            deleteElement(index, name) {
+                if (confirm(`Удалить ${ this.props.name } "${ name }"?`)) {
                     HTTP.delete(this.props.delLink + this.elements[index].id)
                         .then((response) => {
                             this.$notify({

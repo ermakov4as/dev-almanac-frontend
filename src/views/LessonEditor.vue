@@ -1,7 +1,15 @@
 <template>
     <div>
         <h1 class="component-title">Редактирование урока "{{ lesson.name }}"</h1>
-        <div class="component-content">
+        
+        <!-- Отображение спиннера, если нет соединения с сервером -->
+        <!-- При div почему-то не работает... -->
+        <p class="text-center" v-if="!treeDataReady">
+            <i class='fa fa-spinner fa-pulse fa-4x'></i>
+        </p>
+        
+        <!-- Страница редактирования урока, если есть соединение с сервером -->
+        <div class="component-content" v-else>
             <form>
 
                 <!-- Блок названия, сохранения, картинки -->
@@ -201,7 +209,7 @@
                 createBtn: {
                     name: 'ДОБАВИТЬ КАРТОЧКУ',
                     btnPath: `/${ this.$route.path }cards/`,
-                    requestPath: 'cards/'
+                    requestPath: 'editor/cards/'
                 },
                 dataReady: false,
                 treeDataReady: false,
@@ -210,7 +218,7 @@
                 delProps: {
                     name: 'карточку',
                     editPath: `${ this.$route.path }cards/`,
-                    delLink: 'cards/'
+                    delLink: 'editor/cards/'
                 },
                 customToolbar: {
                     modules: {

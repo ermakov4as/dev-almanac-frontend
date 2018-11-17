@@ -1,7 +1,15 @@
 <template>
     <div>
         <h1 class="component-title">Редактирование дисциплины "{{ science.name }}"</h1>
-        <div class="component-content">
+
+        <!-- Отображение спиннера, если нет соединения с сервером -->
+        <!-- При div почему-то не работает... -->
+        <p class="text-center" v-if="!dataReady">
+            <i class='fa fa-spinner fa-pulse fa-4x'></i>
+        </p>
+        
+        <!-- Страница редактирования дисциплины, если есть соединение с сервером -->
+        <div class="component-content" v-else>
             <form>
 
                 <!-- Блок редактирования названия дисциплины, кнопок сохранить на сервере и вернуться назад -->
@@ -70,6 +78,7 @@
                         @createBtnUsed="createBtnUsed"></create-btn>
             </div>
         </div>
+
     </div>
 </template>
 
@@ -104,7 +113,7 @@
                 createBtn: {
                     name: 'ДОБАВИТЬ УРОК',
                     btnPath: `${ this.$route.path }lessons/`,
-                    requestPath: 'lessons/'
+                    requestPath: 'editor/lessons/'
                 },
                 dataReady: false,
                 showContent: true,
@@ -112,7 +121,7 @@
                 delProps: {
                     name: 'урок',
                     editPath: `${ this.$route.path }lessons/`,
-                    delLink: 'lessons/'
+                    delLink: 'editor/lessons/'
                 },
                 customToolbar: {
                     modules: {

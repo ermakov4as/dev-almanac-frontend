@@ -2,7 +2,7 @@ import axios from 'axios';
 import store from './store/store';
 import router from './router';
 
-const API_URL = 'http://almanacredactortest-dev.us-east-2.elasticbeanstalk.com/api/v1/';
+const API_URL = 'https://backend.swift-english.com/api/v1/';
 
 // Стандартный HTTP запрос
 export const HTTP = axios.create({

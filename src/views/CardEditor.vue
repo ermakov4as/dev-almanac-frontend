@@ -1,7 +1,15 @@
 <template>
     <div>
         <h1 class="component-title">Редактирование карточки "{{ card.name }}"</h1>
-        <div class="component-content mb-3">
+        
+        <!-- Отображение спиннера, если нет соединения с сервером -->
+        <!-- При div почему-то не работает... -->
+        <p class="text-center" v-if="!treeStartReady">
+            <i class='fa fa-spinner fa-pulse fa-4x'></i>
+        </p>
+        
+        <!-- Страница редактирования карточки, если есть соединение с сервером -->
+        <div class="component-content mb-3" v-else>
             <form>
 
                 <!-- Блок редактирования названия карточки, кнопок сохранить на сервере и вернуться назад -->
