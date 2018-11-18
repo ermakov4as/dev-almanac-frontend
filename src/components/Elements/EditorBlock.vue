@@ -301,7 +301,7 @@
                         });
                         let formData = new FormData();
                         formData.append("file", this.image_file);
-                        HTTP_UPLOAD.post('upload_image/', formData)
+                        HTTP_UPLOAD.post('editor/upload_image/', formData)
                             .then((response) => {
                                 this.image_url = response.data.url;
                             })
