@@ -145,11 +145,13 @@
                 <div class="label-subtitle">
                     <label for="cards">Тренажёры: </label>
                     <p @click="showTrainer = !showTrainer" class="show-element elements-list-margin">
-                        {{ showTrainer ? 'Скрыть' : 'Показать' }}
+                        {{ showTrainer ? 'Старая версия' : 'Новая версия' }}
                     </p>
                 </div>
             </div>
-            <div v-if="showTrainer" class="mb-5">
+
+            <!-- Old version -->
+            <div v-if="!showTrainer" class="mb-5">
 
                 <!-- ААМ -->
                 <div class="d-flex mb-2">
@@ -179,6 +181,14 @@
 
             </div>
 
+            <!-- New version -->
+            <div v-if="showTrainer">
+                <card-sentences 
+                        :url_id="card.id"
+                        :card_aams="card.aams"
+                        :ready="dataReady"></card-sentences>
+            </div>
+
         </div>
     </div>
 </template>
@@ -187,6 +197,7 @@
     import EditorBlock from '../components/Elements/EditorBlock.vue';
     import NodesDelList from '../components/Elements/NodesDelList.vue';
     import TreeRegister from '../components/CardEditor/TreeRegister.vue';
+    import CardSentences from '../components/CardEditor/CardSentences.vue';
     import {HTTP, HTTP_UPLOAD} from '../http-common.js';
     import {mapMutations, mapGetters} from 'vuex';
 
@@ -201,7 +212,8 @@
                     nodes: [],
                     lesson: 0,
                     science: 0,
-                    time: 0
+                    time: 0,
+                    aams: []
                 },
                 customToolbar: {
                     modules: {
@@ -232,7 +244,8 @@
         components: {
             EditorBlock,
             NodesDelList,
-            TreeRegister
+            TreeRegister,
+            CardSentences
         },
 
         computed: {

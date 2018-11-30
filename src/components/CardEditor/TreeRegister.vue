@@ -17,11 +17,8 @@
 
     export default {
         name: "tree-register",
-        props: [
-            'node',
-            'ready'
-        ],
-
+        props: ['node', 'ready'],
+        
         data() {
             return {
                 isSelected: false,
