@@ -11,7 +11,7 @@
                         v-if="makeVoice" 
                         @close="makeVoice = false"
                         :kolvo="checkedExamplesLength"
-                        @examples="getCheckedExamplesData()"></make-voice>
+                        @examples_id="checkedExamples"></make-voice>
 
                 <div class="btn btn-info" @click="uploadScheme = true">Загрузить схему</div>
                 <upload-scheme 
@@ -163,7 +163,7 @@
                         if (example.id < -1) delete example.id
                     });
                 };
-                console.log(presavedExamples);
+                //console.log(presavedExamples);
                 HTTP.put(`editor/cards/${this.url_id}/examples/`, presavedExamples)
                     .then(response => {
                         if (this.newExampleDetected) {
@@ -216,9 +216,9 @@
             createNew() {
                 let newExample = {
                     id: this.currentTmpId,
-                    question: "qqq",
+                    question: "",
                     question_audio: "",
-                    answer: "qqq",
+                    answer: "",
                     answer_audio: "",
                     image: "",
                     use_for_exam: false,
@@ -232,11 +232,17 @@
 
         
             initTrainer() {
-                // CЕЙЧАС ПОСЛЕ СОХРАНЕНИЯ СБИВАЮТСЯ ГАЛКИ СВЕЖЕСОХРАНЁННЫХ//////////////////////////////////////////////////
                 this.imagesFromTrainer = [];
-                this.examples.forEach((example) => {
+                /*this.examples.forEach((example) => {  // CЕЙЧАС ПОСЛЕ СОХРАНЕНИЯ СБИВАЮТСЯ ГАЛКИ СВЕЖЕСОХРАНЁННЫХ
                     if (this.checkedExamples.find(x => x === example.id)) example.checked = true
                         else example.checked = false;
+                    if (example.image) {
+                        this.imagesFromTrainer.push(example.image);
+                    };
+                });*/
+                this.checkedExamples = [];
+                this.examples.forEach((example) => {
+                    example.checked = false;
                     if (example.image) {
                         this.imagesFromTrainer.push(example.image);
                     };
@@ -252,7 +258,7 @@
             removeExampleChecked(id) {
                 let index = this.checkedExamples.indexOf(id);
                 this.checkedExamples.splice(index, 1);
-                console.log(this.checkedExamples);
+                //console.log(this.checkedExamples);
             },
 
             addExampleChecked(id) {
@@ -287,7 +293,7 @@
                     };
                 });
                 return newAllSchemes;
-            },
+            }/*,
 
             getCheckedExamplesData() {
                 let checkedExamplesData = [];
@@ -297,7 +303,7 @@
                     };
                 });
                 return checkedExamplesData;
-            }
+            }*/
         },
 
         watch: {

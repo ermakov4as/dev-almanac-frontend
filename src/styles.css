@@ -114,6 +114,12 @@
     margin-bottom: 0;
 }
 
+.error-text-notification {
+    color: red;
+    font-size: 14px;
+    text-decoration: underline;
+}
+
 .form-element {
     text-align: center;
     margin: 0 30px 30px 30px;

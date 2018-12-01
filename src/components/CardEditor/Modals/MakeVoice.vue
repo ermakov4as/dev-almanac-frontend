@@ -15,15 +15,24 @@
 
                     <div class="modal-body">
                         <slot name="body">
-                            <div>Здесь будет select выбора поля</div>
-                            <div>Здесь будет select выбора персонала</div>
+                            <!--<div>
+                                <select v-model="fieldType">
+                                    <option disabled value="">Выбор схемы</option>
+                                    <option :value="{type: 'question'}">EN (Question)</option>
+                                    <option :value="{type: 'answer'}">RU (Answer)</option>
+                                </select>
+                            </div>-->
+                            <v-select v-model="fieldType" :options="fieldTypeOptions" placeholder="Выбор поля (EN, RU)"></v-select>
+                            <br>
+                            <v-select v-model="memberSelected" :options="members" label="email" placeholder="Выбор персонала"></v-select>
                         </slot>
                     </div>
 
                     <div class="modal-footer">
                         <slot name="footer">
-                            <div class="btn btn-default btn-success center">
-                                Здесь будет отправить в бот
+                            <p class="error-text-notification">{{ errorNotification }}</p>
+                            <div class="btn btn-default btn-success center" @click="sendToBot">
+                                Oтправить в бот
                             </div>
                         </slot>
                     </div>
@@ -35,16 +44,95 @@
 </template>
 
 <script>
+    import { HTTP } from '../../../http-common.js';
+
     export default {
-        props: ['kolvo', 'examples'],
+        props: ['kolvo', 'examples_id'],
         data() {
             return {
-
+                fieldType: "",
+                fieldTypeOptions: [
+                    {label: 'Question (EN)', value: 'question'},
+                    {label: 'Answer (RU)', value: 'answer'}
+                ],
+                members: [],
+                memberSelected: "",
+                errorNotification: ""
             };
         },
 
         methods: {
-           
+            sendToBot() {
+                if (!this.memberSelected && !this.fieldType) {
+                    this.$notify({
+                        group: 'foo',
+                        type: "error",
+                        title: 'Ошибка',
+                        text: 'Выберите поле и персонал'
+                    });
+                    this.errorNotification = "Выберите поле и персонал";
+                } else if (!this.memberSelected) {
+                    this.$notify({
+                        group: 'foo',
+                        type: "error",
+                        title: 'Ошибка',
+                        text: 'Выберите персонал'
+                    });
+                    this.errorNotification = "Выберите персонал";
+                } else if (!this.fieldType) {
+                    this.$notify({
+                        group: 'foo',
+                        type: "error",
+                        title: 'Ошибка',
+                        text: 'Выберите поле'
+                    });
+                    this.errorNotification = "Выберите поле";
+                } else {
+                    let dataToBot = {
+                        user_id: this.memberSelected.id,
+                        field: this.fieldType.value,
+                        example_id_list: this.examples_id
+                    };
+                    this.errorNotification = "";
+                    //console.log(dataToBot);
+                    HTTP.post('editor/append_record/', dataToBot)
+                        .then(response => {
+                            this.$notify({
+                                group: 'foo',
+                                type: "success",
+                                title: 'Успешно отправлено',
+                                text: 'Отправлено в бот'
+                            });
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            this.$notify({
+                                group: 'foo',
+                                type: "error",
+                                title: 'Произошла ошибка',
+                                text: 'Ошибка отправки в бот'
+                            });
+                        });
+                    this.$emit('close');
+                };
+            },
+
+            getMembers() {
+                HTTP.get('editor/member_list/')
+                    .then(response => {
+                        this.members = response.data;
+                        //console.log(this.members);                     
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.$notify({
+                            group: 'foo',
+                            type: "error",
+                            title: 'Произошла ошибка',
+                            text: 'Sorry'
+                        });
+                    });
+            }
         },
 
         mounted() {
@@ -56,7 +144,9 @@
                     text: 'Не выбрано ни одного элемента'
                 });
                 this.$emit('close');
-            };
+            } else {
+                this.getMembers();
+            }
         }
     }
 </script>
