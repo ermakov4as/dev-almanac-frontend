@@ -4,14 +4,20 @@
 
             <!-- Панель кнопок -->
             <div class="d-flex justify-content-start">
-                <div class="btn btn-success mr-5" @click="saveTrainer">Сохранить</div>
-                <div class="btn btn-warning mr-5" @click="voice">Озвучить</div>
+                <div class="btn btn-success mr-5" @click="preSaveTrainer">Сохранить</div>
+
+                <div class="btn btn-warning mr-5" @click="makeVoice = true">Озвучить</div>
+                <make-voice 
+                        v-if="makeVoice" 
+                        @close="makeVoice = false"
+                        :kolvo="checkedExamplesLength"
+                        @examples="getCheckedExamplesData()"></make-voice>
 
                 <div class="btn btn-info" @click="uploadScheme = true">Загрузить схему</div>
                 <upload-scheme 
                         v-if="uploadScheme" 
                         @close="uploadScheme = false"
-                        :kolvo="checkedExamples.length"
+                        :kolvo="checkedExamplesLength"
                         @image_uploaded="imageUploaded"></upload-scheme>
 
                 <div class="ml-auto btn btn-danger" @click="deleteFromTrainer">Удалить</div>
@@ -34,28 +40,53 @@
                 <tbody v-for="(example, index) in examples" :key="index">
                     <tr :class="{active: index % 2 === 0}">
 
-                        <th class="id-col center" scope="row">
-                            <i class="material-icons pointer" v-if="!example.checked">check_box_outline_blank</i>
+                        <th class="id-col center" scope="row" @click="checkExample(example)">
+                            <i class="material-icons pointer" v-if="!checkedExamples.find(x => x === example.id)">check_box_outline_blank</i>
                             <i class="material-icons pointer" v-else>check_box</i>
                         </th>
 
                         <td class="en-col">
+                            <div class="float-right material-icons pointer" @click="playAudio(example.question_audio)">volume_up</div>
                             <input
-                                type="text"
-                                id="en"
-                                class=""
-                                v-model="example.question">
+                                    type="text"
+                                    id="en"
+                                    class="form-control input-questipn-answer"
+                                    v-model="example.question">
                         </td>
+
                         <td class="ru-col">
+                            <div class="float-right material-icons pointer" @click="playAudio(example.answer_audio)">volume_up</div>
                             <input
-                                type="text"
-                                id="ru"
-                                class=""
-                                v-model="example.answer">
+                                    type="text"
+                                    id="ru"
+                                    class="form-control input-questipn-answer"
+                                    v-model="example.answer">
                         </td>
-                        <td class="scheme-col center">4</td>
-                        <td class="practice-col center">5</td>
-                        <td class="exam-col center">6</td>
+
+                        <td class="scheme-col center">
+                            <div v-if="example.image">
+                                <img :src="example.image.url" alt="..." class="img-thumbnail">
+                                <div class="float-right material-icons pointer" @click="example.image = ''">close</div>
+                            </div>
+                            <div v-else>
+                                <div class="btn btn-outline-secondary" @click="{selectScheme = true; selectIndex = index}">Выберите схему</div>
+                                <select-scheme 
+                                        v-if="selectScheme"
+                                        :schemes="checkAllSchemes()"
+                                        @close="selectScheme = false"
+                                        @scheme_selected="schemeSelected"></select-scheme>
+                            </div>
+                        </td>
+
+                        <td class="practice-col center" @click="example.use_for_practice = !example.use_for_practice">
+                            <i class="material-icons pointer" v-if="!example.use_for_practice">check_box_outline_blank</i>
+                            <i class="material-icons pointer" v-else>check_box</i>
+                        </td>
+                        <td class="exam-col center" @click="example.use_for_exam = !example.use_for_exam">
+                            <i class="material-icons pointer" v-if="!example.use_for_exam">check_box_outline_blank</i>
+                            <i class="material-icons pointer" v-else>check_box</i>
+                        </td>
+
                     </tr>
                 </tbody>
 
@@ -68,68 +99,13 @@
 
         </div>
     </div>
-        
-
-                        <!--<tr class="sentences_row">
-                        <td colspan="8">
-                            <div class="d-flex align-items-center justify-content-center">
-                                <table class="table table-sm table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th>Статус</th>
-                                        <th>На английском</th>
-                                        <th>На русском</th>
-                                        <th>Дата создания</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody v-for="sentence in lesson['sentences']">
-                                    <tbody>
-                                    <tr>
-                                        <td v-if="sentence.accepted">
-                                            <i class="material-icons">done</i>
-                                        </td>
-                                        <td v-else-if="sentence.checked">
-                                            <i class="material-icons">clear</i>
-                                        </td>
-                                        <td v-else>
-                                            <i class="material-icons">schedule</i>
-                                        </td>
-                                        <td @click="playAudio(sentence.question_audio)" class="sentence_td"
-                                            v-if="sentence.question_audio">
-                                            <div class="d-flex">
-                                                <div class="text-left">{{sentence.question}}</div>
-                                                <div class="ml-auto"><i class="material-icons">volume_up</i></div>
-                                            </div>
-                                        </td>
-                                        <td class="sentence_td" v-else>
-                                            <div class="d-flex">
-                                                <div class="text-left">{{sentence.question}}</div>
-                                            </div>
-                                        </td>
-                                        <td @click="playAudio(sentence.answer_audio)" class="sentence_td"
-                                         v-if="sentence.answer_audio">
-                                            <div class="d-flex">
-                                                <div class="text-left">{{sentence.answer}}</div>
-                                                <div class="ml-auto"><i class="material-icons">volume_up</i></div>
-                                            </div>
-                                        </td>
-                                        <td class="sentence_td" v-else>
-                                            <div class="d-flex">
-                                                <div class="text-left">{{sentence.answer}}</div>
-                                            </div>
-                                        </td>
-                                        <td>{{get_datetime(sentence.date_created)}}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </td>
-                    </tr>-->
 </template>
 
 <script>
     import { HTTP } from '../../http-common.js';
     import UploadScheme from './Modals/UploadScheme.vue';
+    import SelectScheme from './Modals/SelectScheme.vue';
+    import MakeVoice from './Modals/MakeVoice.vue';
 
     export default {
         props: ['url_id', 'card_aams', 'ready'],
@@ -139,25 +115,62 @@
                 examples: [],
                 firstAamsGetting: true,
                 uploadScheme: false,
+                selectScheme: false,
                 checkedExamples: [],
-                ulpoadedImages: []
+                ulpoadedImages: [],
+                currentTmpId: -2,
+                newExampleDetected: false,
+                selectIndex: Number,
+                checkedExamplesLength: 0,
+                imagesFromTrainer: [],
+                makeVoice: false
             };
         },
 
         components: {
-            UploadScheme
+            UploadScheme,
+            SelectScheme,
+            MakeVoice
         },
 
         methods: {
+            preSaveTrainer() {
+                let permission = true;
+                this.examples.forEach((example) => {
+                    if (!example.question || !example.answer) permission = false;
+                });
+                if (permission) {
+                    this.saveTrainer();
+                } else {
+                    this.$notify({
+                        group: 'foo',
+                        type: "error",
+                        title: 'Сохранение недоступно',
+                        text: 'Заполните поля Question и Answer!'
+                    });
+                };
+            },
+
             // Сохранение данных тренажёра на сервере
             saveTrainer() {
                 let presavedExamples = this.examples;
                 presavedExamples.forEach((example) => {
                     delete example.checked;
                 });
+                // Удаление временных id, если они есть
+                if (this.newExampleDetected) {
+                    presavedExamples.forEach((example) => {
+                        if (example.id < -1) delete example.id
+                    });
+                };
                 console.log(presavedExamples);
                 HTTP.put(`editor/cards/${this.url_id}/examples/`, presavedExamples)
                     .then(response => {
+                        if (this.newExampleDetected) {
+                            this.examples = response.data;
+                            this.newExampleDetected = false;
+                            this.initTrainer();
+                        };
                         this.$notify({
                             group: 'foo',
                             type: "success",
@@ -181,16 +194,28 @@
             },
 
             deleteFromTrainer() {
-
+                if (confirm(`Удалить выбранные записи (${this.checkedExamplesLength})?`)) {
+                    let tmpExamples = [];
+                    this.examples.forEach((example) => {
+                        if (!this.checkedExamples.find(x => x === example.id)) {
+                            tmpExamples.push(example);
+                        };
+                    });
+                    this.examples = tmpExamples;
+                };
             },
 
             imageUploaded(imageData) {
                 this.ulpoadedImages.push(imageData);
-                //console.log(this.ulpoadedImages);
+            },
+
+            schemeSelected(selectedScheme) {
+                this.examples[this.selectIndex].image = selectedScheme;
             },
             
             createNew() {
                 let newExample = {
+                    id: this.currentTmpId,
                     question: "qqq",
                     question_audio: "",
                     answer: "qqq",
@@ -200,15 +225,78 @@
                     use_for_practice: false,
                     checked: false
                 };
+                this.newExampleDetected = true;
+                this.currentTmpId -= 1;
                 this.examples.push(newExample);
             },
 
+        
             initTrainer() {
-                this.examples = this.card_aams;
+                // CЕЙЧАС ПОСЛЕ СОХРАНЕНИЯ СБИВАЮТСЯ ГАЛКИ СВЕЖЕСОХРАНЁННЫХ//////////////////////////////////////////////////
+                this.imagesFromTrainer = [];
                 this.examples.forEach((example) => {
-                    example.checked = false;
+                    if (this.checkedExamples.find(x => x === example.id)) example.checked = true
+                        else example.checked = false;
+                    if (example.image) {
+                        this.imagesFromTrainer.push(example.image);
+                    };
                 });
-                console.log(this.examples);
+            },
+
+            checkExample(example) {
+                if (example.checked) this.removeExampleChecked(example.id)
+                    else this.addExampleChecked(example.id);
+                example.checked = !example.checked;
+            },
+
+            removeExampleChecked(id) {
+                let index = this.checkedExamples.indexOf(id);
+                this.checkedExamples.splice(index, 1);
+                console.log(this.checkedExamples);
+            },
+
+            addExampleChecked(id) {
+                this.checkedExamples.push(id);
+            },
+
+            playAudio(source) {
+                if (source) {
+                    if (this.snd) {
+                        this.snd.pause();
+                    };
+                    this.snd = new Audio(source);
+                    this.snd.play();
+                } else {
+                    this.$notify({
+                        group: 'foo',
+                        type: "error",
+                        title: 'Ошибка воспроизведения',
+                        text: 'Отсутствует аудиозапись'
+                    });
+                };
+            },
+
+            checkAllSchemes() {
+                let oldAllSchemes = [...this.ulpoadedImages, ...this.imagesFromTrainer];
+                let newAllSchemes = [];
+                let allSchemesId = [];
+                oldAllSchemes.forEach((image) => {
+                    if (!allSchemesId.find(x => x === image.id)) {
+                        allSchemesId.push(image.id);
+                        newAllSchemes.push(image);
+                    };
+                });
+                return newAllSchemes;
+            },
+
+            getCheckedExamplesData() {
+                let checkedExamplesData = [];
+                this.examples.forEach((example) => {
+                    if (this.checkedExamples.find(x => x === example.id)) {
+                        checkedExamplesData.push(example);
+                    };
+                });
+                return checkedExamplesData;
             }
         },
 
@@ -218,10 +306,17 @@
                 handler(val, oldVal) {
                     if (this.ready) {
                         if (this.firstAamsGetting) {
+                            this.examples = this.card_aams;
                             this.initTrainer();
                             this.firstAamsGetting = false;
                         };
                     };
+                }
+            },
+
+            checkedExamples: {
+                handler(val, oldVal) {
+                    this.checkedExamplesLength = this.checkedExamples.length;
                 }
             }
         },
@@ -229,6 +324,7 @@
         mounted() {
             if (this.ready) {
                 if (this.firstAamsGetting) {
+                    this.examples = this.card_aams;
                     this.initTrainer();
                     this.firstAamssGetting = false;
                 };
@@ -249,10 +345,11 @@
     .card-sentences-table {
         margin-top: 15px;
         margin-bottom: -5px;
+        vertical-align: middle;
     }
 
     .id-col {
-        width: 5%;
+        width: 3%;
     }
 
     .en-col {
@@ -268,11 +365,15 @@
     }
 
     .practice-col {
-        width: 10%;
+        width: 5%;
     }
 
     .exam-col {
-        width: 10%;
+        width: 5%;
+    }
+
+    .input-questipn-answer {
+        width: 86%;
     }
 </style>
 

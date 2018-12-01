@@ -2,11 +2,11 @@
     <transition name="UploadScheme">
         <div class="modal-mask">
             <div class="modal-wrapper">
-                <div class="modal-container">
+                <div class="modal-container modal-container-standart">
 
                     <div class="modal-header">
                         <slot name="header">
-                            Загрузить схему для {{ kolvo }} предложений
+                            Загрузить схему для {{ titleText }}
                             <div class="btn btn-default btn-danger" @click="$emit('close')">
                                 Отмена
                             </div>
@@ -69,7 +69,8 @@
             return {
                 image_data: {},
                 image_file: "",
-                image_url: ""
+                image_url: "",
+                titleText: "предложений"
             };
         },
 
@@ -132,6 +133,16 @@
                     }
                 };
             }
+        },
+
+        mounted() {
+            if (this.kolvo > 0) {
+                if (this.kolvo > 1) {
+                    this.titleText = this.kolvo + ' предложений';
+                } else if (this.kolvo === 1) {
+                    this.titleText = this.kolvo + ' предложения';
+                };
+            };
         }
     }
 </script>
