@@ -11,7 +11,7 @@
                         v-if="makeVoice" 
                         @close="makeVoice = false"
                         :kolvo="checkedExamplesLength"
-                        @examples_id="checkedExamples"></make-voice>
+                        :examples_id="checkedExamples"></make-voice>
 
                 <div class="btn btn-info" @click="uploadScheme = true">Загрузить схему</div>
                 <upload-scheme 
@@ -46,27 +46,43 @@
                         </th>
 
                         <td class="en-col">
-                            <div class="float-right material-icons pointer" @click="playAudio(example.question_audio)">volume_up</div>
-                            <input
-                                    type="text"
-                                    id="en"
-                                    class="form-control input-questipn-answer"
-                                    v-model="example.question">
+                            <div class="d-flex">
+                                <textarea
+                                        type="text"
+                                        id="en"
+                                        class="form-control"
+                                        rows="1"
+                                        v-autosize="example.question">{{ example.question }}</textarea>
+                                <div 
+                                        v-if="example.question_audio" 
+                                        class="material-icons pointer" 
+                                        @click="playAudio(example.question_audio)">volume_up</div>
+                            </div>
                         </td>
 
                         <td class="ru-col">
-                            <div class="float-right material-icons pointer" @click="playAudio(example.answer_audio)">volume_up</div>
-                            <input
-                                    type="text"
-                                    id="ru"
-                                    class="form-control input-questipn-answer"
-                                    v-model="example.answer">
+                            <div class="d-flex">
+                                <!-- eslint-disable -->
+                                <textarea
+                                        type="text"
+                                        id="ru"
+                                        class="form-control"
+                                        rows="1"
+                                        v-autosize="example.answer">{{ example.answer }}</textarea>
+                                <!-- eslint-enable -->
+                                <div 
+                                        v-if="example.answer_audio" 
+                                        class="material-icons pointer" 
+                                        @click="playAudio(example.answer_audio)">volume_up</div>
+                            </div>
                         </td>
 
                         <td class="scheme-col center">
-                            <div v-if="example.image">
-                                <img :src="example.image.url" alt="..." class="img-thumbnail">
-                                <div class="float-right material-icons pointer" @click="example.image = ''">close</div>
+                            <div v-if="example.image" class="d-flex justify-content-center">
+                                <figure class="ml-auto">
+                                    <img :src="example.image.url" alt="..." class="img-fluid height-max">
+                                </figure>
+                                <div class="material-icons pointer ml-auto" @click="example.image = ''">close</div>
                             </div>
                             <div v-else>
                                 <div class="btn btn-outline-secondary" @click="{selectScheme = true; selectIndex = index}">Выберите схему</div>
@@ -266,20 +282,11 @@
             },
 
             playAudio(source) {
-                if (source) {
-                    if (this.snd) {
-                        this.snd.pause();
-                    };
-                    this.snd = new Audio(source);
-                    this.snd.play();
-                } else {
-                    this.$notify({
-                        group: 'foo',
-                        type: "error",
-                        title: 'Ошибка воспроизведения',
-                        text: 'Отсутствует аудиозапись'
-                    });
+                if (this.snd) {
+                    this.snd.pause();
                 };
+                this.snd = new Audio(source);
+                this.snd.play();
             },
 
             checkAllSchemes() {
@@ -340,6 +347,16 @@
 </script>
 
 <style scoped>
+    .height-max {
+        max-height: 200px;
+    }
+
+    textarea {
+        border: none;
+        background-color: transparent;
+        resize: none;
+    }
+
     .active {
         background-color: ghostwhite;
     }
@@ -376,10 +393,6 @@
 
     .exam-col {
         width: 5%;
-    }
-
-    .input-questipn-answer {
-        width: 86%;
     }
 </style>
 

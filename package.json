@@ -45,6 +45,7 @@
         "@vue/cli-service": "^3.0.4",
         "@vue/eslint-config-standard": "^3.0.4",
         "js-cookie": "^2.2.0",
+        "vue-autosize": "^1.0.2",
         "vue-select": "^2.5.1",
         "vue-template-compiler": "^2.5.17"
     }
