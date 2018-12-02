@@ -25,8 +25,8 @@
 
                             <v-select :options="extendedSchemes" placeholder="Выбор схемы" label="title" v-model="selectedScheme">
                                 <template slot="option" slot-scope="option">
-                                    <img :src="option.url" alt="..." class="img-fluid">
-                                    {{ option.title }}
+                                    <img :src="option.url" alt="..." class="img-fluid width-max">
+                                    <span>{{ option.title }}</span>
                                 </template>
                             </v-select>
 
@@ -122,8 +122,9 @@
 </script>
 
 <style scoped>
-    .width-70 {
-        max-width: 70%;
+    .width-max {
+        max-width: 75%;
+        margin-right: 15px;
     }
 
     body {

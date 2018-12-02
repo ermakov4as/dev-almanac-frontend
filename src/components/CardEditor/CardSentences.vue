@@ -28,19 +28,19 @@
                 
                 <thead>
                     <tr class="center">
-                        <th class="id-col"></th>
+                        <th class="id-col sizes-min"></th>
                         <th class="en-col">EN (Question)</th>
                         <th class="ru-col">RU (Answer)</th>
                         <th class="scheme-col">Схема</th>
-                        <th class="practice-col">Практика?</th>
-                        <th class="exam-col">Экзамен?</th>
+                        <th class="practice-col sizes-min">Практика?</th>
+                        <th class="exam-col sizes-min">Экзамен?</th>
                     </tr>
                 </thead>
                 
                 <tbody v-for="(example, index) in examples" :key="index">
                     <tr :class="{active: index % 2 === 0}">
 
-                        <th class="id-col center" scope="row" @click="checkExample(example)">
+                        <th class="id-col sizes-min center" scope="row" @click="checkExample(example)">
                             <i class="material-icons pointer" v-if="!checkedExamples.find(x => x === example.id)">check_box_outline_blank</i>
                             <i class="material-icons pointer" v-else>check_box</i>
                         </th>
@@ -94,11 +94,11 @@
                             </div>
                         </td>
 
-                        <td class="practice-col center" @click="example.use_for_practice = !example.use_for_practice">
+                        <td class="practice-col sizes-min center" @click="example.use_for_practice = !example.use_for_practice">
                             <i class="material-icons pointer" v-if="!example.use_for_practice">check_box_outline_blank</i>
                             <i class="material-icons pointer" v-else>check_box</i>
                         </td>
-                        <td class="exam-col center" @click="example.use_for_exam = !example.use_for_exam">
+                        <td class="exam-col sizes-min center" @click="example.use_for_exam = !example.use_for_exam">
                             <i class="material-icons pointer" v-if="!example.use_for_exam">check_box_outline_blank</i>
                             <i class="material-icons pointer" v-else>check_box</i>
                         </td>
@@ -347,8 +347,13 @@
 </script>
 
 <style scoped>
+    .sizes-min {
+        padding-right: 0px;
+        padding-left: 0px;
+    }
+
     .height-max {
-        max-height: 200px;
+        max-height: 215px;
     }
 
     textarea {
