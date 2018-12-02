@@ -47,15 +47,14 @@
 
                         <td class="en-col">
                             <div class="d-flex">
-                                <!-- eslint-disable -->
                                 <textarea
                                         type="text"
                                         id="en"
-                                        class="form-control"
-                                        rows="1"
+                                        class="form-control font-textarea"
+                                        :rows="1"
                                         placeholder="EN (Question)"
-                                        v-autosize="example.question">{{ example.question }}</textarea>
-                                <!-- eslint-enable -->
+                                        v-autosize="example.question"
+                                        v-model="example.question"></textarea>
                                 <div 
                                         v-if="example.question_audio" 
                                         class="material-icons pointer" 
@@ -65,15 +64,14 @@
 
                         <td class="ru-col">
                             <div class="d-flex">
-                                <!-- eslint-disable -->
                                 <textarea
                                         type="text"
                                         id="ru"
-                                        class="form-control"
-                                        rows="1"
+                                        class="form-control font-textarea"
+                                        :rows="countRows(example.answer)"
                                         placeholder="RU (Answer)"
-                                        v-autosize="example.answer">{{ example.answer }}</textarea>
-                                <!-- eslint-enable -->
+                                        v-autosize="example.answer"
+                                        v-model="example.answer"></textarea>
                                 <div 
                                         v-if="example.answer_audio" 
                                         class="material-icons pointer" 
@@ -154,6 +152,26 @@
         },
 
         methods: {
+            getTextWidth(text, font) {
+                // re-use canvas object for better performance
+                let canvas = this.getTextWidth.canvas || (this.getTextWidth.canvas = document.createElement("canvas"));
+                let context = canvas.getContext("2d");
+                context.font = font;
+                let metrics = context.measureText(text);
+                //return Math.ceil(metrics.width);
+                return metrics.width;
+            },
+            
+            countRows(text) {
+                //let colRows = Math.ceil(text.length / 30);
+                let textMeasure = this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif");
+                let colRows = Math.ceil(textMeasure / 231);
+                if (colRows === 0) colRows = 1;
+                //console.log(this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif"));
+                //console.log(colRows);
+                return colRows;
+            },
+
             preSaveTrainer() {
                 let permission = true;
                 this.examples.forEach((example) => {
@@ -324,7 +342,17 @@
                     if (this.ready) {
                         if (this.firstAamsGetting) {
                             this.examples = this.card_aams;
+                            /*let tmpExamples = this.card_aams;
+                            tmpExamples.forEach((example) => {
+                                delete example.question;
+                                delete example.answer;
+                            });
+                            this.examples = tmpExamples;
+                            console.log(this.examples);*/
                             this.initTrainer();
+                            /*setTimeout(() => {
+                                this.examples = this.card_aams;
+                            }, 4000);*/
                             this.firstAamsGetting = false;
                         };
                     };
@@ -351,6 +379,10 @@
 </script>
 
 <style scoped>
+    .font-textarea {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
     .sizes-min {
         padding-right: 0px;
         padding-left: 0px;
