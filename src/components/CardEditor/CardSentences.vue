@@ -47,12 +47,15 @@
 
                         <td class="en-col">
                             <div class="d-flex">
+                                <!-- eslint-disable -->
                                 <textarea
                                         type="text"
                                         id="en"
                                         class="form-control"
                                         rows="1"
+                                        placeholder="EN (Question)"
                                         v-autosize="example.question">{{ example.question }}</textarea>
+                                <!-- eslint-enable -->
                                 <div 
                                         v-if="example.question_audio" 
                                         class="material-icons pointer" 
@@ -68,6 +71,7 @@
                                         id="ru"
                                         class="form-control"
                                         rows="1"
+                                        placeholder="RU (Answer)"
                                         v-autosize="example.answer">{{ example.answer }}</textarea>
                                 <!-- eslint-enable -->
                                 <div 
