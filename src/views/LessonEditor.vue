@@ -141,17 +141,6 @@
 
             </div>
 
-            <!-- Блок списка карточек -->
-            <div class="form-group elements-list-margin">
-                <div class="label-subtitle">
-                    <label for="cards">Карточки: </label>
-                    <p @click="showCards = !showCards" class="show-element elements-list-margin">
-                        {{ showCards ? 'Скрыть' : 'Показать' }}
-                    </p>
-                </div>
-            </div>
-            <items-list-editor v-model="lesson.cards" :props="delProps" v-if="showCards"></items-list-editor>
-
             <!-- Блок редактирования Практики -->
             <div class="form-group elements-list-margin">
                 <div class="label-subtitle">
@@ -169,6 +158,17 @@
                 </div>
 
             </div>
+
+            <!-- Блок списка карточек -->
+            <div class="form-group elements-list-margin">
+                <div class="label-subtitle">
+                    <label for="cards">Карточки: </label>
+                    <p @click="showCards = !showCards" class="show-element elements-list-margin">
+                        {{ showCards ? 'Скрыть' : 'Показать' }}
+                    </p>
+                </div>
+            </div>
+            <items-list-editor v-model="lesson.cards" :props="delProps" v-if="showCards"></items-list-editor>
 
             <!-- Кнопка создания новой карточки -->
             <div class="create-btn-right">
