@@ -68,7 +68,7 @@
                     </p>
                 </div>
             </div>
-            <items-list-editor v-model="science.lessons" :props="delProps"></items-list-editor>
+            <items-list-editor v-model="science.lessons" :props="delProps" v-if="showLessons"></items-list-editor>
 
             <!-- Кнопка создания нового урока -->
             <div class="create-btn-right">

@@ -4,14 +4,7 @@
 
             <!-- Панель кнопок -->
             <div class="d-flex justify-content-start">
-                <div class="btn btn-success mr-5" @click="preSaveTrainer">Сохранить</div>
-
-                <div class="btn btn-warning mr-5" @click="makeVoice = true">Озвучить</div>
-                <make-voice 
-                        v-if="makeVoice" 
-                        @close="makeVoice = false"
-                        :kolvo="checkedExamplesLength"
-                        :examples_id="checkedExamples"></make-voice>
+                <div class="btn btn-success mr-5" @click="preSavePractice">Сохранить</div>
 
                 <div class="btn btn-info" @click="uploadScheme = true">Загрузить схему</div>
                 <upload-scheme 
@@ -20,7 +13,7 @@
                         :kolvo="checkedExamplesLength"
                         @image_uploaded="imageUploaded"></upload-scheme>
 
-                <div class="ml-auto btn btn-danger" @click="deleteFromTrainer">Удалить</div>
+                <div class="ml-auto btn btn-danger" @click="deleteFromPractice">Удалить</div>
             </div>
 
             <!-- The Table itself -->
@@ -29,11 +22,8 @@
                 <thead>
                     <tr class="center">
                         <th class="id-col sizes-min"></th>
-                        <th class="en-col">EN (Question)</th>
-                        <th class="ru-col">RU (Answer)</th>
                         <th class="scheme-col">Схема</th>
-                        <th class="practice-col sizes-min">Практика?</th>
-                        <th class="exam-col sizes-min">Экзамен?</th>
+                        <th class="desc-col">Описание</th>
                     </tr>
                 </thead>
                 
@@ -44,41 +34,7 @@
                             <i class="material-icons pointer" v-if="!checkedExamples.find(x => x === example.id)">check_box_outline_blank</i>
                             <i class="material-icons pointer" v-else>check_box</i>
                         </th>
-
-                        <td class="en-col">
-                            <div class="d-flex">
-                                <textarea
-                                        type="text"
-                                        id="en"
-                                        class="form-control font-textarea"
-                                        :rows="1"
-                                        placeholder="EN (Question)"
-                                        v-autosize="example.question"
-                                        v-model="example.question"></textarea>
-                                <div 
-                                        v-if="example.question_audio" 
-                                        class="material-icons pointer" 
-                                        @click="playAudio(example.question_audio)">volume_up</div>
-                            </div>
-                        </td>
-
-                        <td class="ru-col">
-                            <div class="d-flex">
-                                <textarea
-                                        type="text"
-                                        id="ru"
-                                        class="form-control font-textarea"
-                                        :rows="countRows(example.answer)"
-                                        placeholder="RU (Answer)"
-                                        v-autosize="example.answer"
-                                        v-model="example.answer"></textarea>
-                                <div 
-                                        v-if="example.answer_audio" 
-                                        class="material-icons pointer" 
-                                        @click="playAudio(example.answer_audio)">volume_up</div>
-                            </div>
-                        </td>
-
+                        
                         <td class="scheme-col center">
                             <div v-if="example.image" class="d-flex justify-content-center">
                                 <figure class="ml-auto">
@@ -96,13 +52,17 @@
                             </div>
                         </td>
 
-                        <td class="practice-col sizes-min center" @click="example.use_for_practice = !example.use_for_practice">
-                            <i class="material-icons pointer" v-if="!example.use_for_practice">check_box_outline_blank</i>
-                            <i class="material-icons pointer" v-else>check_box</i>
-                        </td>
-                        <td class="exam-col sizes-min center" @click="example.use_for_exam = !example.use_for_exam">
-                            <i class="material-icons pointer" v-if="!example.use_for_exam">check_box_outline_blank</i>
-                            <i class="material-icons pointer" v-else>check_box</i>
+                        <td class="desc-col">
+                            <div class="d-flex">
+                                <textarea
+                                        type="text"
+                                        id="ru"
+                                        class="form-control font-textarea"
+                                        :rows="countRows(example.description)"
+                                        placeholder="Текстовое описание"
+                                        v-autosize="example.description"
+                                        v-model="example.description"></textarea>
+                            </div>
                         </td>
 
                     </tr>
@@ -123,15 +83,14 @@
     import { HTTP } from '../../http-common.js';
     import UploadScheme from '../Elements/Modals/UploadScheme.vue';
     import SelectScheme from '../Elements/Modals/SelectScheme.vue';
-    import MakeVoice from './Modals/MakeVoice.vue';
 
     export default {
-        props: ['url_id', 'card_aams', 'ready'],
+        props: ['url_id', 'practice_tasks', 'ready'],
 
         data() {
             return {
                 examples: [],
-                firstAamsGetting: true,
+                firstGetting: true,
                 uploadScheme: false,
                 selectScheme: false,
                 checkedExamples: [],
@@ -140,15 +99,13 @@
                 newExampleDetected: false,
                 selectIndex: Number,
                 checkedExamplesLength: 0,
-                imagesFromTrainer: [],
-                makeVoice: false
+                imagesFromPractice: []
             };
         },
 
         components: {
             UploadScheme,
-            SelectScheme,
-            MakeVoice
+            SelectScheme
         },
 
         methods: {
@@ -159,38 +116,39 @@
                 context.font = font;
                 let metrics = context.measureText(text);
                 //return Math.ceil(metrics.width);
+                //console.log(metrics.width);
                 return metrics.width;
             },
             
             countRows(text) {
                 //let colRows = Math.ceil(text.length / 30);
                 let textMeasure = this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif");
-                let colRows = Math.ceil(textMeasure / 231);
+                let colRows = Math.ceil(textMeasure / 450);
                 if (colRows === 0) colRows = 1;
                 //console.log(this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif"));
                 //console.log(colRows);
                 return colRows;
             },
 
-            preSaveTrainer() {
+            preSavePractice() {
                 let permission = true;
                 this.examples.forEach((example) => {
-                    if (!example.question || !example.answer) permission = false;
+                    if (!example.image) permission = false;
                 });
                 if (permission) {
-                    this.saveTrainer();
+                    this.savePractice();
                 } else {
                     this.$notify({
                         group: 'foo',
                         type: "error",
                         title: 'Сохранение недоступно',
-                        text: 'Заполните поля Question и Answer!'
+                        text: 'Добавьте схему!'
                     });
                 };
             },
 
-            // Сохранение данных тренажёра на сервере
-            saveTrainer() {
+            // Сохранение данных практики на сервере
+            savePractice() {
                 let presavedExamples = this.examples;
                 presavedExamples.forEach((example) => {
                     delete example.checked;
@@ -202,18 +160,18 @@
                     });
                 };
                 //console.log(presavedExamples);
-                HTTP.put(`editor/cards/${this.url_id}/examples/`, presavedExamples)
+                HTTP.put(`editor/lessons/${this.url_id}/practice_tasks/`, presavedExamples)
                     .then(response => {
                         if (this.newExampleDetected) {
                             this.examples = response.data;
                             this.newExampleDetected = false;
-                            this.initTrainer();
+                            this.initPractice();
                         };
                         this.$notify({
                             group: 'foo',
                             type: "success",
                             title: 'Успешно сохранено',
-                            text: 'Тренажёр загружен на сервер'
+                            text: 'Практика загружена на сервер'
                         });
                     })
                     .catch(error => {
@@ -227,7 +185,7 @@
                     });
             },
 
-            deleteFromTrainer() {
+            deleteFromPractice() {
                 if (confirm(`Удалить выбранные записи (${this.checkedExamplesLength})?`)) {
                     let tmpExamples = [];
                     this.examples.forEach((example) => {
@@ -250,13 +208,8 @@
             createNew() {
                 let newExample = {
                     id: this.currentTmpId,
-                    question: "",
-                    question_audio: "",
-                    answer: "",
-                    answer_audio: "",
+                    description: "",
                     image: "",
-                    use_for_exam: false,
-                    use_for_practice: false,
                     checked: false
                 };
                 this.newExampleDetected = true;
@@ -265,20 +218,13 @@
             },
 
         
-            initTrainer() {
-                this.imagesFromTrainer = [];
-                /*this.examples.forEach((example) => {  // CЕЙЧАС ПОСЛЕ СОХРАНЕНИЯ СБИВАЮТСЯ ГАЛКИ СВЕЖЕСОХРАНЁННЫХ
-                    if (this.checkedExamples.find(x => x === example.id)) example.checked = true
-                        else example.checked = false;
-                    if (example.image) {
-                        this.imagesFromTrainer.push(example.image);
-                    };
-                });*/
+            initPractice() {
+                this.imagesFromPractice = [];
                 this.checkedExamples = [];
                 this.examples.forEach((example) => {
                     example.checked = false;
                     if (example.image) {
-                        this.imagesFromTrainer.push(example.image);
+                        this.imagesFromPractice.push(example.image);
                     };
                 });
             },
@@ -292,23 +238,14 @@
             removeExampleChecked(id) {
                 let index = this.checkedExamples.indexOf(id);
                 this.checkedExamples.splice(index, 1);
-                //console.log(this.checkedExamples);
             },
 
             addExampleChecked(id) {
                 this.checkedExamples.push(id);
             },
 
-            playAudio(source) {
-                if (this.snd) {
-                    this.snd.pause();
-                };
-                this.snd = new Audio(source);
-                this.snd.play();
-            },
-
             checkAllSchemes() {
-                let oldAllSchemes = [...this.ulpoadedImages, ...this.imagesFromTrainer];
+                let oldAllSchemes = [...this.ulpoadedImages, ...this.imagesFromPractice];
                 let newAllSchemes = [];
                 let allSchemesId = [];
                 oldAllSchemes.forEach((image) => {
@@ -318,17 +255,7 @@
                     };
                 });
                 return newAllSchemes;
-            }/*,
-
-            getCheckedExamplesData() {
-                let checkedExamplesData = [];
-                this.examples.forEach((example) => {
-                    if (this.checkedExamples.find(x => x === example.id)) {
-                        checkedExamplesData.push(example);
-                    };
-                });
-                return checkedExamplesData;
-            }*/
+            }
         },
 
         watch: {
@@ -336,20 +263,10 @@
             ready: {
                 handler(val, oldVal) {
                     if (this.ready) {
-                        if (this.firstAamsGetting) {
-                            this.examples = this.card_aams;
-                            /*let tmpExamples = this.card_aams;
-                            tmpExamples.forEach((example) => {
-                                delete example.question;
-                                delete example.answer;
-                            });
-                            this.examples = tmpExamples;
-                            console.log(this.examples);*/
-                            this.initTrainer();
-                            /*setTimeout(() => {
-                                this.examples = this.card_aams;
-                            }, 4000);*/
-                            this.firstAamsGetting = false;
+                        if (this.firstGetting) {
+                            this.examples = this.practice_tasks;
+                            this.initPractice();
+                            this.firstGetting = false;
                         };
                     };
                 }
@@ -364,10 +281,11 @@
 
         mounted() {
             if (this.ready) {
-                if (this.firstAamsGetting) {
-                    this.examples = this.card_aams;
-                    this.initTrainer();
-                    this.firstAamssGetting = false;
+                if (this.firstGetting) {
+                    this.examples = this.practice_tasks;
+                    //console.log(this.examples);
+                    this.initPractice();
+                    this.firstGetting = false;
                 };
             };
         }
@@ -409,27 +327,15 @@
     }
 
     .id-col {
-        width: 3%;
+        width: 4%;
     }
 
-    .en-col {
-        width: 25%;
-    }
-
-    .ru-col {
-        width: 25%;
+    .desc-col {
+        width: 48%;
     }
 
     .scheme-col {
-        width: 25%;
-    }
-
-    .practice-col {
-        width: 5%;
-    }
-
-    .exam-col {
-        width: 5%;
+        width: 48%;
     }
 </style>
 

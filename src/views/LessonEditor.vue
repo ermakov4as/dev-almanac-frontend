@@ -150,7 +150,25 @@
                     </p>
                 </div>
             </div>
-            <items-list-editor v-model="lesson.cards" :props="delProps"></items-list-editor>
+            <items-list-editor v-model="lesson.cards" :props="delProps" v-if="showCards"></items-list-editor>
+
+            <!-- Блок редактирования Практики -->
+            <div class="form-group elements-list-margin">
+                <div class="label-subtitle">
+                    <label for="cards">Практика: </label>
+                    <p @click="showPractice = !showPractice" class="show-element elements-list-margin">
+                        {{ showPractice ? 'Скрыть' : 'Показать' }}
+                    </p>
+                </div>
+
+                <div v-if="showPractice">
+                    <practice 
+                            :url_id="lesson.id"
+                            :practice_tasks="lesson.practice_tasks"
+                            :ready="dataReady"></practice>
+                </div>
+
+            </div>
 
             <!-- Кнопка создания новой карточки -->
             <div class="create-btn-right">
@@ -169,6 +187,7 @@
     import EditorBlock from '../components/Elements/EditorBlock.vue';
     import ItemsListEditor from '../components/Elements/ItemsListEditor'
     import Tree from '../components/LessonEditor/Tree.vue';
+    import Practice from '../components/LessonEditor/Practice.vue';
     import {HTTP, HTTP_UPLOAD} from '../http-common.js';
     import {mapMutations, mapGetters} from 'vuex';
 
@@ -178,7 +197,8 @@
             NodesDelList,
             EditorBlock,
             Tree,
-            ItemsListEditor
+            ItemsListEditor,
+            Practice
         },
         data() {
             return {
@@ -215,6 +235,7 @@
                 treeDataReady: false,
                 showContent: true,
                 showCards: true,
+                showPractice: true,
                 delProps: {
                     name: 'карточку',
                     editPath: `${ this.$route.path }cards/`,
@@ -311,6 +332,7 @@
                 HTTP.get(`editor/lessons/${ this.$route.params.id }/`)
                     .then(response => {
                         this.lesson = response.data;
+                        //console.log(this.lesson);
                         this.initNodes(this.lesson.nodes);
                         this.dataReady = true;
                         HTTP.get(`editor/sciences/${ this.lesson.science }/`)
