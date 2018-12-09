@@ -13,11 +13,19 @@
 
         <div class="collapse navbar-collapse" id="navbarCollapse">
 
-            <!-- Ссылка на список дисциплин -->
+            <!-- Блок основных ссылок хэдера -->
             <ul class="navbar-nav mr-auto">
+
+                <!-- Ссылка на редактор -->
                 <li class="nav-item mr-auto">
-                    <router-link to="/sciences/"><span class="nav-link">Список дисциплин</span></router-link>
+                    <router-link to="/sciences/"><span class="nav-link">Редактор</span></router-link>
                 </li>
+
+                <!-- Ссылка на курирование -->
+                <li class="nav-item mr-auto">
+                    <router-link to="/curator/homeworks/"><span class="nav-link">Куратор</span></router-link>
+                </li>
+
             </ul>
 
             <!-- Отображение спиннера, если нет соединения с сервером -->

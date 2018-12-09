@@ -47,6 +47,12 @@ export default new Router({
             name: 'login',
             component: () =>
                 import ('./views/Login.vue')
+        },
+        {
+            path: '/curator/homeworks/',
+            name: 'curator',
+            component: () =>
+                import ('./views/Curator.vue')
         }
     ]
 });
