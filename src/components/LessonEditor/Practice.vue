@@ -19,6 +19,7 @@
             <!-- The Table itself -->
             <table class="table table-bordered table-hover card-sentences-table">
                 
+                <!-- Заголовок таблицы -->
                 <thead>
                     <tr class="center">
                         <th class="id-col sizes-min"></th>
@@ -27,14 +28,17 @@
                     </tr>
                 </thead>
                 
+                <!-- Тело таблицы, по примерам -->
                 <tbody v-for="(example, index) in examples" :key="index">
                     <tr :class="{active: index % 2 === 0}">
 
+                        <!-- Столбец выборки -->
                         <th class="id-col sizes-min center" scope="row" @click="checkExample(example)">
                             <i class="material-icons pointer" v-if="!checkedExamples.find(x => x === example.id)">check_box_outline_blank</i>
                             <i class="material-icons pointer" v-else>check_box</i>
                         </th>
                         
+                        <!-- Столбец выбора схемы -->
                         <td class="scheme-col center">
                             <div v-if="example.image" class="d-flex justify-content-center">
                                 <figure class="ml-auto">
@@ -52,6 +56,7 @@
                             </div>
                         </td>
 
+                        <!-- Столбец описания -->
                         <td class="desc-col">
                             <div class="d-flex">
                                 <textarea
@@ -109,27 +114,24 @@
         },
 
         methods: {
+            // Вычисление ширины строки
             getTextWidth(text, font) {
-                // re-use canvas object for better performance
                 let canvas = this.getTextWidth.canvas || (this.getTextWidth.canvas = document.createElement("canvas"));
                 let context = canvas.getContext("2d");
                 context.font = font;
                 let metrics = context.measureText(text);
-                //return Math.ceil(metrics.width);
-                //console.log(metrics.width);
                 return metrics.width;
             },
             
+            // Расчёт количества строк текстарии
             countRows(text) {
-                //let colRows = Math.ceil(text.length / 30);
                 let textMeasure = this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif");
-                let colRows = Math.ceil(textMeasure / 450);
+                let colRows = Math.ceil(textMeasure / 445); // 450
                 if (colRows === 0) colRows = 1;
-                //console.log(this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif"));
-                //console.log(colRows);
                 return colRows;
             },
 
+            // Подготовка к сохранению данных, проверка, не пропущено ли изображение в примерах
             preSavePractice() {
                 let permission = true;
                 this.examples.forEach((example) => {
@@ -153,13 +155,14 @@
                 presavedExamples.forEach((example) => {
                     delete example.checked;
                 });
+
                 // Удаление временных id, если они есть
                 if (this.newExampleDetected) {
                     presavedExamples.forEach((example) => {
                         if (example.id < -1) delete example.id
                     });
                 };
-                //console.log(presavedExamples);
+
                 HTTP.put(`editor/lessons/${this.url_id}/practice_tasks/`, presavedExamples)
                     .then(response => {
                         if (this.newExampleDetected) {
@@ -185,6 +188,7 @@
                     });
             },
 
+            // Удаление выделенных примеров из локальных данных с подтверждением
             deleteFromPractice() {
                 if (confirm(`Удалить выбранные записи (${this.checkedExamplesLength})?`)) {
                     let tmpExamples = [];
@@ -197,14 +201,17 @@
                 };
             },
 
+            // Добавление загруженного изображения в список
             imageUploaded(imageData) {
                 this.ulpoadedImages.push(imageData);
             },
 
+            // Добавление выбранного изображения в конкретный пример
             schemeSelected(selectedScheme) {
                 this.examples[this.selectIndex].image = selectedScheme;
             },
             
+            // Добавление нового примера
             createNew() {
                 let newExample = {
                     id: this.currentTmpId,
@@ -217,7 +224,7 @@
                 this.examples.push(newExample);
             },
 
-        
+            // Выполняется при инициализации: добавляем свойство выбрано/нет, добавляем изображения в список загруженных
             initPractice() {
                 this.imagesFromPractice = [];
                 this.checkedExamples = [];
@@ -228,22 +235,26 @@
                     };
                 });
             },
-
+            
+            // Отмечаем / снимаем отметку с примера
             checkExample(example) {
                 if (example.checked) this.removeExampleChecked(example.id)
                     else this.addExampleChecked(example.id);
                 example.checked = !example.checked;
             },
 
+            // Исключение примера из списка выбранных
             removeExampleChecked(id) {
                 let index = this.checkedExamples.indexOf(id);
                 this.checkedExamples.splice(index, 1);
             },
 
+            // Добавление примера в список выбранных
             addExampleChecked(id) {
                 this.checkedExamples.push(id);
             },
 
+            // Проверка списка загруженных файлов с целью исключения дублирования
             checkAllSchemes() {
                 let oldAllSchemes = [...this.ulpoadedImages, ...this.imagesFromPractice];
                 let newAllSchemes = [];
@@ -259,7 +270,7 @@
         },
 
         watch: {
-            // Отслеживание готовности данных
+            // Отслеживание готовности данных (вариант на случай задержки родительского компонента), инициализация данных
             ready: {
                 handler(val, oldVal) {
                     if (this.ready) {
@@ -272,6 +283,7 @@
                 }
             },
 
+            // Отслеживание количества выбранных примеров
             checkedExamples: {
                 handler(val, oldVal) {
                     this.checkedExamplesLength = this.checkedExamples.length;
@@ -279,11 +291,11 @@
             }
         },
 
+        // Инициализация данных
         mounted() {
             if (this.ready) {
                 if (this.firstGetting) {
                     this.examples = this.practice_tasks;
-                    //console.log(this.examples);
                     this.initPractice();
                     this.firstGetting = false;
                 };

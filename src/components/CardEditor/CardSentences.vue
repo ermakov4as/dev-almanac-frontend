@@ -26,6 +26,7 @@
             <!-- The Table itself -->
             <table class="table table-bordered table-hover card-sentences-table">
                 
+                <!-- Заголовок таблицы -->
                 <thead>
                     <tr class="center">
                         <th class="id-col sizes-min"></th>
@@ -37,14 +38,17 @@
                     </tr>
                 </thead>
                 
+                <!-- Тело таблицы, по примеру -->
                 <tbody v-for="(example, index) in examples" :key="index">
                     <tr :class="{active: index % 2 === 0}">
-
+                        
+                        <!-- Столбец выбора примеров -->
                         <th class="id-col sizes-min center" scope="row" @click="checkExample(example)">
                             <i class="material-icons pointer" v-if="!checkedExamples.find(x => x === example.id)">check_box_outline_blank</i>
                             <i class="material-icons pointer" v-else>check_box</i>
                         </th>
 
+                        <!-- Столбец английского текста -->
                         <td class="en-col">
                             <div class="d-flex">
                                 <textarea
@@ -55,13 +59,17 @@
                                         placeholder="EN (Question)"
                                         v-autosize="example.question"
                                         v-model="example.question"></textarea>
+
+                                <!-- Озвучка английского текста, если есть -->
                                 <div 
                                         v-if="example.question_audio" 
                                         class="material-icons pointer" 
                                         @click="playAudio(example.question_audio)">volume_up</div>
+
                             </div>
                         </td>
 
+                        <!-- Столбец русского текста -->
                         <td class="ru-col">
                             <div class="d-flex">
                                 <textarea
@@ -72,13 +80,16 @@
                                         placeholder="RU (Answer)"
                                         v-autosize="example.answer"
                                         v-model="example.answer"></textarea>
+
+                                <!-- Озвучка русского текста, если есть -->
                                 <div 
                                         v-if="example.answer_audio" 
                                         class="material-icons pointer" 
                                         @click="playAudio(example.answer_audio)">volume_up</div>
                             </div>
                         </td>
-
+                        
+                        <!-- Столбец выбора схемы -->
                         <td class="scheme-col center">
                             <div v-if="example.image" class="d-flex justify-content-center">
                                 <figure class="ml-auto">
@@ -96,10 +107,13 @@
                             </div>
                         </td>
 
+                        <!-- Столбец выбора использования в практике -->
                         <td class="practice-col sizes-min center" @click="example.use_for_practice = !example.use_for_practice">
                             <i class="material-icons pointer" v-if="!example.use_for_practice">check_box_outline_blank</i>
                             <i class="material-icons pointer" v-else>check_box</i>
                         </td>
+
+                        <!-- Столбец выбора использования в экзамене -->
                         <td class="exam-col sizes-min center" @click="example.use_for_exam = !example.use_for_exam">
                             <i class="material-icons pointer" v-if="!example.use_for_exam">check_box_outline_blank</i>
                             <i class="material-icons pointer" v-else>check_box</i>
@@ -152,26 +166,24 @@
         },
 
         methods: {
+            // Вычисление ширины строки
             getTextWidth(text, font) {
-                // re-use canvas object for better performance
                 let canvas = this.getTextWidth.canvas || (this.getTextWidth.canvas = document.createElement("canvas"));
                 let context = canvas.getContext("2d");
                 context.font = font;
                 let metrics = context.measureText(text);
-                //return Math.ceil(metrics.width);
                 return metrics.width;
             },
             
+            // Рассчёт количества строк текстарии
             countRows(text) {
-                //let colRows = Math.ceil(text.length / 30);
                 let textMeasure = this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif");
-                let colRows = Math.ceil(textMeasure / 231);
+                let colRows = Math.ceil(textMeasure / 227); // 231
                 if (colRows === 0) colRows = 1;
-                //console.log(this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif"));
-                //console.log(colRows);
                 return colRows;
             },
-
+            
+            // Подготовка к сохранению данных, проверка, не пропущены ли вопрос и ответ
             preSaveTrainer() {
                 let permission = true;
                 this.examples.forEach((example) => {
@@ -195,13 +207,14 @@
                 presavedExamples.forEach((example) => {
                     delete example.checked;
                 });
+
                 // Удаление временных id, если они есть
                 if (this.newExampleDetected) {
                     presavedExamples.forEach((example) => {
                         if (example.id < -1) delete example.id
                     });
                 };
-                //console.log(presavedExamples);
+
                 HTTP.put(`editor/cards/${this.url_id}/examples/`, presavedExamples)
                     .then(response => {
                         if (this.newExampleDetected) {
@@ -227,6 +240,7 @@
                     });
             },
 
+            // Удаление выделенных примеров из локальных данных с подтверждением
             deleteFromTrainer() {
                 if (confirm(`Удалить выбранные записи (${this.checkedExamplesLength})?`)) {
                     let tmpExamples = [];
@@ -239,14 +253,17 @@
                 };
             },
 
+            // Добавление загруженного изображения в список
             imageUploaded(imageData) {
                 this.ulpoadedImages.push(imageData);
             },
 
+            // Добавление выбранного изображения в конкретный пример
             schemeSelected(selectedScheme) {
                 this.examples[this.selectIndex].image = selectedScheme;
             },
             
+            // Добавление нового примера
             createNew() {
                 let newExample = {
                     id: this.currentTmpId,
@@ -264,16 +281,9 @@
                 this.examples.push(newExample);
             },
 
-        
+            // Выполняется при инициализации: добавляем свойство выбрано/нет, добавляем изображения в список загруженных
             initTrainer() {
                 this.imagesFromTrainer = [];
-                /*this.examples.forEach((example) => {  // CЕЙЧАС ПОСЛЕ СОХРАНЕНИЯ СБИВАЮТСЯ ГАЛКИ СВЕЖЕСОХРАНЁННЫХ
-                    if (this.checkedExamples.find(x => x === example.id)) example.checked = true
-                        else example.checked = false;
-                    if (example.image) {
-                        this.imagesFromTrainer.push(example.image);
-                    };
-                });*/
                 this.checkedExamples = [];
                 this.examples.forEach((example) => {
                     example.checked = false;
@@ -283,22 +293,25 @@
                 });
             },
 
+            // Отмечаем / снимаем отметку с примера
             checkExample(example) {
                 if (example.checked) this.removeExampleChecked(example.id)
                     else this.addExampleChecked(example.id);
                 example.checked = !example.checked;
             },
 
+            // Исключение примера из списка выбранных
             removeExampleChecked(id) {
                 let index = this.checkedExamples.indexOf(id);
                 this.checkedExamples.splice(index, 1);
-                //console.log(this.checkedExamples);
             },
 
+            // Добавление примера в список выбранных
             addExampleChecked(id) {
                 this.checkedExamples.push(id);
             },
 
+            // Воспроизведение аудио
             playAudio(source) {
                 if (this.snd) {
                     this.snd.pause();
@@ -306,7 +319,8 @@
                 this.snd = new Audio(source);
                 this.snd.play();
             },
-
+            
+            // Проверка списка загруженных файлов с целью исключения дублирования
             checkAllSchemes() {
                 let oldAllSchemes = [...this.ulpoadedImages, ...this.imagesFromTrainer];
                 let newAllSchemes = [];
@@ -318,43 +332,24 @@
                     };
                 });
                 return newAllSchemes;
-            }/*,
-
-            getCheckedExamplesData() {
-                let checkedExamplesData = [];
-                this.examples.forEach((example) => {
-                    if (this.checkedExamples.find(x => x === example.id)) {
-                        checkedExamplesData.push(example);
-                    };
-                });
-                return checkedExamplesData;
-            }*/
+            }
         },
 
         watch: {
-            // Отслеживание готовности данных
+            // Отслеживание готовности данных (вариант на случай задержки родительского компонента), инициализация данных
             ready: {
                 handler(val, oldVal) {
                     if (this.ready) {
                         if (this.firstAamsGetting) {
                             this.examples = this.card_aams;
-                            /*let tmpExamples = this.card_aams;
-                            tmpExamples.forEach((example) => {
-                                delete example.question;
-                                delete example.answer;
-                            });
-                            this.examples = tmpExamples;
-                            console.log(this.examples);*/
                             this.initTrainer();
-                            /*setTimeout(() => {
-                                this.examples = this.card_aams;
-                            }, 4000);*/
                             this.firstAamsGetting = false;
                         };
                     };
                 }
             },
 
+            // Отслеживание количества выбранных примеров
             checkedExamples: {
                 handler(val, oldVal) {
                     this.checkedExamplesLength = this.checkedExamples.length;
@@ -362,6 +357,7 @@
             }
         },
 
+        // Инициализация данных
         mounted() {
             if (this.ready) {
                 if (this.firstAamsGetting) {

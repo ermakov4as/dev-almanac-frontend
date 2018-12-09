@@ -141,7 +141,7 @@
 
             </div>
 
-            <!-- Блок редактирования Практики -->
+            <!-- Блок редактирования практики -->
             <div class="form-group elements-list-margin">
                 <div class="label-subtitle">
                     <label for="cards">Практика: </label>

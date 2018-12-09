@@ -1,9 +1,12 @@
 <template>
     <transition v-if="kolvo > 0" name="UploadScheme">
+
+        <!-- Всплывающее окно -->
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container modal-container-small">
-
+                    
+                    <!-- Заголовок формы, количество предложений -->
                     <div class="modal-header">
                         <slot name="header">
                             Озвучить предложения ({{ kolvo }})
@@ -13,21 +16,16 @@
                         </slot>
                     </div>
 
+                    <!-- Выбор поля и персонала -->
                     <div class="modal-body">
                         <slot name="body">
-                            <!--<div>
-                                <select v-model="fieldType">
-                                    <option disabled value="">Выбор схемы</option>
-                                    <option :value="{type: 'question'}">EN (Question)</option>
-                                    <option :value="{type: 'answer'}">RU (Answer)</option>
-                                </select>
-                            </div>-->
                             <v-select v-model="fieldType" :options="fieldTypeOptions" placeholder="Выбор поля (EN, RU)"></v-select>
                             <br>
                             <v-select v-model="memberSelected" :options="members" label="email" placeholder="Выбор персонала"></v-select>
                         </slot>
                     </div>
 
+                    <!-- Блок отправки в бот и сообщений об ошибках пользователя -->
                     <div class="modal-footer">
                         <slot name="footer">
                             <p class="error-text-notification">{{ errorNotification }}</p>
@@ -40,6 +38,7 @@
                 </div>
             </div>
         </div>
+
     </transition>
 </template>
 
@@ -62,6 +61,7 @@
         },
 
         methods: {
+            // Проверка заполненности полей и отправка данных на сервер
             sendToBot() {
                 if (!this.memberSelected && !this.fieldType) {
                     this.$notify({
@@ -94,7 +94,6 @@
                         example_id_list: this.examples_id
                     };
                     this.errorNotification = "";
-                    //console.log(dataToBot);
                     HTTP.post('editor/append_record/', dataToBot)
                         .then(response => {
                             this.$notify({
@@ -117,11 +116,11 @@
                 };
             },
 
+            // Загрузка списка персонала
             getMembers() {
                 HTTP.get('editor/member_list/')
                     .then(response => {
-                        this.members = response.data;
-                        //console.log(this.members);                     
+                        this.members = response.data;                     
                     })
                     .catch(error => {
                         console.log(error);
@@ -135,6 +134,7 @@
             }
         },
 
+        // Инициализация компонента, если выбрано хотя бы одно предложение, ошибка если нет
         mounted() {
             if (this.kolvo <= 0) {
                 this.$notify({

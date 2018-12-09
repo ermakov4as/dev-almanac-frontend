@@ -1,9 +1,12 @@
 <template>
     <transition name="UploadScheme">
+
+        <!-- Всплывающее окно -->
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container modal-container-select">
 
+                    <!-- Заголовок формы -->
                     <div class="modal-header">
                         <slot name="header">
                             Выбрать схему
@@ -13,19 +16,19 @@
                         </slot>
                     </div>
 
+                    <!-- Выбор изображений из списка загруженных недавно и уже находящихся в таблице -->
                     <div class="modal-body">
                         <slot name="body">
-
                             <v-select :options="extendedSchemes" placeholder="Выбор схемы" label="title" v-model="selectedScheme">
                                 <template slot="option" slot-scope="option">
                                     <img :src="option.url" alt="..." class="img-fluid width-max">
                                     <span>{{ option.title }}</span>
                                 </template>
                             </v-select>
-
                         </slot>
                     </div>
 
+                    <!-- Блок выбора изображения -->
                     <div class="modal-footer">
                         <slot name="footer">
                             <div class="btn btn-default btn-success center" @click="select_scheme">
@@ -33,9 +36,11 @@
                             </div>
                         </slot>
                     </div>
+
                 </div>
             </div>
         </div>
+
     </transition>
 </template>
 
@@ -50,12 +55,14 @@
         },
 
         methods: {
+            // Выбор изображения и возврат в родительский компонент
             select_scheme() {
                 delete this.selectedScheme.title;
                 this.$emit('scheme_selected', this.selectedScheme);
                 this.$emit('close')
             },
 
+            // Подготовка данных для работы списка выбора изображений
             prepareExnendedSchemes() {
                 let schemeIndex = 1;
                 this.schemes.forEach((scheme) => {
@@ -71,14 +78,7 @@
             }
         },
 
-        watch: {
-            schemes: {
-                handler(val, oldVal) {
-                    this.prepareExnendedSchemes;
-                }
-            }
-        },
-
+        // Инициализация компонента
         mounted() {
             this.prepareExnendedSchemes();
         }

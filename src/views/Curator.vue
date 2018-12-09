@@ -10,39 +10,39 @@
         
         <!-- Гиперблок потоков, если есть соединение с сервером -->
         <div class="component-content" v-else>
+
+            <!-- Потоки -->
             <div v-for="(stream, streamIndex) in streams" :key="streamIndex">     
                 <div class="form-group elements-list-margin" @click="stream.showStream = !stream.showStream">
                     <div class="label-subtitle stream">
                         <h3>Поток: {{ stream.name }}
-                            <!--<span @click="stream.showStream = !stream.showStream" class="show-element elements-list-margin hover-bolder-main">
-                                {{ stream.showStream ? 'Скрыть' : 'Показать' }}
-                            </span>-->
                         </h3>
                     </div>
                 </div>
 
+                <!-- Уроки -->
                 <div v-if="stream.showStream" v-for="(lesson, lessonIndex) in stream.lessons" :key="lessonIndex">
                     <div class="form-group elements-list-margin" @click="lesson.showLesson = !lesson.showLesson">
                         <div class="label-subtitle lesson">
                             <h5>Урок: {{ lesson.name }}
-                                <!--<span @click="lesson.showLesson = !lesson.showLesson" class="show-element elements-list-margin hover-bolder">
-                                    {{ lesson.showLesson ? 'Скрыть' : 'Показать' }}
-                                </span>-->
                             </h5>
                         </div>
                     </div>
 
+                    <!-- Схемы -->
                     <div v-if="lesson.showLesson" v-for="(image, imageIndex) in lesson.images" :key="imageIndex">
                         <div v-if="lesson.images != ''" class="d-flex justify-content-center">
                             <img :src="image.image_url" alt="..." class="img-fluid height-max">
                         </div>
                         
+                        <!-- Таблица к схеме -->
                         <table class="table table-bordered table-hover curator-table">
+                            
+                            <!-- Заголовок таблицы -->
                             <thead>
                                 <tr class="center">
                                     <th class="sizes-min">Имя студента</th>
                                     <th class="sizes-min">Группа</th>
-                                    <!--<th class="date-col vsizes-min">Дата создания</th>-->
                                     <th class="lang-col">EN</th>
                                     <th class="lang-col">RU</th>
                                     <th class="sizes-min">Правильно</th>
@@ -51,39 +51,52 @@
                                 </tr>
                             </thead>
                             
+                            <!-- Тело таблицы -->
                             <tbody>
-                                <!--<tr :class="{active: index % 2 === 0}">-->
+
+                                <!-- Непроверенные попытки -->
                                 <tr v-for="(attempt, attemptIndex) in image.attempts" :key="attemptIndex">
                                     <template v-if="!attempt.checked">
-
+                                        
+                                        <!-- Автор и группа попытки -->
                                         <td class="center sizes-min" scope="row">{{ attempt.name }}</td>
                                         <td class="center sizes-min" scope="row">{{ attempt.team }}</td>
                                         
+                                        <!-- Английский текст попытки -->
                                         <td class="lang-col">
                                             <div class="d-flex">
                                                 {{ attempt.question }}
+
+                                                <!-- Английская озвучка попытки, если есть -->
                                                 <div 
                                                         v-if="attempt.question_audio" 
                                                         class="material-icons pointer ml-auto" 
                                                         @click="playAudio(attempt.question_audio)">volume_up</div>
+
                                             </div>
                                         </td>
 
+                                        <!-- Русский текст попытки -->
                                         <td class="lang-col">
                                             <div class="d-flex">
                                                 {{ attempt.answer }}
+
+                                                <!-- Русская озвучка попытки, если есть -->
                                                 <div 
                                                         v-if="attempt.answer_audio" 
                                                         class="material-icons pointer ml-auto" 
                                                         @click="playAudio(attempt.answer_audio)">volume_up</div>
+
                                             </div>
                                         </td>
 
+                                        <!-- Правильность попытки -->
                                         <td class="sizes-min center" @click="attempt.accepted = !attempt.accepted">
                                             <i class="material-icons pointer" v-if="!attempt.accepted">clear</i>
                                             <i class="material-icons pointer" v-else>done</i>
                                         </td>
 
+                                        <!-- Комментарий к попытке -->
                                         <td>
                                             <textarea
                                                     type="text"
@@ -95,12 +108,15 @@
                                                     v-model="attempt.comment"></textarea>
                                         </td>
 
+                                        <!-- Кнопка сохранения попытки -->
                                         <td class="sizes-min align-middle">
                                             <div class="btn btn-success" @click="saveAttempt(attempt)">Сохранить</div>
                                         </td>
+
                                     </template>
                                 </tr>
 
+                                <!-- Блок показа/скрытия проверенных попыток -->
                                 <tr>
                                     <td colspan="7" @click="image.showChecked = !image.showChecked">
                                         <span class="checked-label">Проверенные: </span>
@@ -108,39 +124,49 @@
                                     </td>
                                 </tr>
 
+                                <!-- Проверенные попытки -->
                                 <tr v-if="image.showChecked" v-for="(attempt, attemptIndex) in image.attempts" :key="(attemptIndex*(-1))-1" class="checked">
                                     <template v-if="attempt.checked">
-
+                                        
+                                        <!-- Автор и группа попытки -->
                                         <td class="center sizes-min" scope="row">{{ attempt.name }}</td>
                                         <td class="center sizes-min" scope="row">{{ attempt.team }}</td>
                                         
+                                        <!-- Английский текст попытки -->
                                         <td class="lang-col">
                                             <div class="d-flex">
                                                 {{ attempt.question }}
+
+                                                <!-- Английская озвучка попытки, если есть -->
                                                 <div 
                                                         v-if="attempt.question_audio" 
                                                         class="material-icons pointer ml-auto" 
                                                         @click="playAudio(attempt.question_audio)">volume_up</div>
+
                                             </div>
                                         </td>
 
+                                        <!-- Русский текст попытки -->
                                         <td class="lang-col">
                                             <div class="d-flex">
                                                 {{ attempt.answer }}
+
+                                                <!-- Русская озвучка попытки, если есть -->
                                                 <div 
                                                         v-if="attempt.answer_audio" 
                                                         class="material-icons pointer ml-auto" 
                                                         @click="playAudio(attempt.answer_audio)">volume_up</div>
+
                                             </div>
                                         </td>
 
+                                        <!-- Правильность попытки -->
                                         <td class="sizes-min center" @click="attempt.accepted = !attempt.accepted">
-                                            <!--<i class="material-icons pointer" v-if="!attempt.accepted">check_box_outline_blank</i>
-                                            <i class="material-icons pointer" v-else>check_box</i>-->
                                             <i class="material-icons pointer" v-if="!attempt.accepted">clear</i>
                                             <i class="material-icons pointer" v-else>done</i>
                                         </td>
 
+                                        <!-- Комментарий к попытке -->
                                         <td>
                                             <textarea
                                                     type="text"
@@ -152,6 +178,7 @@
                                                     v-model="attempt.comment"></textarea>
                                         </td>
 
+                                        <!-- Кнопка сохранения попытки -->
                                         <td class="sizes-min align-middle">
                                             <div class="btn btn-success" @click="saveAttempt(attempt)">Сохранить</div>
                                         </td>
@@ -161,17 +188,21 @@
 
 
                             </tbody>
+
                         </table>
 
                     </div>
 
+                    <!-- Дополнительный блок сворачивания урока -->
                     <div 
                             v-if="lesson.showLesson"
                             @click="lesson.showLesson = !lesson.showLesson" 
                             class="only-hide">Cвернуть урок "{{ lesson.name }}"</div>
 
                 </div>
+
             </div>
+
         </div>
 
     </div>
@@ -190,6 +221,7 @@
         },
 
         methods: {
+            // Сохранение попытки
             saveAttempt(attempt) {
                 let savingAttempt ={
                     id: attempt.id,
@@ -207,7 +239,6 @@
                             title: 'Успешно сохранено',
                             text: 'Данные отправлены на сервер'
                         });
-                        //console.log(response.data);
                         attempt.checked = true;
                     })
                     .catch(error => {
@@ -221,54 +252,37 @@
                     });
             },
 
+            // Выполняется при инициализации: добавляем свойства показано/скрыто
             initStreams() {
                 this.streams.forEach((stream) => {
                     this.$set(stream, 'showStream', false);
                     stream.lessons.forEach((lesson) => {
                         this.$set(lesson, 'showLesson', false);
                         lesson.images.forEach((image) => {
-                            //image.showChecked = false;
-                            this.$set(image, 'showChecked', false); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                            this.$set(image, 'showChecked', false);
                         });
                     });
                 });
             },
 
-            /*getElementWidth(id) {
-                let element = document.getElementById('comment');
-                console.log(element);
-                let positionInfo = element.getBoundingClientRect();
-                let width = positionInfo.width;
-                return width;
-            },*/
-
+            // Вычисление ширины строки
             getTextWidth(text, font) {
-                // re-use canvas object for better performance
                 let canvas = this.getTextWidth.canvas || (this.getTextWidth.canvas = document.createElement("canvas"));
                 let context = canvas.getContext("2d");
                 context.font = font;
                 let metrics = context.measureText(text);
-                //return Math.ceil(metrics.width);
-                //console.log(metrics.width);
                 return metrics.width;
             },
             
+            // Рассчёт количества строк текстарии
             countRows(text) {
-                //let colRows = Math.ceil(text.length / 30);
                 let textMeasure = this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif");
-                //let elementWidth = this.getElementWidth();
-                //console.log(elementWidth);
-                //console.log(id);
-                //let test = this.$refs.prev.clientWidth;
-                //console.log(test);
                 let colRows = Math.ceil(textMeasure / 165); //175.20 //145
-                //console.log(colRows);
                 if (colRows === 0) colRows = 1;
-                //console.log(this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif"));
-                //console.log(colRows);
                 return colRows;
             },
-
+            
+            // Воспроизведение аудио
             playAudio(source) {
                 if (this.snd) {
                     this.snd.pause();
@@ -277,13 +291,12 @@
                 this.snd.play();
             },
 
+            // Загрузка данных
             getData() {
                 HTTP.get('/staff/curator/attempt_list/')
                     .then(response => {
                         this.streams = response.data;
-                        this.dataLoaded = true;
-                        //this.dataReady = true;
-                        //this.initStreams();                           
+                        this.dataLoaded = true;                           
                     })
                     .catch(error => {
                         console.log(error);
@@ -298,43 +311,19 @@
         },
 
         watch: {
+            // Отслеживание загрузки данных для запуска инициализации 
+            //(т.к. сама инициализация - длительный процесс, при запуске из приёма данных даёт ошибку по времени)
             dataLoaded: {
                 handler(val, oldVal) {
                     if (this.dataLoaded) {
-                        //console.log('hi');
                         this.initStreams();
                         this.dataReady = true;
-                        /*this.streams.forEach((stream) => {
-                            stream.lessons.forEach((lesson) => {
-                                lesson.images.forEach((image) => {
-                                    image.attempts.forEach((attempt) => {
-                                        if (attempt.comment === null) {
-                                            attempt.comment = "";
-                                        };
-                                        attempt.comment += ' ';
-                                    });
-                                });
-                            });
-                        });*/
-                        /*setTimeout(() => {
-                            this.streams.forEach((stream) => {
-                                stream.lessons.forEach((lesson) => {
-                                    lesson.images.forEach((image) => {
-                                        image.attempts.forEach((attempt) => {
-                                            let length = attempt.comment.length;
-                                            let comment = attempt.comment.slice(0, -1);
-                                            attempt.comment = comment;
-                                            console.log(comment);
-                                        });
-                                    });
-                                });
-                            });
-                        }, 4)*/
                     };
                 }
             }
         },
 
+        // Запуск получения данных при создании компонента
         created() {
             this.getData();
         }
@@ -432,22 +421,6 @@
         vertical-align: middle;
     }
 
-    /*.name-col {
-        width: 12.5%;
-    }
-
-    .group-col {
-        width: 10%;
-    }
-
-    .date-col {
-        width: 12.5%;
-    }*/
-
-    /*.comment-col {
-        width: 200px;
-    }*/
-
     .lang-col {
         min-width: 20%;
     }
@@ -455,12 +428,4 @@
     .lang-col {
         min-width: 20%;
     }
-
-    /*.correct-col {
-        width: 5%;
-    }*/
-
-    /*.save-col {
-        width: 7%;
-    }*/
 </style>

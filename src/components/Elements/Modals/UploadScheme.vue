@@ -1,9 +1,12 @@
 <template>
     <transition name="UploadScheme">
+
+        <!-- Всплывающее окно -->
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container modal-container-standart">
-
+                    
+                    <!-- Заголовок формы, количество предложений -->
                     <div class="modal-header">
                         <slot name="header">
                             Загрузить схему для {{ titleText }}
@@ -13,22 +16,18 @@
                         </slot>
                     </div>
 
+                    <!-- Блок отображения картинки, если она выбрана -->
                     <div class="modal-body">
                         <slot name="body">
                             <div v-if="image_url">
                                 <img :src="image_url" alt="..." class="img-thumbnail">
                             </div>
-                            <!--<div v-else-if="lesson.image">
-                                <img :src="lesson.image" alt="..." class="img-thumbnail">
-                            </div>-->
                         </slot>
                     </div>
-
+                    
+                    <!-- Блок выбора картинки -->
                     <div class="modal-footer">
                         <slot name="footer">
-                            <!--<button class="modal-default-button" @click="$emit('close')">
-                                OK
-                            </button>-->
                             <label class="btn btn-default btn-file btn-primary mr-1">
                                 Выберите файл <input type="file" style="display: none;"
                                                      @change="process_image($event)">
@@ -39,24 +38,10 @@
                         </slot>
                     </div>
 
-                            <!--<h5>Картинка урока:</h5>
-                            <div v-if="image_url">
-                                <img :src="image_url" alt="..." class="img-thumbnail">
-                            </div>
-                            <div v-else-if="lesson.image">
-                                <img :src="lesson.image" alt="..." class="img-thumbnail">
-                            </div>
-
-                            <label class="btn btn-default btn-file btn-primary mr-1">
-                                Выберите файл <input type="file" style="display: none;"
-                                                     @change="process_image($event)">
-                            </label>
-                            <div class="btn btn-default btn-success" @click="upload_image">
-                                Загрузить
-                            </div>-->
                 </div>
             </div>
         </div>
+
     </transition>
 </template>
 
@@ -111,7 +96,6 @@
                                 this.image_url = "";
                                 this.image_data = response.data;
                                 this.$emit('image_uploaded', this.image_data);
-                                //console.log(this.image_data);
                                 this.$emit('close');
                             })
                             .catch((error) => {
@@ -135,6 +119,7 @@
             }
         },
 
+        // Инициализация компонента, количество предложений
         mounted() {
             if (this.kolvo > 0) {
                 if (this.kolvo > 1) {
