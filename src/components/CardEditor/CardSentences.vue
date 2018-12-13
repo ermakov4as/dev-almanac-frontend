@@ -58,7 +58,7 @@
                                         placeholder="EN (Question)"
                                         v-autosize="example.question"
                                         v-model="example.question"></textarea>-->
-                                    <div>
+                                    <div class="width-full">
                                         <quill-editor
                                             v-if="example.id === activeId && activeType === 'en'"
                                             v-model="example.question"
@@ -69,7 +69,7 @@
                                 <!-- Озвучка английского текста, если есть -->
                                 <div 
                                         v-if="example.question_audio" 
-                                        class="material-icons pointer sizes-small" 
+                                        class="material-icons pointer sizes-small ml-auto" 
                                         @click.stop="playAudio(example.question_audio, example.id)">volume_up</div>
 
                             </div>
@@ -86,7 +86,7 @@
                                         placeholder="RU (Answer)"
                                         v-autosize="example.answer"
                                         v-model="example.answer"></textarea>-->
-                                <div>
+                                <div class="width-full">
                                     <quill-editor
                                         v-if="example.id === activeId && activeType === 'ru'"
                                         v-model="example.answer"
@@ -98,7 +98,7 @@
                                 <!-- Озвучка русского текста, если есть -->
                                 <div 
                                         v-if="example.answer_audio" 
-                                        class="material-icons pointer sizes-small" 
+                                        class="material-icons pointer sizes-small ml-auto" 
                                         @click.stop="playAudio(example.answer_audio, example.id)">volume_up</div>
                             </div>
                         </td>
@@ -120,12 +120,6 @@
                                         @scheme_selected="schemeSelected"></select-scheme>
                             </div>
                         </td>
-
-                        <!-- Столбец выбора использования в практике -->
-                        <!--<td class="practice-col sizes-min center" @click="example.use_for_practice = !example.use_for_practice">
-                            <i class="material-icons pointer" v-if="!example.use_for_practice">check_box_outline_blank</i>
-                            <i class="material-icons pointer" v-else>check_box</i>
-                        </td>-->
 
                         <!-- Столбец выбора использования в экзамене -->
                         <td class="exam-col sizes-min center" @click="example.use_for_exam = !example.use_for_exam">
@@ -429,6 +423,10 @@
 </script>
 
 <style scoped>
+    .width-full {
+        width: 100%;
+    }
+
     .quill-table-important {
         padding: 0!important;
     }
