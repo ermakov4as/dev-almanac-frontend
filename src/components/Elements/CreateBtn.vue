@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div @click="createNew" class="btn btn-green btn-oval create-btn">{{ createBtn.name }}</div>
+        <button @click.prevent="createNew" class="btn btn-green btn-oval create-btn">{{ createBtn.name }}</button>
     </div>
 </template>
 

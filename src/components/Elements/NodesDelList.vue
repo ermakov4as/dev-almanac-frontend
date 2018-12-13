@@ -6,7 +6,7 @@
 	        <h5 class="node-name">{{ node.name }}</h5>
 
             <!-- Кнопка удаления вершины из списка используемых в родительском компоненте -->
-            <div @click="deleteNode" class="btn btn-red btn-common remove-btn">X</div>
+            <button @click.prevent="deleteNode" class="btn btn-red btn-common remove-btn">X</button>
 
         </div>
     </div>

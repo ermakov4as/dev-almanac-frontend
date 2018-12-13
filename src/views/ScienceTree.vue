@@ -34,7 +34,7 @@
                         <!-- Кнопки сохранения древа и возврата на страницу списка дисциплин -->
                         <div class="form-group">
                             <div class="form-element">
-                                <div @click="saveTree" class="btn btn-success mr-1">Сохранить</div>
+                                <button @click.prevent="saveTree" class="btn btn-success mr-1">Сохранить</button>
                                 <router-link :to="`/sciences/`" tag="button" class="btn btn-danger">Отмена</router-link>
                             </div>
                         </div>
@@ -67,10 +67,10 @@
                                             id="name"
                                             class="form-control node-delete-input"
                                             v-model="currentNode.object.name">
-                                    <div    
+                                    <button    
                                             class="btn btn-red btn-common btn-delete-node"
-                                            @click="deleteNode">
-                                        Удалить {{ !currentNode.object.is_property ? 'вершину' : 'свойство' }}</div>
+                                            @click.prevent="deleteNode">
+                                        Удалить {{ !currentNode.object.is_property ? 'вершину' : 'свойство' }}</button>
                                 </div>
                             </div>
 
@@ -104,10 +104,10 @@
                                                     :key="node.object.id">{{ node.object.name }}
                                             </option>
                                         </select>
-                                        <div
+                                        <button
                                                 class="btn btn-green btn-common save-cancel-btn add-node-btn"
-                                                @click="changeNodeLocation">Ok
-                                        </div>
+                                                @click.prevent="changeNodeLocation">Ok
+                                        </button>
 
                                     </div>
 
@@ -127,9 +127,9 @@
                                             id="name"
                                             class="form-control node-name-input"
                                             v-model="newNodeName.core">
-                                    <div 
+                                    <button 
                                             class="btn btn-green btn-oval btn-half-place"
-                                            @click="addNode('core')">Добавить свойство в корень</div>
+                                            @click.prevent="addNode('core')">Добавить свойство в корень</button>
                                 </div>
 
                                 <!-- Добавление ноды "под" текущую -->
@@ -139,10 +139,10 @@
                                             id="name"
                                             class="form-control node-name-input"
                                             v-model="newNodeName.child">
-                                    <div 
+                                    <button 
                                             class="btn btn-orange btn-oval btn-half-place"
-                                            @click="addNode('child')">
-                                        Добавить {{ currentNode.object.is_property ? 'дочернюю вершину' : 'дочернее свойство' }}</div>
+                                            @click.prevent="addNode('child')">
+                                        Добавить {{ currentNode.object.is_property ? 'дочернюю вершину' : 'дочернее свойство' }}</button>
                                 </div>
 
                             </div>

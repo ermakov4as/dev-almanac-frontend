@@ -4,23 +4,23 @@
 
             <!-- Панель кнопок -->
             <div class="d-flex justify-content-start">
-                <div class="btn btn-success mr-5" @click="preSaveTrainer">Сохранить</div>
+                <button class="btn btn-success mr-5" @click.prevent="preSaveTrainer">Сохранить</button>
 
-                <div class="btn btn-warning mr-5" @click="makeVoice = true">Озвучить</div>
+                <button class="btn btn-warning mr-5" @click.prevent="makeVoice = true">Озвучить</button>
                 <make-voice 
                         v-if="makeVoice" 
                         @close="makeVoice = false"
                         :kolvo="checkedExamplesLength"
                         :examples_id="checkedExamples"></make-voice>
 
-                <div class="btn btn-info" @click="uploadScheme = true">Загрузить схему</div>
+                <button class="btn btn-info" @click.prevent="uploadScheme = true">Загрузить схему</button>
                 <upload-scheme 
                         v-if="uploadScheme" 
                         @close="uploadScheme = false"
                         :kolvo="checkedExamplesLength"
                         @image_uploaded="imageUploaded"></upload-scheme>
 
-                <div class="ml-auto btn btn-danger" @click="deleteFromTrainer">Удалить</div>
+                <button class="ml-auto btn btn-danger" @click.prevent="deleteFromTrainer">Удалить</button>
             </div>
 
             <!-- The Table itself -->
@@ -50,14 +50,6 @@
                         <!-- Столбец английского текста -->
                         <td class="en-col quill-table-important" @click="setActiveId(example.id, 'en')">
                             <div class="d-flex">
-                                <!--<textarea
-                                        type="text"
-                                        id="en"
-                                        class="form-control font-textarea"
-                                        :rows="1"
-                                        placeholder="EN (Question)"
-                                        v-autosize="example.question"
-                                        v-model="example.question"></textarea>-->
                                     <div class="width-full">
                                         <quill-editor
                                             v-if="example.id === activeId && activeType === 'en'"
@@ -78,14 +70,6 @@
                         <!-- Столбец русского текста -->
                         <td class="ru-col quill-table-important" @click="setActiveId(example.id, 'ru')">
                             <div class="d-flex">
-                                <!--<textarea
-                                        type="text"
-                                        id="ru"
-                                        class="form-control font-textarea"
-                                        :rows="countRows(example.answer)"
-                                        placeholder="RU (Answer)"
-                                        v-autosize="example.answer"
-                                        v-model="example.answer"></textarea>-->
                                 <div class="width-full">
                                     <quill-editor
                                         v-if="example.id === activeId && activeType === 'ru'"
@@ -112,7 +96,9 @@
                                 <div class="material-icons pointer ml-auto" @click="example.image = ''">close</div>
                             </div>
                             <div v-else>
-                                <div class="btn btn-outline-secondary" @click="{selectScheme = true; selectIndex = index}">Выберите схему</div>
+                                <button 
+                                        class="btn btn-outline-secondary" 
+                                        @click.prevent="{selectScheme = true; selectIndex = index}">Выберите схему</button>
                                 <select-scheme 
                                         v-if="selectScheme"
                                         :schemes="checkAllSchemes()"
@@ -134,7 +120,7 @@
 
             <!-- Кнопка добавления новой строки -->
             <div class="center">
-                <div class="btn btn-green btn-oval create-btn" @click="createNew">Добавить</div>
+                <button class="btn btn-green btn-oval create-btn" @click.prevent="createNew">Добавить</button>
             </div>
 
         </div>
@@ -203,23 +189,6 @@
                 this.activeId = -1;
                 this.activeType == "";
             },
-
-            /*// Вычисление ширины строки
-            getTextWidth(text, font) {
-                let canvas = this.getTextWidth.canvas || (this.getTextWidth.canvas = document.createElement("canvas"));
-                let context = canvas.getContext("2d");
-                context.font = font;
-                let metrics = context.measureText(text);
-                return metrics.width;
-            },
-            
-            // Рассчёт количества строк текстарии
-            countRows(text) {
-                let textMeasure = this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif");
-                let colRows = Math.ceil(textMeasure / 227); // 231
-                if (colRows === 0) colRows = 1;
-                return colRows;
-            },*/
             
             // Подготовка к сохранению данных, проверка, не пропущены ли вопрос и ответ
             preSaveTrainer() {
@@ -239,25 +208,57 @@
                 };
             },
 
+            dealWithExtraP(str) {
+                let pos = 0;
+                while (true) {
+                    let foundPos = str.indexOf('<p>', pos);
+                    if (foundPos === -1) break;
+
+                    let strPart1 = str.slice(0, foundPos);
+                    let strPart2 = str.slice(foundPos + 3, str.length);
+                    str = strPart1 + strPart2;
+                    pos = foundPos;
+                };
+
+                pos = 0;
+                while (true) {
+                    let foundPos = str.indexOf('</p>', pos);
+                    if (foundPos === -1) break;
+
+                    let strPart1 = str.slice(0, foundPos);
+                    let strPart2 = str.slice(foundPos + 4, str.length);
+                    str = strPart1 + ' ' + strPart2;
+                    pos = foundPos + 1;
+                };
+
+                pos = 0;
+                while (true) {
+                    let foundPos = str.indexOf('<br>', pos);
+                    if (foundPos === -1) break;
+
+                    let strPart1 = str.slice(0, foundPos);
+                    let strPart2 = str.slice(foundPos + 4, str.length);
+                    str = strPart1 + ' ' + strPart2;
+                    pos = foundPos + 1;
+                };
+
+                str.replace(/\s+/g, " ");
+                if (str[str.length] === ' ') {
+                    str = str.slice(0, str.length - 1);
+                };
+
+                return str;
+            },
+
             // Сохранение данных тренажёра на сервере
             saveTrainer() {
                 let presavedExamples = this.examples;
                 presavedExamples.forEach((example) => {
-                    delete example.checked;
-                    let exampleLength_en = example.question.length;
-                    let exampleLength_ru = example.answer.length;
-                    let test_p_open_en = example.question.slice(0, 3);
-                    let test_p_open_ru = example.answer.slice(0, 3);
-                    let test_p_close_en = example.question.slice(exampleLength_en-4, exampleLength_en);
-                    let test_p_close_ru = example.answer.slice(exampleLength_ru-4, exampleLength_ru);
-                    if (test_p_open_en === '<p>' && test_p_close_en === '</p>') {
-                        example.question = example.question.slice(3, exampleLength_en-4);
-                    };
-                    if (test_p_open_ru === '<p>' && test_p_close_ru === '</p>') {
-                        example.answer = example.answer.slice(3, exampleLength_ru-4);
-                    };
+                    delete example.checked;  
+                    example.question = this.dealWithExtraP(example.question);
+                    example.answer = this.dealWithExtraP(example.answer);
                 });
-
+                
                 // Удаление временных id, если они есть
                 if (this.newExampleDetected) {
                     presavedExamples.forEach((example) => {
@@ -483,10 +484,6 @@
     .scheme-col {
         width: 25%;
     }
-
-    /*.practice-col {
-        width: 5%;
-    }*/
 
     .exam-col {
         width: 5%;

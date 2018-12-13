@@ -23,7 +23,7 @@
                                 id="name"
                                 class="form-control save-cancel-input mr-1"
                                 v-model="science.name">
-                        <div @click="saveScience" class="btn btn-success mr-1">Сохранить</div>
+                        <button @click.prevent="saveScience" class="btn btn-success mr-1">Сохранить</button>
                         <router-link to="/sciences/" tag="button"
                                      class="btn btn-danger">Отмена
                         </router-link>

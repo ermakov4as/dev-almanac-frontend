@@ -284,6 +284,15 @@
 
             // Собираем строку для отправки из блоков
             prepareForSave() {
+                this.blocks.forEach((block) => {
+                    let contentLength = block.content.length;
+                    let contentPart1 = block.content.slice(0, 3);
+                    let contentPart2 = block.content.slice(contentLength - 4, contentLength);
+                    if (contentPart1 === '<p>' && contentPart2 === '</p>') {
+                        block.content = block.content.slice(3, contentLength - 4);
+                    };
+                });
+
                 this.article = JSON.stringify(this.blocks);
             },
 

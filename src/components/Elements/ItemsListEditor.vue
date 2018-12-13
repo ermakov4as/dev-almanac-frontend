@@ -30,7 +30,7 @@
                 <div class="element-controls d-flex align-items-end p-1">
                     <router-link :to="editElementLink(element)" class="btn h100 btn-warning mr-1">Редактировать
                     </router-link>
-                    <div class="btn btn-danger" @click="deleteElement(index, element.name)">Удалить</div>
+                    <button class="btn btn-danger" @click.prevent="deleteElement(index, element.name)">Удалить</button>
                 </div>
                 
             </div>

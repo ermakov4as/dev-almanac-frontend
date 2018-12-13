@@ -10,9 +10,9 @@
                     <div class="modal-header">
                         <slot name="header">
                             Выбрать схему
-                            <div class="btn btn-default btn-danger" @click="$emit('close')">
+                            <button class="btn btn-default btn-danger" @click.prevent="$emit('close')">
                                 Отмена
-                            </div>
+                            </button>
                         </slot>
                     </div>
 
@@ -31,9 +31,9 @@
                     <!-- Блок выбора изображения -->
                     <div class="modal-footer">
                         <slot name="footer">
-                            <div class="btn btn-default btn-success center" @click="select_scheme">
+                            <button class="btn btn-default btn-success center" @click.prevent="select_scheme">
                                 Выбрать
-                            </div>
+                            </button>
                         </slot>
                     </div>
 

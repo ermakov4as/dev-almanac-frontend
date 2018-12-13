@@ -4,16 +4,16 @@
 
             <!-- Панель кнопок -->
             <div class="d-flex justify-content-start">
-                <div class="btn btn-success mr-5" @click="preSavePractice">Сохранить</div>
+                <button class="btn btn-success mr-5" @click.prevent="preSavePractice">Сохранить</button>
 
-                <div class="btn btn-info" @click="uploadScheme = true">Загрузить схему</div>
+                <button class="btn btn-info" @click.prevent="uploadScheme = true">Загрузить схему</button>
                 <upload-scheme 
                         v-if="uploadScheme" 
                         @close="uploadScheme = false"
                         :kolvo="checkedExamplesLength"
                         @image_uploaded="imageUploaded"></upload-scheme>
 
-                <div class="ml-auto btn btn-danger" @click="deleteFromPractice">Удалить</div>
+                <button class="ml-auto btn btn-danger" @click.prevent="deleteFromPractice">Удалить</button>
             </div>
 
             <!-- The Table itself -->
@@ -47,7 +47,9 @@
                                 <div class="material-icons pointer ml-auto" @click="example.image = ''">close</div>
                             </div>
                             <div v-else>
-                                <div class="btn btn-outline-secondary" @click="{selectScheme = true; selectIndex = index}">Выберите схему</div>
+                                <button 
+                                        class="btn btn-outline-secondary" 
+                                        @click.prevent="{selectScheme = true; selectIndex = index}">Выберите схему</button>
                                 <select-scheme 
                                         v-if="selectScheme"
                                         :schemes="checkAllSchemes()"
@@ -77,7 +79,7 @@
 
             <!-- Кнопка добавления новой строки -->
             <div class="center">
-                <div class="btn btn-green btn-oval create-btn" @click="createNew">Добавить</div>
+                <button class="btn btn-green btn-oval create-btn" @click.prevent="createNew">Добавить</button>
             </div>
 
         </div>

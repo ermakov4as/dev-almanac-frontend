@@ -27,7 +27,7 @@
                                         id="name"
                                         class="form-control mr-1"
                                         v-model="lesson.name">
-                                <div @click="saveLesson" class="btn btn-success mr-1">Сохранить</div>
+                                <button @click.prevent="saveLesson" class="btn btn-success mr-1">Сохранить</button>
                                 <router-link :to="`/sciences/${ lesson.science }/`" tag="button"
                                              class="btn btn-danger">Отмена
                                 </router-link>
@@ -59,9 +59,9 @@
                                 Выберите файл <input type="file" style="display: none;"
                                                      @change="process_image($event)">
                             </label>
-                            <div class="btn btn-default btn-success" @click="upload_image">
+                            <button class="btn btn-default btn-success" @click.prevent="upload_image">
                                 Загрузить
-                            </div>
+                            </button>
                         </div>
 
                     </div>
@@ -118,10 +118,10 @@
                                         :key="node.id">{{ node.name }}
                                 </option>
                             </select>
-                            <div
+                            <button
                                     class="btn btn-green btn-common save-cancel-btn add-node-btn"
-                                    @click="addNodeToLesson">Добавить
-                            </div>
+                                    @click.prevent="addNodeToLesson">Добавить
+                            </button>
                         </div>
 
                     </div>

@@ -23,7 +23,7 @@
                                 id="name"
                                 class="form-control save-cancel-input mr-1"
                                 v-model="card.name">
-                        <div @click="saveCard" class="btn btn-success mr-1">Сохранить</div>
+                        <button @click.prevent="saveCard" class="btn btn-success mr-1">Сохранить</button>
                         <router-link :to="`/sciences/${ card.science }/lessons/${ card.lesson }/`"
                                      tag="button" class="btn btn-danger">Отмена
                         </router-link>
@@ -71,9 +71,9 @@
                                             :key="node.id">{{ node.name }}
                                     </option>
                                 </select>
-                                <div class="btn btn-green btn-common save-cancel-btn add-node-btn"
-                                     @click="addNodeToCard">Добавить
-                                </div>
+                                <button class="btn btn-green btn-common save-cancel-btn add-node-btn"
+                                     @click.prevent="addNodeToCard">Добавить
+                                </button>
                             </div>
 
                         </div>
@@ -113,7 +113,7 @@
 
                 <!-- Блок редактирования содержания карточки -->
                 <div class="form-element-complex" v-if="showContent">
-                    <div class="btn btn-orange btn-common btn-generate" @click="generateFromNodes">Сгенерировать из вершин</div>
+                    <button class="btn btn-orange btn-common btn-generate" @click.prevent="generateFromNodes">Сгенерировать из вершин</button>
                     <editor-block
                             id="content"
                             :articleOut="card.content"
@@ -158,7 +158,7 @@
                     <h3>AAM:</h3>
                     <div v-if="card.aam_name" class="d-flex ml-5">
                         <h3 class="green mr-5">{{card.aam_name}}</h3>
-                        <div class="btn btn-danger" @click="remove_aam">Удалить</div>
+                        <button class="btn btn-danger" @click.prevent="remove_aam">Удалить</button>
                     </div>
                     <h3 v-else class="red"> нет данных</h3>
                 </div>
@@ -173,7 +173,7 @@
 
                         <!-- Кнопка создания нового тренажёра крточки -->
                         <div class="col-4">
-                            <div @click="upload_aam" class="btn btn-green btn-oval">Добавить тренажёр</div>
+                            <button @click.prevent="upload_aam" class="btn btn-green btn-oval">Добавить тренажёр</button>
                         </div>
 
                     </div>

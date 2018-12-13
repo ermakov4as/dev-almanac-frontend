@@ -48,7 +48,7 @@
                         </div>
 
                         <!-- Кнопка запроса на авторизацию -->
-                        <div class="btn bg-black btn-primary" @click="login" v-html="loggin_button_text[state]"></div>
+                        <button class="btn bg-black btn-primary" @click.prevent="login" v-html="loggin_button_text[state]"></button>
 
                     </div>
                 </div>

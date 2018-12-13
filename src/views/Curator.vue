@@ -180,7 +180,7 @@
 
                                         <!-- Кнопка сохранения попытки -->
                                         <td class="sizes-min align-middle">
-                                            <div class="btn btn-success" @click="saveAttempt(attempt)">Сохранить</div>
+                                            <button class="btn btn-success" @click.prevent="saveAttempt(attempt)">Сохранить</button>
                                         </td>
                                 
                                     </template>

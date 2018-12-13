@@ -10,9 +10,9 @@
                     <div class="modal-header">
                         <slot name="header">
                             Загрузить схему для {{ titleText }}
-                            <div class="btn btn-default btn-danger" @click="$emit('close')">
+                            <button class="btn btn-default btn-danger" @click.prevent="$emit('close')">
                                 Отмена
-                            </div>
+                            </button>
                         </slot>
                     </div>
 
@@ -32,9 +32,9 @@
                                 Выберите файл <input type="file" style="display: none;"
                                                      @change="process_image($event)">
                             </label>
-                            <div class="btn btn-default btn-success" @click="upload_image">
+                            <button class="btn btn-default btn-success" @click.prevent="upload_image">
                                 Загрузить
-                            </div>
+                            </button>
                         </slot>
                     </div>
 

@@ -10,9 +10,9 @@
                     <div class="modal-header">
                         <slot name="header">
                             Озвучить предложения ({{ kolvo }})
-                            <div class="btn btn-default btn-danger" @click="$emit('close')">
+                            <button class="btn btn-default btn-danger" @click.prevent="$emit('close')">
                                 Отмена
-                            </div>
+                            </button>
                         </slot>
                     </div>
 
@@ -29,9 +29,9 @@
                     <div class="modal-footer">
                         <slot name="footer">
                             <p class="error-text-notification">{{ errorNotification }}</p>
-                            <div class="btn btn-default btn-success center" @click="sendToBot">
+                            <button class="btn btn-default btn-success center" @click.prevent="sendToBot">
                                 Oтправить в бот
-                            </div>
+                            </button>
                         </slot>
                     </div>
 

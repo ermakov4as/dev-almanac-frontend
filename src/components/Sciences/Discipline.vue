@@ -26,7 +26,7 @@
             <!-- УДАЛЕНИЕ ДИСЦИПЛИНЫ. КНОПКА ДЛЯ ОТЛАДКИ. ПРИ НЕОБХОДИМОСТИ РАСКОММЕНТИТЬ ЗДЕСЬ И В ЧАСТИ JS.-->
             <!--
             <button
-                    @click="deleteScience"
+                    @click.prevent="deleteScience"
                     class="btn btn-red btn-common disc-btn"
                     >X</button>
                     -->
