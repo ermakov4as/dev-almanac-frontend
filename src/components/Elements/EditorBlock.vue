@@ -56,7 +56,7 @@
 
                         <!--Обычное отображение-->
                         <div class="m-1" v-else style="cursor: pointer">
-                            <div v-if="block.type===contentType.IMAGE" @click="editImage(index)">
+                            <div v-if="block.type===contentType.IMAGE" @click="editImage(index)" class="image-standart">
                                 <img v-if="block.content" class="img-fluid" :src="block.content"/>
                                 <img v-else class="img-fluid" :src="DEFAULT_IMAGE_URL"/>
                             </div>
@@ -352,6 +352,12 @@
 </script>
 
 <style scoped>
+    .image-standart {
+        /*width: 40%;*/
+        padding-left: 30%;
+        padding-right: 30%;
+    }
+
     .vertical-padding {
         padding-top: 10px;
         padding-bottom: 10px;

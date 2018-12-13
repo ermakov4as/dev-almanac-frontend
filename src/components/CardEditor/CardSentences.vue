@@ -24,16 +24,15 @@
             </div>
 
             <!-- The Table itself -->
-            <table class="table table-bordered table-hover card-sentences-table">
+            <table class="table table-bordered table-hover card-sentences-table" v-click-outside="removeActiveId">
                 
                 <!-- Заголовок таблицы -->
-                <thead>
+                <thead @click="removeActiveId">
                     <tr class="center">
                         <th class="id-col sizes-min"></th>
                         <th class="en-col">EN (Question)</th>
                         <th class="ru-col">RU (Answer)</th>
                         <th class="scheme-col">Схема</th>
-                        <th class="practice-col sizes-min">Практика?</th>
                         <th class="exam-col sizes-min">Экзамен?</th>
                     </tr>
                 </thead>
@@ -49,48 +48,63 @@
                         </th>
 
                         <!-- Столбец английского текста -->
-                        <td class="en-col">
+                        <td class="en-col quill-table-important" @click="setActiveId(example.id, 'en')">
                             <div class="d-flex">
-                                <textarea
+                                <!--<textarea
                                         type="text"
                                         id="en"
                                         class="form-control font-textarea"
                                         :rows="1"
                                         placeholder="EN (Question)"
                                         v-autosize="example.question"
-                                        v-model="example.question"></textarea>
+                                        v-model="example.question"></textarea>-->
+                                    <div>
+                                        <quill-editor
+                                            v-if="example.id === activeId && activeType === 'en'"
+                                            v-model="example.question"
+                                            :options="customToolbar"></quill-editor>
+                                        <div v-else class="sizes-small" v-html="example.question"></div>
+                                    </div>
 
                                 <!-- Озвучка английского текста, если есть -->
                                 <div 
                                         v-if="example.question_audio" 
-                                        class="material-icons pointer" 
-                                        @click="playAudio(example.question_audio)">volume_up</div>
+                                        class="material-icons pointer sizes-small" 
+                                        @click.stop="playAudio(example.question_audio, example.id)">volume_up</div>
 
                             </div>
                         </td>
 
                         <!-- Столбец русского текста -->
-                        <td class="ru-col">
+                        <td class="ru-col quill-table-important" @click="setActiveId(example.id, 'ru')">
                             <div class="d-flex">
-                                <textarea
+                                <!--<textarea
                                         type="text"
                                         id="ru"
                                         class="form-control font-textarea"
                                         :rows="countRows(example.answer)"
                                         placeholder="RU (Answer)"
                                         v-autosize="example.answer"
-                                        v-model="example.answer"></textarea>
+                                        v-model="example.answer"></textarea>-->
+                                <div>
+                                    <quill-editor
+                                        v-if="example.id === activeId && activeType === 'ru'"
+                                        v-model="example.answer"
+                                        :options="customToolbar"></quill-editor>
+                                    <div v-else class="sizes-small" v-html="example.answer"></div>
+                                </div>
+                                
 
                                 <!-- Озвучка русского текста, если есть -->
                                 <div 
                                         v-if="example.answer_audio" 
-                                        class="material-icons pointer" 
-                                        @click="playAudio(example.answer_audio)">volume_up</div>
+                                        class="material-icons pointer sizes-small" 
+                                        @click.stop="playAudio(example.answer_audio, example.id)">volume_up</div>
                             </div>
                         </td>
                         
                         <!-- Столбец выбора схемы -->
-                        <td class="scheme-col center">
+                        <td class="scheme-col center" @click="removeActiveId">
                             <div v-if="example.image" class="d-flex justify-content-center">
                                 <figure class="ml-auto">
                                     <img :src="example.image.url" alt="..." class="img-fluid height-max">
@@ -108,10 +122,10 @@
                         </td>
 
                         <!-- Столбец выбора использования в практике -->
-                        <td class="practice-col sizes-min center" @click="example.use_for_practice = !example.use_for_practice">
+                        <!--<td class="practice-col sizes-min center" @click="example.use_for_practice = !example.use_for_practice">
                             <i class="material-icons pointer" v-if="!example.use_for_practice">check_box_outline_blank</i>
                             <i class="material-icons pointer" v-else>check_box</i>
-                        </td>
+                        </td>-->
 
                         <!-- Столбец выбора использования в экзамене -->
                         <td class="exam-col sizes-min center" @click="example.use_for_exam = !example.use_for_exam">
@@ -138,6 +152,8 @@
     import UploadScheme from '../Elements/Modals/UploadScheme.vue';
     import SelectScheme from '../Elements/Modals/SelectScheme.vue';
     import MakeVoice from './Modals/MakeVoice.vue';
+    import ClickOutside from 'vue-click-outside';
+    import '../Elements/v-html_styles.css';
 
     export default {
         props: ['url_id', 'card_aams', 'ready'],
@@ -155,7 +171,16 @@
                 selectIndex: Number,
                 checkedExamplesLength: 0,
                 imagesFromTrainer: [],
-                makeVoice: false
+                makeVoice: false,
+                activeId: -1,
+                activeType: "",
+                customToolbar: {
+                    modules: {
+                        toolbar: [
+                            [{'color': []}]
+                        ]
+                    }
+                }
             };
         },
 
@@ -165,8 +190,27 @@
             MakeVoice
         },
 
+        directives: {
+            ClickOutside
+        },
+
         methods: {
-            // Вычисление ширины строки
+            // Запись id активного quill-редактора
+            setActiveId(id, type) {
+                /*setTimeout(() => {
+                    this.activeId = id;
+                }, 4);*/
+                this.activeId = id;
+                this.activeType = type;
+            },
+
+            // Закрытие всех quill-редакторов
+            removeActiveId() {
+                this.activeId = -1;
+                this.activeType == "";
+            },
+
+            /*// Вычисление ширины строки
             getTextWidth(text, font) {
                 let canvas = this.getTextWidth.canvas || (this.getTextWidth.canvas = document.createElement("canvas"));
                 let context = canvas.getContext("2d");
@@ -181,7 +225,7 @@
                 let colRows = Math.ceil(textMeasure / 227); // 231
                 if (colRows === 0) colRows = 1;
                 return colRows;
-            },
+            },*/
             
             // Подготовка к сохранению данных, проверка, не пропущены ли вопрос и ответ
             preSaveTrainer() {
@@ -206,6 +250,18 @@
                 let presavedExamples = this.examples;
                 presavedExamples.forEach((example) => {
                     delete example.checked;
+                    let exampleLength_en = example.question.length;
+                    let exampleLength_ru = example.answer.length;
+                    let test_p_open_en = example.question.slice(0, 3);
+                    let test_p_open_ru = example.answer.slice(0, 3);
+                    let test_p_close_en = example.question.slice(exampleLength_en-4, exampleLength_en);
+                    let test_p_close_ru = example.answer.slice(exampleLength_ru-4, exampleLength_ru);
+                    if (test_p_open_en === '<p>' && test_p_close_en === '</p>') {
+                        example.question = example.question.slice(3, exampleLength_en-4);
+                    };
+                    if (test_p_open_ru === '<p>' && test_p_close_ru === '</p>') {
+                        example.answer = example.answer.slice(3, exampleLength_ru-4);
+                    };
                 });
 
                 // Удаление временных id, если они есть
@@ -273,7 +329,6 @@
                     answer_audio: "",
                     image: "",
                     use_for_exam: false,
-                    use_for_practice: false,
                     checked: false
                 };
                 this.newExampleDetected = true;
@@ -312,7 +367,10 @@
             },
 
             // Воспроизведение аудио
-            playAudio(source) {
+            playAudio(source, id) {
+                if (id != this.activeId) {
+                    this.removeActiveId();
+                };
                 if (this.snd) {
                     this.snd.pause();
                 };
@@ -371,6 +429,14 @@
 </script>
 
 <style scoped>
+    .quill-table-important {
+        padding: 0!important;
+    }
+
+    .sizes-small {
+        padding: 3px;
+    }
+
     .font-textarea {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
@@ -420,9 +486,9 @@
         width: 25%;
     }
 
-    .practice-col {
+    /*.practice-col {
         width: 5%;
-    }
+    }*/
 
     .exam-col {
         width: 5%;
