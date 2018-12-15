@@ -192,6 +192,7 @@
                                             <editor-block
                                                 :articleOut="currentNode.object.content"
                                                 :dataReady="editDataReady"
+                                                :examples="'none'"
                                                 @editorUpdated="editorUpdated"></editor-block>
                                         </div>
                                     </div>

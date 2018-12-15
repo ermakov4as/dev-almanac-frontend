@@ -117,7 +117,8 @@
                     <editor-block
                             id="content"
                             :articleOut="card.content"
-                            :dataReady="dataReady"
+                            :dataReady="dataWithExamplesReady"
+                            :examples="exampleImages"
                             @editorUpdated="editorUpdated"></editor-block>
                 </div>
 
@@ -186,6 +187,7 @@
                 <card-sentences 
                         :url_id="card.id"
                         :card_aams="card.aams"
+                        @exampleImagesChanged="exampleImagesUpdate"
                         :ready="dataReady"></card-sentences>
             </div>
 
@@ -238,6 +240,8 @@
                 treeStartReady: false,
                 treeDataReady: 0,
                 aam_file: undefined,
+                exampleImages: [],
+                dataWithExamplesReady: false
             };
         },
 
@@ -266,10 +270,18 @@
                         this.treeDataReady = 0;
                     };
                 }
-            }
+            },
         },
 
         methods: {
+            // Принимаем данные схем для использования в блочном редакторе
+            exampleImagesUpdate(schemes) {
+                if (schemes) {
+                    this.exampleImages = schemes;
+                }
+                this.dataWithExamplesReady = true;
+            },
+
             // Сгенерировать содержание карточки из content вершин карточки
             generateFromNodes() {
                 let permission = true;

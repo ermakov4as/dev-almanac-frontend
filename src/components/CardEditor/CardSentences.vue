@@ -307,6 +307,8 @@
             // Добавление загруженного изображения в список
             imageUploaded(imageData) {
                 this.ulpoadedImages.push(imageData);
+                let allSchemes = this.checkAllSchemes();
+                this.$emit('exampleImagesChanged', allSchemes);
             },
 
             // Добавление выбранного изображения в конкретный пример
@@ -341,6 +343,7 @@
                         this.imagesFromTrainer.push(example.image);
                     };
                 });
+                this.$emit('exampleImagesChanged', this.imagesFromTrainer);
             },
 
             // Отмечаем / снимаем отметку с примера

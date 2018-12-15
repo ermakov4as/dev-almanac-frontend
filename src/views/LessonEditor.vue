@@ -80,6 +80,7 @@
                                 id="content"
                                 :articleOut="lesson.content"
                                 :dataReady="dataReady"
+                                :examples="'none'"
                                 @editorUpdated="editorUpdated">
                         </editor-block>
                     </div>

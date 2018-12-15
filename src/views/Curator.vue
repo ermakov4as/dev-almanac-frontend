@@ -210,6 +210,7 @@
 
 <script>
     import { HTTP } from '../http-common.js';
+    import { test } from '../components/Elements/CommonFunstions/Requests.js';
 
     export default {
         data() {
@@ -318,6 +319,23 @@
                     if (this.dataLoaded) {
                         this.initStreams();
                         this.dataReady = true;
+                        
+                        /*let aaa = test();
+                        console.log(aaa);*/
+                        
+                        /*var promise = new Promise((resolve, reject) => {
+                            let a = test();
+                            setTimeout(() => {
+                                resolve(a);
+                            }, 5000);
+                        });
+
+                        promise
+                            .then(
+                                result => alert("Fulfilled: " + result),
+                                error => alert("Rejected: " + error)
+                        );*/
+
                     };
                 }
             }

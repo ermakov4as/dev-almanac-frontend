@@ -54,6 +54,7 @@
                                 id="content"
                                 :articleOut="science.content"
                                 :dataReady="dataReady"
+                                :examples="'none'"
                                 @editorUpdated="editorUpdated"></editor-block>
                     </div>
                 </div>

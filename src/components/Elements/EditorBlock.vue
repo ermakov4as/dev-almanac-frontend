@@ -8,7 +8,7 @@
                         <!--Если включен редактор-->
                         <div class="content-block" v-if="index===show">
                             <div v-if="block.type===contentType.IMAGE">
-                                <img v-if="block.content" class="img-fluid" :src="block.content"
+                                <img v-if="block.content" class="img-fluid image-standart" :src="block.content"
                                      style="cursor: pointer;"
                                      data-toggle="modal"
                                      data-target="#imageModal" @click="edit_index=index" alt="...">
@@ -20,6 +20,24 @@
                             </div>
                             <div v-else-if="block.type===contentType.YOUTUBE">
                                 <input class="form-control" v-model="block.content">
+                            </div>
+                            <div v-else-if="block.type===contentType.EXAMPLE && examples!='none'">
+                                <div v-if="block.content && block.content!='Default Content'" class="d-flex justify-content-center">
+                                    <figure class="ml-auto">
+                                        <img :src="block.content.url" alt="..." class="img-fluid height-max image-standart">
+                                    </figure>
+                                    <div class="material-icons pointer ml-auto" @click="block.content = ''">close</div>
+                                </div>
+                                <div v-else class="center">
+                                    <button 
+                                            class="btn btn-outline-secondary" 
+                                            @click.prevent="{selectScheme = true; selectIndex = index}">Выберите схему</button>
+                                    <select-scheme 
+                                            v-if="selectScheme"
+                                            :schemes="examples"
+                                            @close="selectScheme = false"
+                                            @scheme_selected="schemeSelected"></select-scheme>
+                                </div>
                             </div>
                             <div v-else-if="block.type===contentType.LABELED_TEXT">
                                 <div class="row">
@@ -63,6 +81,15 @@
                             <div v-else-if="block.type===contentType.YOUTUBE" @click="showEditor(index)">
                                 <div v-html="block.content" v-if="block.content"></div>
                                 <div v-html="DEFAULT_YOUTUBE_URL" v-else></div>
+                            </div>
+
+                            <div v-else-if="block.type===contentType.EXAMPLE && examples!='none'" @click="showEditor(index)">
+                                <div v-if="block.content && block.content!='Default Content'" class="d-flex justify-content-center">
+                                    <figure class="ml-auto">
+                                        <img :src="block.content.url" alt="..." class="img-fluid height-max image-standart">
+                                    </figure>
+                                </div>
+                                <div v-else class="text-italics">Схема не выбрана</div>
                             </div>
 
                             <div v-else-if="block.type===contentType.LABELED_TEXT" :class="block.type"
@@ -167,19 +194,22 @@
 
 <script>
     import {VueEditor} from 'vue2-editor'
-    import {HTTP_UPLOAD} from "../../http-common.js";
+    import {HTTP_UPLOAD} from "../../http-common.js"
     import {Picker, Emoji} from 'emoji-mart-vue'
+    import SelectScheme from '../Elements/Modals/SelectScheme.vue'
 
     export default {
         props: [
             'articleOut',
-            'dataReady'
+            'dataReady',
+            'examples'
         ],
 
         components: {
             VueEditor,
             Picker,
-            Emoji
+            Emoji,
+            SelectScheme
         },
 
         data() {
@@ -210,11 +240,19 @@
                 edit_index: 0,
                 DEFAULT_IMAGE_URL: "http://www.independentmediators.co.uk/wp-content/uploads/2016/02/placeholder-image.jpg",
                 DEFAULT_YOUTUBE_URL: "<iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&amp;showinfo=0\" frameborder=\"0\" allow=\"autoplay; encrypted-media\" allowfullscreen></iframe>",
-                firstDataReady: true
+                firstDataReady: true,
+                exampleImages: [],
+                selectScheme: false,
+                selectIndex: Number
             }
         },
 
         methods: {
+            // Добавление выбранной схемы в конкретный блок
+            schemeSelected(selectedScheme) {
+                this.blocks[this.selectIndex].content = selectedScheme;
+            },
+
             // Добавить эмоджи
             addEmoji(emoji) {
                 this.$set(this.blocks[this.show], 'emoji', emoji.colons);
@@ -285,14 +323,16 @@
             // Собираем строку для отправки из блоков
             prepareForSave() {
                 this.blocks.forEach((block) => {
-                    let contentLength = block.content.length;
-                    let contentPart1 = block.content.slice(0, 3);
-                    let contentPart2 = block.content.slice(contentLength - 4, contentLength);
-                    if (contentPart1 === '<p>' && contentPart2 === '</p>') {
-                        block.content = block.content.slice(3, contentLength - 4);
-                    };
+                    if (block.type === this.contentType.TEXT) {
+                        let contentLength = block.content.length;
+                        let contentPart1 = block.content.slice(0, 3);
+                        let contentPart2 = block.content.slice(contentLength - 4, contentLength);
+                        if (contentPart1 === '<p>' && contentPart2 === '</p>') {
+                            block.content = block.content.slice(3, contentLength - 4);
+                        }
+                    }
                 });
-
+                
                 this.article = JSON.stringify(this.blocks);
             },
 
@@ -361,6 +401,10 @@
 </script>
 
 <style scoped>
+    .text-italics {
+        font-style: italic;
+    }
+
     .image-standart {
         /*width: 40%;*/
         padding-left: 30%;
