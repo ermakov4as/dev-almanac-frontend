@@ -87,9 +87,9 @@
 </template>
 
 <script>
-    import { HTTP } from '../../http-common.js';
-    import UploadScheme from '../Elements/Modals/UploadScheme.vue';
-    import SelectScheme from '../Elements/Modals/SelectScheme.vue';
+    import { HTTP } from '../../http-common.js'
+    import UploadScheme from '../Elements/Modals/UploadScheme.vue'
+    import SelectScheme from '../Elements/Modals/SelectScheme.vue'
 
     export default {
         props: ['url_id', 'practice_tasks', 'ready'],
@@ -129,7 +129,7 @@
             countRows(text) {
                 let textMeasure = this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif");
                 let colRows = Math.ceil(textMeasure / 445); // 450
-                if (colRows === 0) colRows = 1;
+                if (colRows === 0) colRows = 1
                 return colRows;
             },
 
@@ -148,7 +148,7 @@
                         title: 'Сохранение недоступно',
                         text: 'Добавьте схему!'
                     });
-                };
+                }
             },
 
             // Сохранение данных практики на сервере
@@ -162,8 +162,8 @@
                 if (this.newExampleDetected) {
                     presavedExamples.forEach((example) => {
                         if (example.id < -1) delete example.id
-                    });
-                };
+                    })
+                }
 
                 HTTP.put(`editor/lessons/${this.url_id}/practice_tasks/`, presavedExamples)
                     .then(response => {
@@ -171,7 +171,7 @@
                             this.examples = response.data;
                             this.newExampleDetected = false;
                             this.initPractice();
-                        };
+                        }
                         this.$notify({
                             group: 'foo',
                             type: "success",
@@ -197,10 +197,10 @@
                     this.examples.forEach((example) => {
                         if (!this.checkedExamples.find(x => x === example.id)) {
                             tmpExamples.push(example);
-                        };
+                        }
                     });
                     this.examples = tmpExamples;
-                };
+                }
             },
 
             // Добавление загруженного изображения в список
@@ -234,14 +234,14 @@
                     example.checked = false;
                     if (example.image) {
                         this.imagesFromPractice.push(example.image);
-                    };
+                    }
                 });
             },
             
             // Отмечаем / снимаем отметку с примера
             checkExample(example) {
                 if (example.checked) this.removeExampleChecked(example.id)
-                    else this.addExampleChecked(example.id);
+                    else this.addExampleChecked(example.id)
                 example.checked = !example.checked;
             },
 
@@ -265,7 +265,7 @@
                     if (!allSchemesId.find(x => x === image.id)) {
                         allSchemesId.push(image.id);
                         newAllSchemes.push(image);
-                    };
+                    }
                 });
                 return newAllSchemes;
             }
@@ -280,8 +280,8 @@
                             this.examples = this.practice_tasks;
                             this.initPractice();
                             this.firstGetting = false;
-                        };
-                    };
+                        }
+                    }
                 }
             },
 
@@ -300,8 +300,8 @@
                     this.examples = this.practice_tasks;
                     this.initPractice();
                     this.firstGetting = false;
-                };
-            };
+                }
+            }
         }
     }
 </script>

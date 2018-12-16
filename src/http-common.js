@@ -1,6 +1,6 @@
-import axios from 'axios';
-import store from './store/store';
-import router from './router';
+import axios from 'axios'
+import store from './store/store'
+import router from './router'
 
 const API_URL = 'https://backend.swift-english.com/api/v1/';
 

@@ -70,7 +70,7 @@
                     };
                     app.image_file = event.target.files[0];
                     reader.readAsDataURL(event.target.files[0]);
-                };
+                }
             },
 
             // Загрузка изображения урока на сервер
@@ -115,7 +115,7 @@
                             text: 'Уменьшите изображение'
                         });
                     }
-                };
+                }
             }
         },
 
@@ -126,8 +126,8 @@
                     this.titleText = this.kolvo + ' предложений';
                 } else if (this.kolvo === 1) {
                     this.titleText = this.kolvo + ' предложения';
-                };
-            };
+                }
+            }
         }
     }
 </script>

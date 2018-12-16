@@ -13,7 +13,7 @@
 </template>
 
 <script>
-    import {mapMutations, mapGetters} from 'vuex';
+    import {mapMutations, mapGetters} from 'vuex'
 
     export default {
         name: "tree-register",
@@ -38,7 +38,7 @@
             initSelestedNode() {                
                 if (this.nodesSelected.find(x => x.id === this.node.id)) {
                     this.isSelected = true;
-                };
+                }
             },
 
             // Выбор (отмена выбора) ноды
@@ -71,8 +71,8 @@
                         if (this.firstNodesGetting) {
                             this.initSelestedNode();
                             this.firstNodesGetting = false;
-                        };
-                    };
+                        }
+                    }
                 }
             }
         },
@@ -82,8 +82,8 @@
                 if (this.firstNodesGetting) {
                     this.initSelestedNode();
                     this.firstNodesGetting = false;
-                };
-            };
+                }
+            }
         }
     }
 </script>

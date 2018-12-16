@@ -14,14 +14,15 @@
 </template>
 
 <script>
-    import './styles.css';
-    import Header from './components/Header/Header.vue';
-    import {HTTP} from "./http-common";
+    import './styles.css'
+    import Header from './components/Header/Header.vue'
+    import {HTTP} from "./http-common"
 
     export default {
         components: {
             appHeader: Header
         },
+        
         created() {
             HTTP.get('/users/user/')
                 .then((response) => {

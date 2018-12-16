@@ -294,7 +294,7 @@
                     this.blocks.splice(index + 1, 0, {"type": type, "content": this.DEFAULT_YOUTUBE_URL});
                 } else {
                     this.blocks.splice(index + 1, 0, {"type": type, "content": "<p>Default Content</p>"});
-                };
+                }
             },
 
             // Удалить блок
@@ -302,7 +302,7 @@
                 let conf = confirm("Удалить блок?");
                 if (conf) {
                     this.blocks.splice(index, 1);
-                };
+                }
             },
 
             // Активный блок
@@ -317,7 +317,7 @@
                     this.blocks = JSON.parse(this.article);
                 } catch (err) {
                     console.log(err);
-                };
+                }
             },
 
             // Собираем строку для отправки из блоков
@@ -332,7 +332,7 @@
                         }
                     }
                 });
-                
+
                 this.article = JSON.stringify(this.blocks);
             },
 
@@ -370,9 +370,9 @@
                             title: 'Слишком большой файл',
                             text: 'Уменьшите изображение'
                         });
-                    };
+                    }
                     console.log(this.image_file);
-                };
+                }
             }
         },
 
@@ -395,7 +395,7 @@
         created() {
             if (this.dataReady) {
                 this.prepareForUse();
-            };
+            }
         }
     }
 </script>

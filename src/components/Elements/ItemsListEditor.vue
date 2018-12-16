@@ -46,7 +46,7 @@
 </template>
 
 <script>
-    import {HTTP} from "../../http-common";
+    import {HTTP} from "../../http-common"
 
     export default {
         name: "items-list-editor",
@@ -90,13 +90,13 @@
                         .catch((error) => {
                             console.log(error)
                         })
-                };
+                }
             },
 
             // Перемещение элемента (урока, карточки) вверх в списке
             switch_up(index) {
                 if (index !== 0)
-                    this.elements.splice(index - 1, 2, this.elements[index], this.elements[index - 1]);
+                    this.elements.splice(index - 1, 2, this.elements[index], this.elements[index - 1])
 
                 // Возврат родителю информации об изменённом списке элементов
                 this.$emit('input', this.elements);
@@ -106,7 +106,7 @@
             // Перемещение элемента (урока, карточки) вниз в списке
             switch_down(index) {
                 if (index !== this.elements.length - 1)
-                    this.elements.splice(index, 2, this.elements[index + 1], this.elements[index]);
+                    this.elements.splice(index, 2, this.elements[index + 1], this.elements[index])
 
                 // Возврат родителю информации об изменённом списке элементов
                 this.$emit('input', this.elements);

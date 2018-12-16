@@ -32,9 +32,9 @@
 </template>
 
 <script>
-    import Discipline from '../components/Sciences/Discipline.vue';
-    import CreateBtn from '../components/Elements/CreateBtn.vue';
-    import {HTTP} from '../http-common.js';
+    import Discipline from '../components/Sciences/Discipline.vue'
+    import CreateBtn from '../components/Elements/CreateBtn.vue'
+    import {HTTP} from '../http-common.js'
 
     export default {
         data() {

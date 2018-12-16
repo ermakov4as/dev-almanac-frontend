@@ -196,12 +196,12 @@
 </template>
 
 <script>
-    import EditorBlock from '../components/Elements/EditorBlock.vue';
-    import NodesDelList from '../components/Elements/NodesDelList.vue';
-    import TreeRegister from '../components/CardEditor/TreeRegister.vue';
-    import CardSentences from '../components/CardEditor/CardSentences.vue';
-    import {HTTP, HTTP_UPLOAD} from '../http-common.js';
-    import {mapMutations, mapGetters} from 'vuex';
+    import EditorBlock from '../components/Elements/EditorBlock.vue'
+    import NodesDelList from '../components/Elements/NodesDelList.vue'
+    import TreeRegister from '../components/CardEditor/TreeRegister.vue'
+    import CardSentences from '../components/CardEditor/CardSentences.vue'
+    import {HTTP, HTTP_UPLOAD} from '../http-common.js'
+    import {mapMutations, mapGetters} from 'vuex'
 
     export default {
         data() {
@@ -266,9 +266,9 @@
                         this.treeStartReady = true;
                         if (this.lessonTreeData.length > 0) {
                             this.treeNodesToBuild(this.scienceTreeData, this.lessonTreeData.map(x => x.id));
-                        };
+                        }
                         this.treeDataReady = 0;
-                    };
+                    }
                 }
             },
         },
@@ -288,15 +288,15 @@
                 if (this.card.content != "") {
                     if (!confirm('При создании описании карточки из вершины текущее описание будет удалено.\nПродолжить всё равно?')) {
                         permission = false;
-                    };
-                };
+                    }
+                }
                 if (permission) {
                     let contentToEditor = ""
                     let nodesArr = this.card.nodes;
                     nodesArr.forEach((node, i, nodesArr) => {
                         if (node.content != "") {
                             contentToEditor = contentToEditor + node.content.slice(1, -1) + ",";
-                        };
+                        }
                     });
                     if (contentToEditor != "") {
                         // Выглядит как костыль, но JSON.stringify здесь работает некорректно
@@ -304,23 +304,23 @@
                         contentToEditor = '[' + contentToEditor + ']';
                         this.card.content = contentToEditor;
                         this.dataReady =! this.dataReady;
-                    };
-                };
+                    }
+                }
             },
 
             // Получения списка нод из древа
             treeNodesToBuild(branch, storage) {
                 if (storage.indexOf(branch.object.id) !== -1) {
                     this.treeList.push(branch.object);
-                };
+                }
                 if (branch.children) {
                     let branchLenght = branch.children.length;
                     let childrenVisited = 0;
                     while (branchLenght > childrenVisited) {
                         this.treeNodesToBuild(branch.children[childrenVisited], storage);
                         childrenVisited += 1;
-                    };
-                };
+                    }
+                }
             },
 
             // Считывание информации из блочного редактора
@@ -335,7 +335,7 @@
                     this.nodeAdding = 0;
                     this.toggleNode(currentNode);
                     this.changeNodeSelection(currentNode.id);
-                };
+                }
             },
             
             // Удаление ноды из списка нод карточки

@@ -43,7 +43,7 @@
 </template>
 
 <script>
-    import { HTTP } from '../../../http-common.js';
+    import { HTTP } from '../../../http-common.js'
 
     export default {
         props: ['kolvo', 'examples_id'],
@@ -113,7 +113,7 @@
                             });
                         });
                     this.$emit('close');
-                };
+                }
             },
 
             // Загрузка списка персонала

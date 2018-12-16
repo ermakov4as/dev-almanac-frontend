@@ -211,10 +211,10 @@
 </template>
 
 <script>
-    import TreeEdit from '../components/ScienceTree/TreeEdit.vue';
-    import EditorBlock from '../components/Elements/EditorBlock.vue';
-    import { HTTP } from '../http-common.js';
-    import {mapMutations, mapGetters} from 'vuex';
+    import TreeEdit from '../components/ScienceTree/TreeEdit.vue'
+    import EditorBlock from '../components/Elements/EditorBlock.vue'
+    import { HTTP } from '../http-common.js'
+    import {mapMutations, mapGetters} from 'vuex'
 
     export default {
         data() {
@@ -307,11 +307,11 @@
                         if (this.nodesToMoveExist) {
                             this.nodesToMoveExist = false;
                             nodesToMoveExistFlag = true;
-                        };
+                        }
                         if (this.showContent) {
                             this.showContent = false;
                             showContentFlag = true;
-                        };
+                        }
                         // По умолчанию блокируем возможность перемещения новы вверх/вниз 
                         this.moveAccess = {
                             up: false,
@@ -321,7 +321,7 @@
                         // Сохраняем в science.nodes изменения предыдущей активной ноды, если она была
                         if (this.currentNode.object.id != 0) {
                             this.science.nodes = this.nodeSaveToNodes(this.science.nodes, this.currentNode);
-                        };
+                        }
                         this.allNodes = [];
                         this.nodeSearch(this.science.nodes, this.editingNode);
                         this.moveToOther = {
@@ -346,12 +346,12 @@
                             setTimeout(() => {
                                 this.showContent = true;
                             }, 4);
-                        };
+                        }
                         if (nodesToMoveExistFlag) {
                             setTimeout(() => {
                                 this.nodesToMoveExist = true;
                             }, 4);
-                        };
+                        }
                     };
                 }
             },
@@ -373,7 +373,7 @@
                         }, 4);
                     } else {
                         this.nodesToMoveExist = false;
-                    };
+                    }
                 }
             }
         },
@@ -390,15 +390,15 @@
                             this.toggleEditing(branch.children[index].children[branch.children[index].children.length - 1].object.id);
                         }, 4);
                         this.currentNode = node;
-                    };
+                    }
                     let branchLenght = branch.children.length;
                     let childrenVisited = 0;
                     while (branchLenght > childrenVisited) {
                         this.nodeLocationPush(branch.children[childrenVisited], node);
                         childrenVisited += 1;
-                    };
+                    }
                 };
-                return branch;
+                return branchж
             },
 
             // Исключение перемещаемой вершины из старого места
@@ -408,13 +408,13 @@
                         let index = branch.children.indexOf(node);
                         branch.children.splice(index, 1);
                         this.clearEditing();
-                    };
+                    }
                     let branchLenght = branch.children.length;
                     let childrenVisited = 0;
                     while (branchLenght > childrenVisited) {
                         this.nodeLocationRemove(branch.children[childrenVisited], node);
                         childrenVisited += 1;
-                    };
+                    }
                 };
                 return branch;
             },
@@ -425,7 +425,7 @@
                     let tmpCurrentNode = this.currentNode;
                     this.science.nodes = this.nodeLocationRemove(this.science.nodes, this.currentNode);
                     this.science.nodes = this.nodeLocationPush(this.science.nodes, tmpCurrentNode);
-                };
+                }
             },
 
             // Перемещение ноды вверх/вниз
@@ -441,7 +441,7 @@
                                 this.toggleEditing(branch.children[index - 1].object.id);
                             }, 4);
                             this.currentNode = node;
-                        };
+                        }
                         if (mode === 'down') {
                             branch.children.splice(index, 2, branch.children[index + 1], branch.children[index]);
                             this.clearEditing();
@@ -450,14 +450,14 @@
                                 this.toggleEditing(branch.children[index + 1].object.id);
                             }, 4);
                             this.currentNode = node;
-                        };
+                        }
                     };
                     let branchLenght = branch.children.length;
                     let childrenVisited = 0;
                     while (branchLenght > childrenVisited) {
                         this.moveNode(branch.children[childrenVisited], node, mode);
                         childrenVisited += 1;
-                    };
+                    }
                 };
                 return branch;
             },
@@ -466,7 +466,7 @@
             nodeMove(mode) {
                 if ((mode === 'up' && this.moveAccess.up) || (mode === 'down' && this.moveAccess.down)) {
                     this.science.nodes = this.moveNode(this.science.nodes, this.currentNode, mode);
-                };
+                }
             },
             // Проверка наличия нод до/после активной в её слое для разрешения/запрета на перемещение вверх/вниз
             checkMoveAccess(branch, node) {
@@ -476,17 +476,17 @@
                             let index = branch.children.indexOf(node);
                             if (index > 0) {
                                 this.moveAccess.up = true;
-                            };
+                            }
                             if ((-1 < index) && (index < branch.children.length - 1)) {
                                 this.moveAccess.down = true;
-                            };
+                            }
                         };                    
                         let branchLenght = branch.children.length;
                         let childrenVisited = 0;
                         while (branchLenght > childrenVisited) {
                             this.checkMoveAccess(branch.children[childrenVisited], node);
                             childrenVisited += 1;
-                        };
+                        }
                     };
                 };
             },
@@ -503,13 +503,13 @@
                         let index = branch.children.indexOf(node);
                         branch.children.splice(index, 1);
                         this.clearEditing();
-                    };
+                    }
                     let branchLenght = branch.children.length;
                     let childrenVisited = 0;
                     while (branchLenght > childrenVisited) {
                         this.deleteCurrentNode(branch.children[childrenVisited], node);
                         childrenVisited += 1;
-                    };
+                    }
                 };
                 return branch;
             },
@@ -518,15 +518,15 @@
             deleteTmpIds(branch) {
                 if (branch.object.id < -1) {
                     delete branch.object.id;
-                };
+                }
                 if (branch.children) {
                     let branchLenght = branch.children.length;
                     let childrenVisited = 0;
                     while (branchLenght > childrenVisited) {
                         this.deleteTmpIds(branch.children[childrenVisited]);
                         childrenVisited += 1;
-                    };
-                };
+                    }
+                }
                 this.currentTmpId = -2;
                 return branch;
             },
@@ -554,7 +554,7 @@
                     newNode = this.giveTmpId(newNode);
                     this.science.nodes.children.push(newNode);
                     this.newNodeName.core = "";
-                };
+                }
                 // Добавление ноды "под" активную
                 if (mode === 'child' && this.newNodeName.child != "") {
                     if (this.currentNode.object.is_property) {
@@ -562,13 +562,13 @@
                         newNode.object.tmp = "";
                         newNode.object.description = "";
                         newNode.object.content = "";
-                    };
+                    }
                     newNode.object.name = this.newNodeName.child;
                     newNode = this.giveTmpId(newNode);
                     this.currentNode.children.push(newNode);
                     this.science.nodes = this.nodeSaveToNodes(this.science.nodes, this.currentNode);
                     this.newNodeName.child = "";
-                };
+                }
                 this.newNodeDetected = true;
             },
 
@@ -576,22 +576,22 @@
             checkEditorState() {
                 if (this.showContent && this.editingNode != -1 && this.treeDataReady) {
                     this.editDataReady = true;
-                };
+                }
             },
 
             // Сохранение активной ноды в science.nodes
             nodeSaveToNodes(branch, node) {
                 if (branch.object.id === node.object.id) {
                     branch = node;
-                };
+                }
                 if (branch.children) {
                     let branchLenght = branch.children.length;
                     let childrenVisited = 0;
                     while (branchLenght > childrenVisited) {
                         this.nodeSaveToNodes(branch.children[childrenVisited], node);
                         childrenVisited += 1;
-                    };
-                };
+                    }
+                }
                 return branch;
             },
 
@@ -599,18 +599,18 @@
             nodeSearch(branch, id) {
                 if (branch.object.id === id) {
                     this.currentNode = branch;
-                };
+                }
                 if (branch.children) {
                     let branchLenght = branch.children.length;
                     let childrenVisited = 0;
                     if ((branch.object.id != id) && (!branch.object.is_property) && (branchLenght > 0)) {
                         this.allNodes.push(branch);
-                    };
+                    }
                     while (branchLenght > childrenVisited) {
                         this.nodeSearch(branch.children[childrenVisited], id);
                         childrenVisited += 1;
-                    };
-                };
+                    }
+                }
             },
 
             // Фиксация данных блочного редактора
@@ -646,11 +646,11 @@
             saveTree() {
                 if (this.currentNode.object.id != 0) {
                     this.science.nodes = this.nodeSaveToNodes(this.science.nodes, this.currentNode);
-                };
+                }
                 // Удаление временных id, если они есть
                 if (this.newNodeDetected) {
                     this.science.nodes = this.deleteTmpIds(this.science.nodes);
-                };
+                }
                 HTTP.put(`editor/sciences/${ this.$route.params.id }/upload_tree/`, this.science)
                     .then(response => {
                         // Обновление science.nodes лишь в случае, если были добавлены новые ноды

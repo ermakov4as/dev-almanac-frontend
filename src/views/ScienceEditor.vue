@@ -84,11 +84,11 @@
 </template>
 
 <script>
-    import CreateBtn from '../components/Elements/CreateBtn.vue';
-    import NodesDelList from '../components/Elements/NodesDelList.vue';
-    import EditorBlock from '../components/Elements/EditorBlock.vue';
+    import CreateBtn from '../components/Elements/CreateBtn.vue'
+    import NodesDelList from '../components/Elements/NodesDelList.vue'
+    import EditorBlock from '../components/Elements/EditorBlock.vue'
     import ItemsListEditor from "../components/Elements/ItemsListEditor"
-    import {HTTP} from '../http-common.js';
+    import {HTTP} from '../http-common.js'
 
     export default {
         name: 'ScienceEditor',

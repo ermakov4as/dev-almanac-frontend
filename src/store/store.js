@@ -1,9 +1,9 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import scienceTree from './modules/scienceTree';
-import login from './modules/login';
+import Vue from 'vue'
+import Vuex from 'vuex'
+import scienceTree from './modules/scienceTree'
+import login from './modules/login'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {},

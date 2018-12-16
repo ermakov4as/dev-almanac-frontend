@@ -128,12 +128,12 @@
 </template>
 
 <script>
-    import { HTTP } from '../../http-common.js';
-    import UploadScheme from '../Elements/Modals/UploadScheme.vue';
-    import SelectScheme from '../Elements/Modals/SelectScheme.vue';
-    import MakeVoice from './Modals/MakeVoice.vue';
-    import ClickOutside from 'vue-click-outside';
-    import '../Elements/v-html_styles.css';
+    import { HTTP } from '../../http-common.js'
+    import UploadScheme from '../Elements/Modals/UploadScheme.vue'
+    import SelectScheme from '../Elements/Modals/SelectScheme.vue'
+    import MakeVoice from './Modals/MakeVoice.vue'
+    import ClickOutside from 'vue-click-outside'
+    import '../Elements/v-html_styles.css'
 
     export default {
         props: ['url_id', 'card_aams', 'ready'],
@@ -177,9 +177,6 @@
         methods: {
             // Запись id активного quill-редактора
             setActiveId(id, type) {
-                /*setTimeout(() => {
-                    this.activeId = id;
-                }, 4);*/
                 this.activeId = id;
                 this.activeType = type;
             },
@@ -194,7 +191,7 @@
             preSaveTrainer() {
                 let permission = true;
                 this.examples.forEach((example) => {
-                    if (!example.question || !example.answer) permission = false;
+                    if (!example.question || !example.answer) permission = false
                 });
                 if (permission) {
                     this.saveTrainer();
@@ -205,47 +202,47 @@
                         title: 'Сохранение недоступно',
                         text: 'Заполните поля Question и Answer!'
                     });
-                };
+                }
             },
 
             dealWithExtraP(str) {
                 let pos = 0;
                 while (true) {
                     let foundPos = str.indexOf('<p>', pos);
-                    if (foundPos === -1) break;
+                    if (foundPos === -1) break
 
                     let strPart1 = str.slice(0, foundPos);
                     let strPart2 = str.slice(foundPos + 3, str.length);
                     str = strPart1 + strPart2;
                     pos = foundPos;
-                };
+                }
 
                 pos = 0;
                 while (true) {
                     let foundPos = str.indexOf('</p>', pos);
-                    if (foundPos === -1) break;
+                    if (foundPos === -1) break
 
                     let strPart1 = str.slice(0, foundPos);
                     let strPart2 = str.slice(foundPos + 4, str.length);
                     str = strPart1 + ' ' + strPart2;
                     pos = foundPos + 1;
-                };
+                }
 
                 pos = 0;
                 while (true) {
                     let foundPos = str.indexOf('<br>', pos);
-                    if (foundPos === -1) break;
+                    if (foundPos === -1) break
 
                     let strPart1 = str.slice(0, foundPos);
                     let strPart2 = str.slice(foundPos + 4, str.length);
                     str = strPart1 + ' ' + strPart2;
                     pos = foundPos + 1;
-                };
+                }
 
                 str.replace(/\s+/g, " ");
                 if (str[str.length] === ' ') {
                     str = str.slice(0, str.length - 1);
-                };
+                }
 
                 return str;
             },
@@ -264,7 +261,7 @@
                     presavedExamples.forEach((example) => {
                         if (example.id < -1) delete example.id
                     });
-                };
+                }
 
                 HTTP.put(`editor/cards/${this.url_id}/examples/`, presavedExamples)
                     .then(response => {
@@ -272,7 +269,7 @@
                             this.examples = response.data;
                             this.newExampleDetected = false;
                             this.initTrainer();
-                        };
+                        }
                         this.$notify({
                             group: 'foo',
                             type: "success",
@@ -298,10 +295,10 @@
                     this.examples.forEach((example) => {
                         if (!this.checkedExamples.find(x => x === example.id)) {
                             tmpExamples.push(example);
-                        };
+                        }
                     });
                     this.examples = tmpExamples;
-                };
+                }
             },
 
             // Добавление загруженного изображения в список
@@ -341,7 +338,7 @@
                     example.checked = false;
                     if (example.image) {
                         this.imagesFromTrainer.push(example.image);
-                    };
+                    }
                 });
                 this.$emit('exampleImagesChanged', this.imagesFromTrainer);
             },
@@ -349,7 +346,7 @@
             // Отмечаем / снимаем отметку с примера
             checkExample(example) {
                 if (example.checked) this.removeExampleChecked(example.id)
-                    else this.addExampleChecked(example.id);
+                    else this.addExampleChecked(example.id)
                 example.checked = !example.checked;
             },
 
@@ -368,10 +365,10 @@
             playAudio(source, id) {
                 if (id != this.activeId) {
                     this.removeActiveId();
-                };
+                }
                 if (this.snd) {
                     this.snd.pause();
-                };
+                }
                 this.snd = new Audio(source);
                 this.snd.play();
             },
@@ -385,7 +382,7 @@
                     if (!allSchemesId.find(x => x === image.id)) {
                         allSchemesId.push(image.id);
                         newAllSchemes.push(image);
-                    };
+                    }
                 });
                 return newAllSchemes;
             }
@@ -400,8 +397,8 @@
                             this.examples = this.card_aams;
                             this.initTrainer();
                             this.firstAamsGetting = false;
-                        };
-                    };
+                        }
+                    }
                 }
             },
 
@@ -420,8 +417,8 @@
                     this.examples = this.card_aams;
                     this.initTrainer();
                     this.firstAamssGetting = false;
-                };
-            };
+                }
+            }
         }
     }
 </script>

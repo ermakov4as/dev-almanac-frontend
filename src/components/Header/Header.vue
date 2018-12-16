@@ -67,8 +67,8 @@
 </template>
 
 <script>
-    import {LOGIN_HTTP} from "../../http-common";
-    import Cookies from 'js-cookie';
+    import {LOGIN_HTTP} from "../../http-common"
+    import Cookies from 'js-cookie'
 
     export default {
         name: "SiteHeader",

@@ -25,8 +25,8 @@
 </template>
 
 <script>
-    import Tree from './TreeEdit.vue';
-    import {mapMutations, mapGetters} from 'vuex';
+    import Tree from './TreeEdit.vue'
+    import {mapMutations, mapGetters} from 'vuex'
 
     export default {
         name: "tree-edit",
@@ -59,7 +59,7 @@
                         this.isSelected = true;
                     } else {
                         this.isSelected = false;
-                    };
+                    }
                 } 
             }
         },

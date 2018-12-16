@@ -41,11 +41,11 @@ const mutations = {
             chozenNodesArr.forEach((node, i, chozenNodesArr) => {
                 if (node.id === payload.id) {
                     state.chozenNodes.splice(i, 1);
-                };
+                }
             });
         } else {
             state.chozenNodes.push(payload);
-        };
+        }
     },
 
     // Меняем id выбранной ноды

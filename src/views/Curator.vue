@@ -209,8 +209,9 @@
 </template>
 
 <script>
-    import { HTTP } from '../http-common.js';
-    import { test } from '../components/Elements/CommonFunstions/Requests.js';
+    import { HTTP } from '../http-common.js'
+    //import { test } from '../components/Elements/CommonFunstions/Requests.js'
+    //import { notif } from '../components/Elements/CommonFunstions/Notifications.js'
 
     export default {
         data() {
@@ -231,7 +232,7 @@
                 };
                 if (attempt.comment === "") {
                     savingAttempt.comment = null;
-                };
+                }
                 HTTP.put('/staff/curator/сheck_attempt/', savingAttempt)
                     .then(response => {
                         this.$notify({
@@ -279,7 +280,7 @@
             countRows(text) {
                 let textMeasure = this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif");
                 let colRows = Math.ceil(textMeasure / 165); //175.20 //145
-                if (colRows === 0) colRows = 1;
+                if (colRows === 0) colRows = 1
                 return colRows;
             },
             
@@ -287,7 +288,7 @@
             playAudio(source) {
                 if (this.snd) {
                     this.snd.pause();
-                };
+                }
                 this.snd = new Audio(source);
                 this.snd.play();
             },
@@ -297,7 +298,8 @@
                 HTTP.get('/staff/curator/attempt_list/')
                     .then(response => {
                         this.streams = response.data;
-                        this.dataLoaded = true;                           
+                        this.dataLoaded = true;
+                        //notif('success', "");                           
                     })
                     .catch(error => {
                         console.log(error);
@@ -336,7 +338,7 @@
                                 error => alert("Rejected: " + error)
                         );*/
 
-                    };
+                    }
                 }
             }
         },

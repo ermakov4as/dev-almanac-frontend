@@ -25,8 +25,8 @@
 </template>
 
 <script>
-    import Tree from './Tree.vue';
-    import {mapMutations, mapGetters} from 'vuex';
+    import Tree from './Tree.vue'
+    import {mapMutations, mapGetters} from 'vuex'
 
     export default {
         name: "tree",
@@ -56,7 +56,7 @@
             initSelestedNode() {
                 if (this.nodesSelected.find(x => x.id === this.node.object.id)) {
                     this.isSelected = !this.isSelected;
-                };
+                }
             },
 
             // Выбор (отмена выбора) ноды
@@ -64,7 +64,7 @@
                 if (!this.node.object.is_property) {
                     this.toggleNode(node.object);
                     this.isSelected = !this.isSelected
-                };
+                }
             },
 
             ...mapMutations([
@@ -80,7 +80,7 @@
                     if (this.nodeSelected == this.node.object.id) {
                         this.isSelected = !this.isSelected;
                         this.changeNodeSelection(-1);
-                    };
+                    }
                 }
             },
 
@@ -93,7 +93,7 @@
                         setTimeout(() => {
                             this.readyChild = true;
                         }, 4);
-                    };
+                    }
                 }
             }
         },

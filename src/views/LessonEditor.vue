@@ -183,14 +183,14 @@
 </template>
 
 <script>
-    import CreateBtn from '../components/Elements/CreateBtn.vue';
-    import NodesDelList from '../components/Elements/NodesDelList.vue';
-    import EditorBlock from '../components/Elements/EditorBlock.vue';
+    import CreateBtn from '../components/Elements/CreateBtn.vue'
+    import NodesDelList from '../components/Elements/NodesDelList.vue'
+    import EditorBlock from '../components/Elements/EditorBlock.vue'
     import ItemsListEditor from '../components/Elements/ItemsListEditor'
-    import Tree from '../components/LessonEditor/Tree.vue';
-    import Practice from '../components/LessonEditor/Practice.vue';
-    import {HTTP, HTTP_UPLOAD} from '../http-common.js';
-    import {mapMutations, mapGetters} from 'vuex';
+    import Tree from '../components/LessonEditor/Tree.vue'
+    import Practice from '../components/LessonEditor/Practice.vue'
+    import {HTTP, HTTP_UPLOAD} from '../http-common.js'
+    import {mapMutations, mapGetters} from 'vuex'
 
     export default {
         components: {
@@ -297,7 +297,7 @@
                     this.nodeAdding = 0;
                     this.toggleNode(currentNode);
                     this.changeNodeSelection(currentNode.id);
-                };
+                }
             },
 
             ...mapMutations([
@@ -395,7 +395,7 @@
                     };
                     app.image_file = event.target.files[0];
                     reader.readAsDataURL(event.target.files[0]);
-                };
+                }
             },
 
             // Загрузка изображения урока на сервер
@@ -438,7 +438,7 @@
                             text: 'Уменьшите изображение'
                         });
                     }
-                };
+                }
             }
         },
         

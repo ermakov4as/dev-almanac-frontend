@@ -58,8 +58,8 @@
 </template>
 
 <script>
-    import {HTTP, LOGIN_HTTP} from "../http-common";
-    import Cookies from "js-cookie";
+    import {HTTP, LOGIN_HTTP} from "../http-common"
+    import Cookies from "js-cookie"
 
     export default {
         name: "login",
@@ -86,14 +86,14 @@
                 for (let field_name in this.errors) {
                     if (this.errors.hasOwnProperty(field_name)) {
                         this.clear_errors(field_name);
-                    };
-                };
+                    }
+                }
                 if (this.email === "") {
                     this.errors.email.push("Необходимое поле");
-                };
+                }
                 if (this.password === "") {
                     this.errors.password.push("Необходимое поле");
-                };
+                }
                 if (this.email !== "" && this.password !== "") {
                     this.state = "entering";
 
@@ -116,7 +116,7 @@
                             this.password = "";
                             this.state = "default";
                         })
-                };
+                }
             },
 
             // Очистка списка ошибок
@@ -124,8 +124,8 @@
                 if (this.errors.hasOwnProperty(field_name)) {
                     while (this.errors[field_name].length > 0) {
                         this.errors[field_name].pop();
-                    };
-                };
+                    }
+                }
             },
 
             // Добавление ошибок в выводимый список
@@ -137,10 +137,10 @@
                             console.log(field_name);
                             for (let index = 0; index < errors_dict[field_name].length; index++) {
                                 this.errors[field_name].push(errors_dict[field_name][index]);
-                            };
-                        };
-                    };
-                };
+                            }
+                        }
+                    }
+                }
             }
         },
 
@@ -153,7 +153,7 @@
         mounted() {
             if (this.$store.getters.token) {
                 this.$router.push('/');
-            };
+            }
         }
     }
 </script>
