@@ -22,7 +22,7 @@
                                 <input class="form-control" v-model="block.content">
                             </div>
                             <div v-else-if="block.type===contentType.EXAMPLE && examples!='none'">
-                                <div v-if="block.content && block.content!='Default Content'" class="d-flex justify-content-center">
+                                <div v-if="block.content && block.content!='Default Content' && block.content!='<p>Default Content</p>'" class="d-flex justify-content-center">
                                     <figure class="ml-auto">
                                         <img :src="block.content.url" alt="..." class="img-fluid height-max image-standart">
                                     </figure>
@@ -84,7 +84,9 @@
                             </div>
 
                             <div v-else-if="block.type===contentType.EXAMPLE && examples!='none'" @click="showEditor(index)">
-                                <div v-if="block.content && block.content!='Default Content'" class="d-flex justify-content-center">
+                                <div 
+                                        v-if="block.content && block.content!='Default Content' && block.content!='<p>Default Content</p>'" 
+                                        class="d-flex justify-content-center">
                                     <figure class="ml-auto">
                                         <img :src="block.content.url" alt="..." class="img-fluid height-max image-standart">
                                     </figure>
@@ -105,6 +107,7 @@
                             <div :class="block.type" v-else @click="showEditor(index)">
                                 <div v-html="block.content"></div>
                             </div>
+
                         </div>
 
                     </div>
@@ -243,7 +246,8 @@
                 firstDataReady: true,
                 exampleImages: [],
                 selectScheme: false,
-                selectIndex: Number
+                selectIndex: Number,
+                preSavingEditing: false
             }
         },
 
@@ -322,8 +326,13 @@
 
             // Собираем строку для отправки из блоков
             prepareForSave() {
+                /*this.preSavingEditing = true;
+                console.log(this.blocks);
+                let safetyLength = this.blocks.length;
+                console.log(safetyLength);
                 this.blocks.forEach((block) => {
-                    if (block.type === this.contentType.TEXT) {
+                    //console.log(block);
+                    if (block.type === this.contentType.TEXT || block.type === this.contentType.LABELED_TEXT) {
                         let contentLength = block.content.length;
                         let contentPart1 = block.content.slice(0, 3);
                         let contentPart2 = block.content.slice(contentLength - 4, contentLength);
@@ -331,9 +340,15 @@
                             block.content = block.content.slice(3, contentLength - 4);
                         }
                     }
-                });
+                    safetyLength -= 1;
+                    if (safetyLength < 0) {
+                        console.log('STOP!');
+                        //break;
+                    }
+                });*/
 
                 this.article = JSON.stringify(this.blocks);
+                //this.preSavingEditing = false;
             },
 
             // Обработка загрузки файла
@@ -385,8 +400,10 @@
             // Отслеживаем все изменения контента и возвращаем их в родительский компонент
             blocks: {
                 handler(val, oldVal) {
-                    this.prepareForSave();
-                    this.$emit('editorUpdated', this.article);
+                    //if (!this.preSavingEditing) {
+                        this.prepareForSave();
+                        this.$emit('editorUpdated', this.article);
+                    //} else this.preSavingEditing = false
                 },
                 deep: true
             }
