@@ -68,7 +68,6 @@
                     .then(response => {
                         this.disciplines = response.data;
                         this.dataReady = true;
-                        console.log(this.disciplines);
                     })
                     .catch(error => {
                         console.log(error);

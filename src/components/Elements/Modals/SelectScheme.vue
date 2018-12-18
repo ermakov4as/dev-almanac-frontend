@@ -21,7 +21,7 @@
                         <slot name="body">
                             <v-select :options="extendedSchemes" placeholder="Выбор схемы" label="title" v-model="selectedScheme">
                                 <template slot="option" slot-scope="option">
-                                    <img :src="option.url" alt="..." class="img-fluid width-max">
+                                    <img :src="option.url" alt="..." class="img-fluid size-max">
                                     <span>{{ option.title }}</span>
                                 </template>
                             </v-select>
@@ -64,6 +64,7 @@
 
             // Подготовка данных для работы списка выбора изображений
             prepareExnendedSchemes() {
+                this.extendedSchemes = [];
                 let schemeIndex = 1;
                 this.schemes.forEach((scheme) => {
                     let title = `Изображение №${schemeIndex}`;
@@ -78,6 +79,15 @@
             }
         },
 
+         watch: {
+            // Инициализация компонента в случае подкгрузки изображений из карточек
+            schemes: {
+                handler(val, oldVal) {
+                    this.prepareExnendedSchemes();
+                }
+            }
+        },
+
         // Инициализация компонента
         mounted() {
             this.prepareExnendedSchemes();
@@ -86,7 +96,8 @@
 </script>
 
 <style scoped>
-    .width-max {
+    .size-max {
+        max-height: 110px;
         max-width: 75%;
         margin-right: 15px;
     }

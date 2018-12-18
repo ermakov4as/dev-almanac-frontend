@@ -155,7 +155,8 @@
                     <practice 
                             :url_id="lesson.id"
                             :practice_tasks="lesson.practice_tasks"
-                            :ready="dataReady"></practice>
+                            :ready="dataReady"
+                            :cardsId="cardsId"></practice>
                 </div>
 
             </div>
@@ -255,7 +256,8 @@
                     }
                 },
                 image_file: "",
-                image_url: ""
+                image_url: "",
+                cardsId: []
             }
         },
 
@@ -275,6 +277,14 @@
         },
 
         methods: {
+            // Выявление id всех дочерних карточек
+            initCardIds(cards) {
+                this.cardsId = [];
+                cards.forEach((card) => {
+                    this.cardsId.push(card.id);
+                });
+            },
+
             // Заполнение списка вершин без указания дочерних свойств из всех нод
             treeInspect(branch) {
                 if (!branch.object.is_property) {
@@ -309,17 +319,18 @@
 
             // Считывание информации из блочного редактора
             editorUpdated(content) {
-                this.lesson.content = content
+                this.lesson.content = content;
             },
 
             // Создание новой карточки урока
             createBtnUsed(newCard) {
-                this.lesson.cards.push(newCard)
+                this.lesson.cards.push(newCard);
             },
 
             // Удаление карточки урока из списка карточек
             elementRemoved(index) {
-                this.lesson.cards.splice(index, 1)
+                this.lesson.cards.splice(index, 1);
+                this.initCardIds(this.lesson.cards);
             },
 
             // Удаление ноды из списка нод урока
@@ -335,6 +346,7 @@
                         this.lesson = response.data;
                         //console.log(this.lesson);
                         this.initNodes(this.lesson.nodes);
+                        this.initCardIds(this.lesson.cards);
                         this.dataReady = true;
                         HTTP.get(`editor/sciences/${ this.lesson.science }/`)
                             .then(response => {

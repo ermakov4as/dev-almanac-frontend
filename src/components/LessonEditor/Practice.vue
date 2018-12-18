@@ -6,12 +6,12 @@
             <div class="d-flex justify-content-start">
                 <button class="btn btn-success mr-5" @click.prevent="preSavePractice">Сохранить</button>
 
-                <button class="btn btn-info" @click.prevent="uploadScheme = true">Загрузить схему</button>
+                <!--<button class="btn btn-info" @click.prevent="uploadScheme = true">Загрузить схему</button>
                 <upload-scheme 
                         v-if="uploadScheme" 
                         @close="uploadScheme = false"
                         :kolvo="checkedExamplesLength"
-                        @image_uploaded="imageUploaded"></upload-scheme>
+                        @image_uploaded="imageUploaded"></upload-scheme>-->
 
                 <button class="ml-auto btn btn-danger" @click.prevent="deleteFromPractice">Удалить</button>
             </div>
@@ -88,30 +88,32 @@
 
 <script>
     import { HTTP } from '../../http-common.js'
-    import UploadScheme from '../Elements/Modals/UploadScheme.vue'
+    //import UploadScheme from '../Elements/Modals/UploadScheme.vue'
     import SelectScheme from '../Elements/Modals/SelectScheme.vue'
 
     export default {
-        props: ['url_id', 'practice_tasks', 'ready'],
+        props: ['url_id', 'practice_tasks', 'ready', 'cardsId'],
 
         data() {
             return {
                 examples: [],
                 firstGetting: true,
-                uploadScheme: false,
+                //uploadScheme: false,
                 selectScheme: false,
                 checkedExamples: [],
-                ulpoadedImages: [],
+                //ulpoadedImages: [],
                 currentTmpId: -2,
                 newExampleDetected: false,
                 selectIndex: Number,
                 checkedExamplesLength: 0,
-                imagesFromPractice: []
+                imagesFromPractice: [],
+                imagesFromCards: [],
+                imagesFromCardsLoaded: false
             };
         },
 
         components: {
-            UploadScheme,
+            //UploadScheme,
             SelectScheme
         },
 
@@ -258,7 +260,11 @@
 
             // Проверка списка загруженных файлов с целью исключения дублирования
             checkAllSchemes() {
-                let oldAllSchemes = [...this.ulpoadedImages, ...this.imagesFromPractice];
+                if (!this.imagesFromCardsLoaded) {
+                    this.getImagesFromCards(this.cardsId);
+                    this.imagesFromCardsLoaded = true;
+                }
+                let oldAllSchemes = [/*...this.ulpoadedImages,*/...this.imagesFromCards, ...this.imagesFromPractice];
                 let newAllSchemes = [];
                 let allSchemesId = [];
                 oldAllSchemes.forEach((image) => {
@@ -268,6 +274,29 @@
                     }
                 });
                 return newAllSchemes;
+            },
+            
+            // Запросы для получения изображений из тренажёров карточек
+            getImagesFromCards(cardIds) {
+                cardIds.forEach((id) => {
+                    HTTP.get(`editor/cards/${id}/`)
+                        .then(response => {
+                            response.data.aams.forEach((aam) => {
+                                if (aam.image) {
+                                    this.imagesFromCards.push(aam.image);
+                                }
+                            });                             
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            this.$notify({
+                                group: 'foo',
+                                type: "error",
+                                title: 'Произошла ошибка',
+                                text: 'Sorry'
+                            });
+                        });
+                });
             }
         },
 

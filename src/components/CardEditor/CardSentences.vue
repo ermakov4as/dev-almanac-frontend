@@ -33,7 +33,9 @@
                         <th class="en-col">EN (Question)</th>
                         <th class="ru-col">RU (Answer)</th>
                         <th class="scheme-col">Схема</th>
-                        <th class="exam-col sizes-min">Экзамен?</th>
+                        <th class="source-col">Источник</th>
+                        <th class="exam-col sizes-min">Экзамен</th>
+                        <th class="exam-col sizes-min">Плеер</th>
                     </tr>
                 </thead>
                 
@@ -107,9 +109,27 @@
                             </div>
                         </td>
 
+                        <!-- Столбец указания источника -->
+                        <td class="desc-col sizes-small">
+                            <div class="d-flex">
+                                <input
+                                        type="text"
+                                        id="ru"
+                                        class="form-control font-input"
+                                        placeholder="Источник"
+                                        v-model="example.source"/>
+                            </div>
+                        </td>
+
                         <!-- Столбец выбора использования в экзамене -->
                         <td class="exam-col sizes-min center" @click="example.use_for_exam = !example.use_for_exam">
                             <i class="material-icons pointer" v-if="!example.use_for_exam">check_box_outline_blank</i>
+                            <i class="material-icons pointer" v-else>check_box</i>
+                        </td>
+
+                        <!-- Столбец выбора использования в плеере -->
+                        <td class="exam-col sizes-min center" @click="example.use_for_player = !example.use_for_player">
+                            <i class="material-icons pointer" v-if="!example.use_for_player">check_box_outline_blank</i>
                             <i class="material-icons pointer" v-else>check_box</i>
                         </td>
 
@@ -175,6 +195,23 @@
         },
 
         methods: {
+            // Вычисление ширины строки
+            getTextWidth(text, font) {
+                let canvas = this.getTextWidth.canvas || (this.getTextWidth.canvas = document.createElement("canvas"));
+                let context = canvas.getContext("2d");
+                context.font = font;
+                let metrics = context.measureText(text);
+                return metrics.width;
+            },
+            
+            // Расчёт количества строк текстарии
+            countRows(text) {
+                let textMeasure = this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif");
+                let colRows = Math.ceil(textMeasure / 445); // 450
+                if (colRows === 0) colRows = 1
+                return colRows;
+            },
+
             // Запись id активного quill-редактора
             setActiveId(id, type) {
                 this.activeId = id;
@@ -322,7 +359,9 @@
                     answer: "",
                     answer_audio: "",
                     image: "",
+                    source: null,
                     use_for_exam: false,
+                    use_for_player: false,
                     checked: false
                 };
                 this.newExampleDetected = true;
@@ -340,6 +379,7 @@
                         this.imagesFromTrainer.push(example.image);
                     }
                 });
+                this.checkAllSchemes();
                 this.$emit('exampleImagesChanged', this.imagesFromTrainer);
             },
 
@@ -415,6 +455,7 @@
             if (this.ready) {
                 if (this.firstAamsGetting) {
                     this.examples = this.card_aams;
+                    console.log(this.card_aams);
                     this.initTrainer();
                     this.firstAamssGetting = false;
                 }
@@ -424,6 +465,18 @@
 </script>
 
 <style scoped>
+    /*.vertical-text {
+        -webkit-transform: rotate(-90deg);
+        -moz-transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg);
+        -o-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+        writing-mode: vertical-lr;
+        padding-top: 0;
+        padding-bottom: 0;
+        vertical-align: middle;
+    }*/
+
     .width-full {
         width: 100%;
     }
@@ -433,7 +486,8 @@
     }
 
     .sizes-small {
-        padding: 3px;
+        padding-right: 3px;
+        padding-left: 3px;
     }
 
     .font-textarea {
@@ -486,7 +540,11 @@
     }
 
     .exam-col {
-        width: 5%;
+        width: 3%;
+    }
+
+    .source-col {
+        width: 15%;
     }
 </style>
 
