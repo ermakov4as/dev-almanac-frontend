@@ -195,23 +195,6 @@
         },
 
         methods: {
-            // Вычисление ширины строки
-            getTextWidth(text, font) {
-                let canvas = this.getTextWidth.canvas || (this.getTextWidth.canvas = document.createElement("canvas"));
-                let context = canvas.getContext("2d");
-                context.font = font;
-                let metrics = context.measureText(text);
-                return metrics.width;
-            },
-            
-            // Расчёт количества строк текстарии
-            countRows(text) {
-                let textMeasure = this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif");
-                let colRows = Math.ceil(textMeasure / 445); // 450
-                if (colRows === 0) colRows = 1
-                return colRows;
-            },
-
             // Запись id активного quill-редактора
             setActiveId(id, type) {
                 this.activeId = id;
@@ -455,7 +438,6 @@
             if (this.ready) {
                 if (this.firstAamsGetting) {
                     this.examples = this.card_aams;
-                    console.log(this.card_aams);
                     this.initTrainer();
                     this.firstAamssGetting = false;
                 }

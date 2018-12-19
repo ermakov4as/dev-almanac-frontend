@@ -140,7 +140,7 @@
                                 <input class="form-check-input" type="radio" name="exampleRadios"
                                        :value="value" v-model="insertType">
                                 <label class="form-check-label">
-                                    {{key}}
+                                    {{ contentName[key] }}
                                 </label>
                             </div>
                         </div>
@@ -232,6 +232,14 @@
                     "TEXT": "text",
                     "LABELED_TEXT": "labeled_text",
                     "YOUTUBE": "youtube"
+                },
+                contentName: {
+                    "IMAGE": 'Изображение',
+                    "GOALS": 'Цели',
+                    "EXAMPLE": 'Примеры',
+                    "TEXT": 'Текст',
+                    "LABELED_TEXT": 'Маркированный текст',
+                    "YOUTUBE": 'YouTube ролик'
                 },
                 content: '',
                 customToolbar: [
@@ -325,6 +333,10 @@
                     this.blocks = JSON.parse(this.article);
                 } catch (err) {
                     console.log(err);
+                }
+                if (this.examples === 'none') {
+                    delete this.contentType.EXAMPLE;
+                    delete this.contentName.EXAMPLE;
                 }
             },
 
