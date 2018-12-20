@@ -362,7 +362,7 @@
                         this.imagesFromTrainer.push(example.image);
                     }
                 });
-                this.checkAllSchemes();
+                this.imagesFromTrainer = this.checkAllSchemes();
                 this.$emit('exampleImagesChanged', this.imagesFromTrainer);
             },
 
@@ -407,6 +407,7 @@
                         newAllSchemes.push(image);
                     }
                 });
+                //console.log(newAllSchemes);
                 return newAllSchemes;
             }
         },
