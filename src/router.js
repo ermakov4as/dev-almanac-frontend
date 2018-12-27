@@ -53,6 +53,12 @@ export default new Router({
             name: 'curator',
             component: () =>
                 import ('./views/Curator.vue')
+        },
+        {
+            path: '/curator/requests/',
+            name: 'curator-requests',
+            component: () =>
+                import ('./views/CuratorRequests.vue')
         }
     ]
 });

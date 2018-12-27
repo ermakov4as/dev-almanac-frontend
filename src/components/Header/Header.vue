@@ -22,8 +22,23 @@
                 </li>
 
                 <!-- Ссылка на курирование -->
-                <li class="nav-item mr-auto">
-                    <router-link to="/curator/homeworks/"><span class="nav-link">Куратор</span></router-link>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        Куратор
+                    </a>
+
+                    <!-- Выпадающее меню действий с аккаунтом -->
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+
+                        <!-- Ссылка на проверку ДЗ -->
+                        <router-link to="/curator/homeworks/"><span class="nav-link">Проверка ДЗ</span></router-link>
+
+                        <!-- Ссылка на заявки по озвучке/разбору -->
+                        <router-link to="/curator/requests/"><span class="nav-link">Разбор / озвучка</span></router-link>
+
+                    </div>
+
                 </li>
 
             </ul>
