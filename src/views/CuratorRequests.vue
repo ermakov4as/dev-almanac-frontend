@@ -44,7 +44,10 @@
                             <th class="lang-col">EN (Question)</th>
                             <th class="lang-col">RU (Answer)</th>
                             <th width="200">Комментарий</th>
-                            <th class="sizes-min">Исполнитель</th>
+                            <th class="sizes-min" v-if="showCompleted">Исполнитель</th>
+                            <th class="sizes-min no-borders">
+                                <div class="material-icons invisible">save</div>
+                            </th>
                         </tr>
                     </thead>
 
@@ -105,8 +108,14 @@
                                     <div class="btn btn-success" @click="saveAttempt(request)">Сохранить</div>
                                 </td>-->
 
-                                <td>
-                                    {{ request.dict_unit.comment.performer }}
+                                <td v-if="showCompleted">
+                                    {{ request.performer }}
+                                </td>
+
+                                <td v-if="index === 2" class="pointer vertical-center">
+                                    <div class="material-icons">
+                                        save
+                                    </div>
                                 </td>
 
                             </template>
@@ -177,6 +186,7 @@
                 this.dataReady = false;
                 this.mode = 'voice';
                 this.getData('/staff/curator/voice_requests/');
+                //this.dataReady = true;
             },
 
             // Загрузка данных
@@ -211,6 +221,18 @@
 </script>
 
 <style scoped>
+    .vertical-center {
+        vertical-align: middle;
+    }
+
+    .no-borders {
+        border: 1px solid white;
+    }
+
+    .invisible {
+        visibility: hidden;
+    }
+
     .no-vertical-padding {
         padding-top: 0;
         padding-bottom: 0;
