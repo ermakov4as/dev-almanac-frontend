@@ -53,7 +53,7 @@
                                             <emoji :emoji="block.emoji" :size="40" v-if="block.emoji"/>
                                         </p>
 
-                                        <button class="btn btn-outline-danger" @click="removeEmoji">Удалить</button>
+                                        <button class="btn btn-outline-danger" @click.prevent="removeEmoji">Удалить</button>
                                     </div>
                                 </div>
 
@@ -147,7 +147,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                        <button type="button" class="btn btn-primary" @click="insertBlock(insertIndex, insertType)"
+                        <button type="button" class="btn btn-primary" @click.prevent="insertBlock(insertIndex, insertType)"
                                 data-dismiss="modal">
                             Добавить
                         </button>
@@ -187,7 +187,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                        <button type="button" class="btn btn-primary" @click="insertImage(edit_index)"
+                        <button type="button" class="btn btn-primary" @click.prevent="insertImage(edit_index)"
                                 data-dismiss="modal">
                             Добавить
                         </button>
