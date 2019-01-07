@@ -33,6 +33,129 @@
             <!-- Гиперблок потоков, если есть соединение с сервером -->
             <div class="table-place" v-else-if="mode != 'none'">
                 
+                
+                <!-- The Table itself -->
+                <table v-if="mode === 'analysis'" class="table table-bordered table-hover card-sentences-table">
+                    
+                   <!-- Заголовок таблицы -->
+                    <thead>
+                        <tr class="center">
+                            <th class="sizes-min no-vertical-padding">Дата<br>cоздания</th>
+                            <th class="sizes-min">Пользователь</th>
+                            <th class="td-textarea td-lang">EN (Question)</th>
+                            <th class="td-textarea td-lang">RU (Answer)</th>
+                            <th class="td-textarea td-comment">Комментарий</th>
+                            <th class="sizes-min" v-if="showCompleted && showPerformer">Исполнитель</th>
+                            <!--th class="sizes-min no-borders">
+                                <div class="material-icons invisible">save</div>
+                            </th-->
+                        </tr>
+                    </thead>
+
+                    <!-- Тело таблицы -->
+                    <tbody>
+
+                        <!-- Непроверенные попытки -->
+                        <tr v-for="(request, index) in requests" :key="index">
+                            <template v-if="(showNonCompleted && request.finished === null) || (showCompleted && request.finished != null)">
+                                        
+                                <!-- Автор и группа попытки -->
+                                <td class="center sizes-min" scope="row">{{ decodeDate(request.created) }}</td>
+                                <td class="center sizes-min" scope="row">{{ request.dict_unit.profile }}</td>
+                                        
+                                <!-- Английский текст попытки -->
+                                <td class="td-textarea td-lang">
+                                    <div class="d-flex">
+                                        <!--{{ request.dict_unit.question }}-->
+
+                                        <textarea
+                                                type="text"
+                                                class="form-control font-textarea"
+                                                :rows="countRows(request.dict_unit.question, (210*request.dict_unit.question_audio+232*!request.dict_unit.question_audio))"
+                                                placeholder="Комментарий"
+                                                v-autosize="request.dict_unit.question"
+                                                v-model="request.dict_unit.question"></textarea>
+
+                                        <!-- Английская озвучка попытки, если есть -->
+                                        <div 
+                                                v-if="request.dict_unit.question_audio" 
+                                                class="material-icons pointer ml-auto" 
+                                                @click="playAudio(request.dict_unit.question_audio)">volume_up</div>
+
+                                    </div>
+                                </td>
+
+                                <!-- Русский текст попытки -->
+                                <td class="td-textarea td-lang">
+                                    <div class="d-flex">
+                                        <!--{{ request.dict_unit.answer }}-->
+
+                                        <textarea
+                                                type="text"
+                                                class="form-control font-textarea"
+                                                :rows="countRows(request.dict_unit.answer, (211*request.dict_unit.answer_audio+235*!request.dict_unit.answer_audio))"
+                                                placeholder="Комментарий"
+                                                v-autosize="request.dict_unit.answer"
+                                                v-model="request.dict_unit.answer"></textarea>
+
+                                        <!-- Русская озвучка попытки, если есть -->
+                                        <div 
+                                                v-if="request.dict_unit.answer_audio" 
+                                                class="material-icons pointer ml-auto" 
+                                                @click="playAudio(request.dict_unit.answer_audio)">volume_up</div>
+
+                                    </div>
+                                </td>
+
+                                <!-- Комментарий к попытке -->
+                                <td class="td-textarea td-comment">
+                                    <textarea
+                                            type="text"
+                                            class="form-control font-textarea"
+                                            :rows="countRows(request.dict_unit.comment, 181)"
+                                            placeholder="Комментарий"
+                                            v-autosize="request.dict_unit.comment"
+                                            v-model="request.dict_unit.comment"></textarea>
+
+                                    <!--{{ request.dict_unit.comment }}-->
+                                </td>
+
+                                <!-- Кнопка сохранения попытки -->
+                                <!--<td class="sizes-min align-middle">
+                                    <div class="btn btn-success" @click="saveAttempt(request)">Сохранить</div>
+                                </td>-->
+
+                                <td v-if="showCompleted && showPerformer">
+                                    {{ request.performer }}
+                                </td>
+
+                                <!--td v-if="index === 2" class="pointer vertical-center">
+                                    <div class="material-icons">
+                                        save
+                                    </div>
+                                </td-->
+
+                                <div v-if="index === 1" class="vertical-center flex-save-tr">
+                                    <button class="btn btn-success mr-5" @click.prevent="preSavePractice">Сохранить</button>
+                                </div>
+
+                            </template>
+
+                            <!--td v-if="index === 1" class="pointer vertical-center flex-save-tr">
+                                <div class="material-icons">
+                                    save
+                                </div>
+                            </td-->
+
+                        </tr>
+
+                    </tbody>
+
+                </table>                
+                
+
+                <!--///////////////////////////////////////////////////-->
+                
                 <!-- The Table itself -->
                 <table v-if="mode === 'voice'" class="table table-bordered table-hover card-sentences-table">
                     
@@ -44,10 +167,7 @@
                             <th class="lang-col">EN (Question)</th>
                             <th class="lang-col">RU (Answer)</th>
                             <th width="200">Комментарий</th>
-                            <th class="sizes-min" v-if="showCompleted">Исполнитель</th>
-                            <th class="sizes-min no-borders">
-                                <div class="material-icons invisible">save</div>
-                            </th>
+                            <th class="sizes-min" v-if="showCompleted && showPerformer">Исполнитель</th>
                         </tr>
                     </thead>
 
@@ -108,14 +228,8 @@
                                     <div class="btn btn-success" @click="saveAttempt(request)">Сохранить</div>
                                 </td>-->
 
-                                <td v-if="showCompleted">
+                                <td v-if="showCompleted && showPerformer">
                                     {{ request.performer }}
-                                </td>
-
-                                <td v-if="index === 2" class="pointer vertical-center">
-                                    <div class="material-icons">
-                                        save
-                                    </div>
                                 </td>
 
                             </template>
@@ -151,11 +265,58 @@
                 showNonCompleted: true,
                 showCompleted: false,
                 mode: 'none',
-                requests: []
+                requests: [],
+                //requestsOld: [],
+                //requests_id: [],
+                showPerformer: false,
+                changedRequests: []
             }
         },
 
         methods: {
+            // Вычисление ширины строки
+            getTextWidth(text, font) {
+                let canvas = this.getTextWidth.canvas || (this.getTextWidth.canvas = document.createElement("canvas"));
+                let context = canvas.getContext("2d");
+                context.font = font;
+                let metrics = context.measureText(text);
+                return metrics.width;
+            },
+            
+            // Расчёт количества строк текстарии
+            countRows(text, width) {
+                let textMeasure = this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif");
+                if (this.showCompleted && this.showPerformer) {
+                    width = 0.75 * width;
+                }
+                let colRows = Math.ceil(textMeasure / width); // bad function
+                if (colRows === 0) colRows = 1;
+                return colRows;
+            },
+
+            // Запись id активного quill-редактора
+            setActiveId(id, type) {
+                this.activeId = id;
+                this.activeType = type;
+            },
+
+            // Закрытие всех quill-редакторов
+            removeActiveId() {
+                this.activeId = -1;
+                this.activeType == "";
+            },
+
+            initRequests() {
+                this.requests.forEach((request) => {
+                    //request.edited = false;
+                    if (request.finished != null) {
+                        this.showPerformer = true;
+                    }
+                    //this.requests_id.push(request.id);
+                    //this.dataReady = true;
+                });
+            },
+
             // Воспроизведение аудио
             playAudio(source) {
                 if (this.snd) {
@@ -195,6 +356,8 @@
                     .then(response => {
                         console.log(response.data);
                         this.requests = response.data;
+                        //this.requestsOld = response.data;
+                        this.initRequests();
                         this.dataReady = true;                          
                     })
                     .catch(error => {
@@ -210,6 +373,26 @@
         },
 
         watch: {
+            /*requests: {
+                handler(val, oldVal) {
+                    if (this.dataReady) {*/
+                        /*console.log(this.requestsOld[0].dict_unit.comment);
+                        console.log(this.requests[0].dict_unit.comment);
+                        this.requests.forEach((request) => {
+                            let requestOld = this.requestsOld.find(x => x.id === request.id);
+                            if (request.dict_unit.comment != requestOld.dict_unit.comment) {
+                                console.log(request.id);
+                            }
+                        });*/
+                        /*console.log(val);
+                        console.log(oldVal);
+                        if (val === oldVal) {
+                            console.log('===')
+                        } else console.log('!=')
+                    }
+                },
+                deep: true
+            }*/
             /*dataLoaded: {
                 handler(val, oldVal) {
                     this.dataReady = this.dataLoaded;
@@ -221,6 +404,29 @@
 </script>
 
 <style scoped>
+    .td-textarea {
+        padding: 5px 3px;
+    }
+
+    .td-comment {
+        width: 20%;
+    }
+
+    .td-lang {
+        width: 25%;
+    }
+
+    /*.no-right-border {
+        border-right: 0px;
+    }*/
+
+    .flex-save-tr {
+        position: absolute;
+        margin-left: 20px;
+        padding-top: 5.4px;
+        padding-bottom: 5.4px; 
+    }
+
     .vertical-center {
         vertical-align: middle;
     }

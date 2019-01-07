@@ -131,7 +131,7 @@
             countRows(text) {
                 let textMeasure = this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif");
                 let colRows = Math.ceil(textMeasure / 445); // 450
-                if (colRows === 0) colRows = 1
+                if (colRows === 0) colRows = 1;
                 return colRows;
             },
 
