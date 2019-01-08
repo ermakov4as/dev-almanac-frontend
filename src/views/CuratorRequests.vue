@@ -40,12 +40,12 @@
                    <!-- Заголовок таблицы -->
                     <thead>
                         <tr class="center">
-                            <th class="sizes-min no-vertical-padding">Дата<br>cоздания</th>
-                            <th class="sizes-min">Пользователь</th>
+                            <th class="sizes-small no-vertical-padding">Дата<br>cоздания</th>
+                            <th class="sizes-small">Пользователь</th>
                             <th class="td-textarea td-lang">EN (Question)</th>
                             <th class="td-textarea td-lang">RU (Answer)</th>
                             <th class="td-textarea td-comment">Комментарий</th>
-                            <th class="sizes-min" v-if="showCompleted && showPerformer">Исполнитель</th>
+                            <th class="sizes-small" v-if="showCompleted && showPerformer">Исполнитель</th>
                             <!--th class="sizes-min no-borders">
                                 <div class="material-icons invisible">save</div>
                             </th-->
@@ -73,8 +73,8 @@
                             <template v-if="(showNonCompleted && request.finished === null) || (showCompleted && request.finished != null)">
                                         
                                 <!-- Автор и группа попытки -->
-                                <td class="center sizes-min" scope="row">{{ decodeDate(request.created) }}</td>
-                                <td class="center sizes-min" scope="row">{{ request.dict_unit.profile }}</td>
+                                <td class="center sizes-small" scope="row">{{ decodeDate(request.created) }}</td>
+                                <td class="center sizes-small" scope="row">{{ request.dict_unit.profile }}</td>
                                         
                                 <!-- Английский текст попытки -->
                                 <td class="td-textarea td-lang">
@@ -84,7 +84,7 @@
                                         <textarea
                                                 type="text"
                                                 class="form-control font-textarea"
-                                                :rows="countRows(request.dict_unit.question, (210*request.dict_unit.question_audio+232*!request.dict_unit.question_audio))"
+                                                :rows="countRows(request.dict_unit.question, (189*request.dict_unit.question_audio+232*!request.dict_unit.question_audio))"
                                                 placeholder="Комментарий"
                                                 v-autosize="request.dict_unit.question"
                                                 v-model="request.dict_unit.question"></textarea>
@@ -106,7 +106,7 @@
                                         <textarea
                                                 type="text"
                                                 class="form-control font-textarea"
-                                                :rows="countRows(request.dict_unit.answer, (211*request.dict_unit.answer_audio+235*!request.dict_unit.answer_audio))"
+                                                :rows="countRows(request.dict_unit.answer, (189*request.dict_unit.answer_audio+235*!request.dict_unit.answer_audio))"
                                                 placeholder="Комментарий"
                                                 v-autosize="request.dict_unit.answer"
                                                 v-model="request.dict_unit.answer"></textarea>
@@ -139,7 +139,7 @@
                                     <div class="btn btn-success" @click="saveAttempt(request)">Сохранить</div>
                                 </td>-->
 
-                                <td v-if="showCompleted && showPerformer">
+                                <td v-if="showCompleted && showPerformer" class="sizes-small">
                                     {{ request.performer }}
                                 </td>
 
@@ -180,12 +180,12 @@
                    <!-- Заголовок таблицы -->
                     <thead>
                         <tr class="center">
-                            <th class="sizes-min no-vertical-padding">Дата<br>cоздания</th>
-                            <th class="sizes-min">Пользователь</th>
+                            <th class="sizes-small no-vertical-padding">Дата<br>cоздания</th>
+                            <th class="sizes-small">Пользователь</th>
                             <th class="lang-col">EN (Question)</th>
                             <th class="lang-col">RU (Answer)</th>
-                            <th width="200">Комментарий</th>
-                            <th class="sizes-min" v-if="showCompleted && showPerformer">Исполнитель</th>
+                            <th class="lang-col">Комментарий</th>
+                            <th class="sizes-small" v-if="showCompleted && showPerformer">Исполнитель</th>
                         </tr>
                     </thead>
 
@@ -197,8 +197,8 @@
                             <template v-if="(showNonCompleted && request.finished === null) || (showCompleted && request.finished != null)">
                                         
                                 <!-- Автор и группа попытки -->
-                                <td class="center sizes-min" scope="row">{{ decodeDate(request.created) }}</td>
-                                <td class="center sizes-min" scope="row">{{ request.dict_unit.profile }}</td>
+                                <td class="center sizes-small" scope="row">{{ decodeDate(request.created) }}</td>
+                                <td class="center sizes-small" scope="row">{{ request.dict_unit.profile }}</td>
                                         
                                 <!-- Английский текст попытки -->
                                 <td class="lang-col">
@@ -246,7 +246,7 @@
                                     <div class="btn btn-success" @click="saveAttempt(request)">Сохранить</div>
                                 </td>-->
 
-                                <td v-if="showCompleted && showPerformer">
+                                <td v-if="showCompleted && showPerformer" class="sizes-small">
                                     {{ request.performer }}
                                 </td>
 
@@ -291,7 +291,9 @@
                 changedRequests: [],
                 activeId: -1,
                 requestsNumber: 0,
-                savingId: -1
+                savingId: -1/*,
+                members: [],
+                membersReady: false*/
             }
         },
 
@@ -302,11 +304,11 @@
                 this.requests.forEach((request) => {
                     if (request.id === this.savingId) {
                         updatedRequests.push(savedRequest);
-                        /*console.log('---');
+                        console.log('---');
                         console.log(request);
                         console.log(savedRequest);
                         console.log('+++');
-                        request = savedRequest;
+                        /*request = savedRequest;
                         console.log(request);
                         console.log('!!!');*/
                     } else {
@@ -322,6 +324,7 @@
             save(request) {
                 HTTP.put('/staff/curator/analysis_requests/', request)
                     .then(response => {
+                        console.log('resp.');
                         console.log(response.data);
                         //this.requests = this.postSave(response.data);
                         this.postSave(response.data);
@@ -349,7 +352,8 @@
                 this.savingId = request.id;
                 //delete request.focused;
                 //this.$delete(request, 'focused');
-                //console.log(request);   
+                console.log('ttt');
+                console.log(request);   
                 this.save(request);             
             },
 
@@ -370,7 +374,7 @@
             countRows(text, width) {
                 let textMeasure = this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif");
                 if (this.showCompleted && this.showPerformer) {
-                    width = 0.87 * width;
+                    width = 0.82 * width;
                 }
                 let colRows = Math.ceil(textMeasure / width); // bad function
                 if (colRows === 0) colRows = 1;
@@ -389,6 +393,25 @@
                 this.activeType == "";
             },*/
 
+            /*// Загрузка списка персонала
+            getMembers() {
+                HTTP.get('editor/member_list/')
+                    .then(response => {
+                        this.members = response.data; 
+                        this.membersReady = true;
+                        console.log(this.members);                    
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.$notify({
+                            group: 'foo',
+                            type: "error",
+                            title: 'Произошла ошибка',
+                            text: 'Sorry'
+                        });
+                    });
+            },*/
+
             initRequests() {
                 this.requests.forEach((request) => {
                     request.edited = false;
@@ -404,6 +427,9 @@
                 if (this.requestsNumber === 0) {
                     this.mode = 'none'
                 }
+                /*if (this.showPerformer) {
+                    this.getMembers()
+                }*/
             },
 
             // Воспроизведение аудио
@@ -584,5 +610,19 @@
         font-size: 18px;
         padding-top: 7px;
         padding: 7px 10px 7px 10px;
+    }
+
+    .sizes-small {
+        padding-right: 3px;
+        padding-left: 3px;
+    }
+
+    .font-textarea {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    .sizes-min {
+        padding-right: 0px;
+        padding-left: 0px;
     }
 </style>
