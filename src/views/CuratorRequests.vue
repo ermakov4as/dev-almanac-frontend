@@ -56,7 +56,20 @@
                     <tbody>
 
                         <!-- Непроверенные попытки -->
-                        <tr v-for="(request, index) in requests" :key="index">
+                        <tr 
+                                v-for="(request, index) in requests" 
+                                :key="index"
+                                @mouseenter="activeId = request.id" 
+                                @mouseleave="activeId = -1">
+                                <!--@mouseenter="request.focused = true" 
+                                @mouseleave="request.focused = false"-->
+
+                            <!--analysis-line
+                                    v-if="(showNonCompleted && request.finished === null) || (showCompleted && request.finished != null)"
+                                    :request="request"
+                                    :performerEnable="showCompleted && showPerformer"
+                                    @scheme_selected="schemeSelected"></analysis-line-->
+
                             <template v-if="(showNonCompleted && request.finished === null) || (showCompleted && request.finished != null)">
                                         
                                 <!-- Автор и группа попытки -->
@@ -114,6 +127,7 @@
                                             class="form-control font-textarea"
                                             :rows="countRows(request.dict_unit.comment, 181)"
                                             placeholder="Комментарий"
+                                            @input="request.edited = true"
                                             v-autosize="request.dict_unit.comment"
                                             v-model="request.dict_unit.comment"></textarea>
 
@@ -135,8 +149,12 @@
                                     </div>
                                 </td-->
 
-                                <div v-if="index === 1" class="vertical-center flex-save-tr">
-                                    <button class="btn btn-success mr-5" @click.prevent="preSavePractice">Сохранить</button>
+                                <div 
+                                        v-if="request.edited && activeId === request.id" 
+                                        class="vertical-center flex-save-tr"
+                                        @mouseenter="activeId = request.id" 
+                                        @mouseleave="activeId = -1">
+                                    <button class="btn btn-success mr-5" @click.prevent="preSave(request)">Сохранить</button>
                                 </div>
 
                             </template>
@@ -237,8 +255,9 @@
 
                     </tbody>
 
-                </table>        
+                </table> 
 
+                <h5 v-else-if="mode === 'none'">Нет доступных заявок</h5>   
 
                 <!--<div v-if="mode === 'analysis'">
                     <p>!!!</p>
@@ -269,11 +288,75 @@
                 //requestsOld: [],
                 //requests_id: [],
                 showPerformer: false,
-                changedRequests: []
+                changedRequests: [],
+                activeId: -1,
+                requestsNumber: 0,
+                savingId: -1
             }
         },
 
         methods: {
+            postSave(savedRequest) {
+                //let requests = this.requests;
+                let updatedRequests = [];
+                this.requests.forEach((request) => {
+                    if (request.id === this.savingId) {
+                        updatedRequests.push(savedRequest);
+                        /*console.log('---');
+                        console.log(request);
+                        console.log(savedRequest);
+                        console.log('+++');
+                        request = savedRequest;
+                        console.log(request);
+                        console.log('!!!');*/
+                    } else {
+                        updatedRequests.push(request);
+                    }
+                });
+                console.log(updatedRequests);
+                this.savingId = -1;
+                this.requests = updatedRequests;
+                //return requests;
+            },
+
+            save(request) {
+                HTTP.put('/staff/curator/analysis_requests/', request)
+                    .then(response => {
+                        console.log(response.data);
+                        //this.requests = this.postSave(response.data);
+                        this.postSave(response.data);
+                        this.$notify({
+                            group: 'foo',
+                            type: "success",
+                            title: 'Успешно сохранено',
+                            text: 'Заявка сохранена на сервере'
+                        });
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.$notify({
+                            group: 'foo',
+                            type: "error",
+                            title: 'Произошла ошибка',
+                            text: 'Sorry'
+                        });
+                    });
+            },
+
+            preSave(request) {
+                //console.log(request);
+                delete request.edited;
+                this.savingId = request.id;
+                //delete request.focused;
+                //this.$delete(request, 'focused');
+                //console.log(request);   
+                this.save(request);             
+            },
+
+            /*test(id) {
+                console.log('test' + id);
+            },*/
+
             // Вычисление ширины строки
             getTextWidth(text, font) {
                 let canvas = this.getTextWidth.canvas || (this.getTextWidth.canvas = document.createElement("canvas"));
@@ -287,14 +370,14 @@
             countRows(text, width) {
                 let textMeasure = this.getTextWidth(text, "400 1rem -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif");
                 if (this.showCompleted && this.showPerformer) {
-                    width = 0.75 * width;
+                    width = 0.87 * width;
                 }
                 let colRows = Math.ceil(textMeasure / width); // bad function
                 if (colRows === 0) colRows = 1;
                 return colRows;
             },
 
-            // Запись id активного quill-редактора
+            /*// Запись id активного quill-редактора
             setActiveId(id, type) {
                 this.activeId = id;
                 this.activeType = type;
@@ -304,17 +387,23 @@
             removeActiveId() {
                 this.activeId = -1;
                 this.activeType == "";
-            },
+            },*/
 
             initRequests() {
                 this.requests.forEach((request) => {
-                    //request.edited = false;
+                    request.edited = false;
+                    this.requestsNumber += 1;
+                    //this.$set(request, 'focused', false);
+                    //request.focused = false;
                     if (request.finished != null) {
                         this.showPerformer = true;
                     }
                     //this.requests_id.push(request.id);
                     //this.dataReady = true;
                 });
+                if (this.requestsNumber === 0) {
+                    this.mode = 'none'
+                }
             },
 
             // Воспроизведение аудио
@@ -422,7 +511,7 @@
 
     .flex-save-tr {
         position: absolute;
-        margin-left: 20px;
+        padding-left: 20px;
         padding-top: 5.4px;
         padding-bottom: 5.4px; 
     }
