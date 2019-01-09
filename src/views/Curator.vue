@@ -41,7 +41,7 @@
                             <!-- Заголовок таблицы -->
                             <thead>
                                 <tr class="center">
-                                    <th class="sizes-min">Имя студента</th>
+                                    <th class="sizes-min no-vertical-padding">Имя студента<br>Время попытки</th>
                                     <th class="sizes-min">Группа</th>
                                     <th class="lang-col">EN</th>
                                     <th class="lang-col">RU</th>
@@ -59,7 +59,9 @@
                                     <template v-if="!attempt.checked">
                                         
                                         <!-- Автор и группа попытки -->
-                                        <td class="center sizes-min" scope="row">{{ attempt.name }}</td>
+                                        <td class="center sizes-min no-vertical-padding" scope="row">
+                                            {{ attempt.name }}<br>{{ decodeDateTime(attempt.date_created) }}
+                                        </td>
                                         <td class="center sizes-min" scope="row">{{ attempt.team }}</td>
                                         
                                         <!-- Английский текст попытки -->
@@ -91,9 +93,15 @@
                                         </td>
 
                                         <!-- Правильность попытки -->
-                                        <td class="sizes-min center" @click="attempt.accepted = !attempt.accepted">
-                                            <i class="material-icons pointer" v-if="!attempt.accepted">clear</i>
-                                            <i class="material-icons pointer" v-else>done</i>
+                                        <!--td class="sizes-min center" @click="attempt.accepted = !attempt.accepted"-->
+                                        <td class="sizes-small center">
+                                            <input
+                                                    type="text"
+                                                    id="name"
+                                                    class="form-control"
+                                                    v-model="attempt.result">
+                                            <!--<i class="material-icons pointer" v-if="!attempt.accepted">clear</i>
+                                            <i class="material-icons pointer" v-else>done</i>-->
                                         </td>
 
                                         <!-- Комментарий к попытке -->
@@ -129,7 +137,9 @@
                                     <template v-if="attempt.checked">
                                         
                                         <!-- Автор и группа попытки -->
-                                        <td class="center sizes-min" scope="row">{{ attempt.name }}</td>
+                                        <td class="center sizes-min no-vertical-padding" scope="row">
+                                            {{ attempt.name }}<br>{{ decodeDateTime(attempt.date_created) }}
+                                        </td>
                                         <td class="center sizes-min" scope="row">{{ attempt.team }}</td>
                                         
                                         <!-- Английский текст попытки -->
@@ -161,13 +171,20 @@
                                         </td>
 
                                         <!-- Правильность попытки -->
-                                        <td class="sizes-min center" @click="attempt.accepted = !attempt.accepted">
+                                        <!--td class="sizes-min center" @click="attempt.accepted = !attempt.accepted">
                                             <i class="material-icons pointer" v-if="!attempt.accepted">clear</i>
                                             <i class="material-icons pointer" v-else>done</i>
+                                        </td-->
+                                        <td class="sizes-small center">
+                                            <input
+                                                    type="text"
+                                                    id="name"
+                                                    class="form-control"
+                                                    v-model="attempt.result">
                                         </td>
 
                                         <!-- Комментарий к попытке -->
-                                        <td>
+                                        <td class="td-textarea">
                                             <textarea
                                                     type="text"
                                                     id='comment'
@@ -223,11 +240,28 @@
         },
 
         methods: {
+            // Преобразование времени в читаемый вид
+            decodeDateTime(date) {
+                let msUTS = Date.parse(date);
+                let _Date = new Date(msUTS);
+                let minutes = _Date.getMinutes();
+                let extraZeros = '';
+                if (minutes < 10) {
+                    if (minutes === 0) {
+                        extraZeros = '00';
+                    } else {
+                        extraZeros = '0';
+                    }
+                }
+                let creationDate = `${_Date.getDate()}.${_Date.getMonth()}.${_Date.getFullYear()}, ${_Date.getHours()}:${extraZeros}${minutes}`;
+                return creationDate;
+            },
+
             // Сохранение попытки
             saveAttempt(attempt) {
                 let savingAttempt ={
                     id: attempt.id,
-                    accepted: attempt.accepted,
+                    result: attempt.result,
                     comment: attempt.comment
                 };
                 if (attempt.comment === "") {
@@ -298,6 +332,7 @@
                 HTTP.get('/staff/curator/attempt_list/')
                     .then(response => {
                         this.streams = response.data;
+                        console.log(this.streams);
                         this.dataLoaded = true;
                         //notif('success', "");                           
                     })
@@ -351,6 +386,15 @@
 </script>
 
 <style scoped>
+    .no-vertical-padding {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    .td-textarea {
+        padding: 3px;
+    }
+
     .only-hide {
         color: blue;
         margin-right: 50px;
