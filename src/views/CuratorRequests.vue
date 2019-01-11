@@ -25,11 +25,9 @@
                 <i class='fa fa-spinner fa-pulse fa-4x'></i>
             </p>
 
-            <!-- Гиперблок потоков, если есть соединение с сервером -->
             <div class="table-place" v-else-if="mode != 'none'">
-                
-                
-                <!-- The Table itself -->
+                 
+                <!-- Таблица для анализа -->
                 <table v-if="mode === 'analysis'" class="table table-bordered table-hover card-sentences-table">
                     
                    <!-- Заголовок таблицы -->
@@ -47,7 +45,7 @@
                     <!-- Тело таблицы -->
                     <tbody>
 
-                        <!-- Непроверенные попытки -->
+                        <!-- Заявка -->
                         <tr 
                                 v-for="(request, index) in requests" 
                                 :key="index"
@@ -56,11 +54,11 @@
 
                             <template v-if="(showNonCompleted && request.finished === null) || (showCompleted && request.finished != null)">
                                         
-                                <!-- Автор и группа попытки -->
+                                <!-- Дата создания и пользователь -->
                                 <td class="center sizes-small" scope="row">{{ decodeDate(request.created) }}</td>
                                 <td class="center sizes-small" scope="row">{{ request.dict_unit.profile }}</td>
                                         
-                                <!-- Английский текст попытки -->
+                                <!-- Английский текст -->
                                 <td class="td-textarea td-lang">
                                     <div class="d-flex">
 
@@ -72,7 +70,7 @@
                                                 v-autosize="request.dict_unit.question"
                                                 v-model="request.dict_unit.question"></textarea>
 
-                                        <!-- Английская озвучка попытки, если есть -->
+                                        <!-- Английская озвучка, если есть -->
                                         <div 
                                                 v-if="request.dict_unit.question_audio" 
                                                 class="material-icons pointer ml-auto" 
@@ -81,7 +79,7 @@
                                     </div>
                                 </td>
 
-                                <!-- Русский текст попытки -->
+                                <!-- Русский текст -->
                                 <td class="td-textarea td-lang">
                                     <div class="d-flex">
 
@@ -93,7 +91,7 @@
                                                 v-autosize="request.dict_unit.answer"
                                                 v-model="request.dict_unit.answer"></textarea>
 
-                                        <!-- Русская озвучка попытки, если есть -->
+                                        <!-- Русская озвучка, если есть -->
                                         <div 
                                                 v-if="request.dict_unit.answer_audio" 
                                                 class="material-icons pointer ml-auto" 
@@ -102,7 +100,7 @@
                                     </div>
                                 </td>
 
-                                <!-- Комментарий к попытке -->
+                                <!-- Комментарий -->
                                 <td class="td-textarea td-comment">
                                     <textarea
                                             type="text"
@@ -114,10 +112,12 @@
                                             v-model="request.dict_unit.comment"></textarea>
                                 </td>
 
+                                <!-- Исполнитель (для выполненных заявок) -->
                                 <td v-if="showCompleted && showPerformer" class="sizes-small">
                                     {{ request.performer }}
                                 </td>
 
+                                <!-- Сохранение изменений в заявке. Активно при наведении курсора и наличии изменений -->
                                 <div 
                                         v-if="request.edited && activeId === request.id" 
                                         class="vertical-center flex-save-tr"
@@ -135,7 +135,7 @@
                 </table>                
                 
                 
-                <!-- The Table itself -->
+                <!-- Таблица для озвучки -->
                 <table v-if="mode === 'voice'" class="table table-bordered table-hover card-sentences-table">
                     
                    <!-- Заголовок таблицы -->
@@ -153,20 +153,20 @@
                     <!-- Тело таблицы -->
                     <tbody>
 
-                        <!-- Непроверенные попытки -->
+                        <!-- Заявки -->
                         <tr v-for="(request, index) in requests" :key="index">
                             <template v-if="(showNonCompleted && request.finished === null) || (showCompleted && request.finished != null)">
                                         
-                                <!-- Автор и группа попытки -->
+                                <!-- Дата создания и пользователь -->
                                 <td class="center sizes-small" scope="row">{{ decodeDate(request.created) }}</td>
                                 <td class="center sizes-small" scope="row">{{ request.dict_unit.profile }}</td>
                                         
-                                <!-- Английский текст попытки -->
+                                <!-- Английский текст -->
                                 <td>
                                     <div class="d-flex">
                                         {{ request.dict_unit.question }}
 
-                                        <!-- Английская озвучка попытки, если есть -->
+                                        <!-- Английская озвучка, если есть -->
                                         <div 
                                                 v-if="request.dict_unit.question_audio" 
                                                 class="material-icons pointer ml-auto" 
@@ -175,12 +175,12 @@
                                     </div>
                                 </td>
 
-                                <!-- Русский текст попытки -->
+                                <!-- Русский текст -->
                                 <td>
                                     <div class="d-flex">
                                         {{ request.dict_unit.answer }}
 
-                                        <!-- Русская озвучка попытки, если есть -->
+                                        <!-- Русская озвучка, если есть -->
                                         <div 
                                                 v-if="request.dict_unit.answer_audio" 
                                                 class="material-icons pointer ml-auto" 
@@ -189,11 +189,12 @@
                                     </div>
                                 </td>
 
-                                <!-- Комментарий к попытке -->
+                                <!-- Комментарий -->
                                 <td>
                                     {{ request.dict_unit.comment }}
                                 </td>
 
+                                <!-- Исполнитель (для выполненных заявок) -->
                                 <td v-if="showCompleted && showPerformer" class="sizes-small">
                                     {{ request.performer }}
                                 </td>
@@ -205,6 +206,7 @@
 
                 </table> 
 
+                <!-- Заглушка на случай отсутствия заявок -->
                 <h5 v-else-if="mode === 'none'">Нет доступных заявок</h5>   
 
             </div>
@@ -233,6 +235,7 @@
         },
 
         methods: {
+            // Операции сразу после успешного сохранения
             postSave(savedRequest) {
                 let updatedRequests = [];
                 this.requests.forEach((request) => {
@@ -246,6 +249,7 @@
                 this.requests = updatedRequests;
             },
 
+            // Сохранение на сервере
             save(request) {
                 HTTP.put('/staff/curator/analysis_requests/', request)
                     .then(response => {
@@ -268,6 +272,7 @@
                     });
             },
 
+            // Подготовка к сохранению
             preSave(request) {
                 delete request.edited;
                 this.savingId = request.id;   
@@ -294,7 +299,7 @@
                 return colRows;
             },
 
-
+            // Проверка на наличие выполненных запросов 
             initRequests() {
                 this.showPerformer = false;
                 let requestsNumber = 0;
@@ -319,6 +324,7 @@
                 this.snd.play();
             },
 
+            // Преобразование даты в читаемый вид
             decodeDate(date) {
                 let msUTS = Date.parse(date);
                 let normalDate = new Date(msUTS);
@@ -326,12 +332,14 @@
                 return creationDate;
             },
 
+            // Запрос на заявки-анализ
             analysis() {
                 this.dataReady = false;
                 this.mode = 'analysis';
                 this.getData('/staff/curator/analysis_requests/');
             },
 
+            // Запрос на заявки-озвучку
             voice() {
                 this.dataReady = false;
                 this.mode = 'voice';
