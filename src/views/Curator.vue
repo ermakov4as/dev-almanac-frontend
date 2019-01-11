@@ -15,7 +15,7 @@
             <div v-for="(stream, streamIndex) in streams" :key="streamIndex">     
                 <div class="form-group elements-list-margin" @click="stream.showStream = !stream.showStream">
                     <div class="label-subtitle stream">
-                        <h3>Поток: {{ stream.name }}
+                        <h3>Поток: {{ stream.name }} ({{ stream.unchecked }})
                         </h3>
                     </div>
                 </div>
@@ -24,7 +24,7 @@
                 <div v-if="stream.showStream" v-for="(lesson, lessonIndex) in stream.lessons" :key="lessonIndex">
                     <div class="form-group elements-list-margin" @click="lesson.showLesson = !lesson.showLesson">
                         <div class="label-subtitle lesson">
-                            <h5>Урок: {{ lesson.name }}
+                            <h5>Урок: {{ lesson.name }} ({{ lesson.unchecked }})
                             </h5>
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                                     <th class="sizes-min">Группа</th>
                                     <th class="lang-col">EN</th>
                                     <th class="lang-col">RU</th>
-                                    <th class="sizes-min">Правильно</th>
+                                    <th class="sizes-min">Баллы</th>
                                     <th width="200">Комментарий</th>
                                     <th class="sizes-min"></th>
                                 </tr>
@@ -94,7 +94,7 @@
 
                                         <!-- Правильность попытки -->
                                         <!--td class="sizes-min center" @click="attempt.accepted = !attempt.accepted"-->
-                                        <td class="sizes-small center">
+                                        <td class="sizes-min center">
                                             <input
                                                     type="text"
                                                     id="name"
@@ -118,7 +118,7 @@
 
                                         <!-- Кнопка сохранения попытки -->
                                         <td class="sizes-min align-middle">
-                                            <div class="btn btn-success" @click="saveAttempt(attempt)">Сохранить</div>
+                                            <div class="btn btn-success" @click="saveAttempt(attempt, lesson, stream)">Сохранить</div>
                                         </td>
 
                                     </template>
@@ -175,7 +175,7 @@
                                             <i class="material-icons pointer" v-if="!attempt.accepted">clear</i>
                                             <i class="material-icons pointer" v-else>done</i>
                                         </td-->
-                                        <td class="sizes-small center">
+                                        <td class="sizes-min center">
                                             <input
                                                     type="text"
                                                     id="name"
@@ -197,7 +197,7 @@
 
                                         <!-- Кнопка сохранения попытки -->
                                         <td class="sizes-min align-middle">
-                                            <button class="btn btn-success" @click.prevent="saveAttempt(attempt)">Сохранить</button>
+                                            <button class="btn btn-success" @click.prevent="saveAttempt(attempt, lesson, stream)">Сохранить</button>
                                         </td>
                                 
                                     </template>
@@ -258,7 +258,7 @@
             },
 
             // Сохранение попытки
-            saveAttempt(attempt) {
+            saveAttempt(attempt, lesson, stream) {
                 let savingAttempt ={
                     id: attempt.id,
                     result: attempt.result,
@@ -276,6 +276,8 @@
                             text: 'Данные отправлены на сервер'
                         });
                         attempt.checked = true;
+                        lesson.unchecked -= 1;
+                        stream.unchecked -= 1;
                     })
                     .catch(error => {
                         console.log(error);
@@ -292,11 +294,19 @@
             initStreams() {
                 this.streams.forEach((stream) => {
                     this.$set(stream, 'showStream', false);
+                    this.$set(stream, 'unchecked', 0);
                     stream.lessons.forEach((lesson) => {
                         this.$set(lesson, 'showLesson', false);
+                        this.$set(lesson, 'unchecked', 0);
                         lesson.images.forEach((image) => {
                             this.$set(image, 'showChecked', false);
+                            image.attempts.forEach((attempt) => {
+                                if (!attempt.checked) {
+                                    lesson.unchecked += 1;
+                                }
+                            });
                         });
+                        stream.unchecked += lesson.unchecked;
                     });
                 });
             },

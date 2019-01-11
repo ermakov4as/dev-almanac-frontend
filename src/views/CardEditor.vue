@@ -103,7 +103,7 @@
 
                 </div>
 
-                <!-- Блок редактирования содержания карточки и времени на её изучение -->
+                <!-- Блок редактирования содержания карточки -->
                 <div class="label-subtitle">
                     <label for="content">Содержимое</label>
                     <p @click="showContent = !showContent" class="show-element">
@@ -120,23 +120,6 @@
                             :dataReady="dataWithExamplesReady"
                             :examples="exampleImages"
                             @editorUpdated="editorUpdated"></editor-block>
-                </div>
-
-                <!-- Блок редактирования времени на изучение карточки -->
-                <div class="form-group">
-                    <div class="label-subtitle">
-                        <label for="time">Время на изучение
-                            <span class="label-subdescription">   (в секундах)</span>
-                        </label>
-                    </div>
-                    <div class="form-element">
-                        <input
-                                type="number"
-                                min="0"
-                                id="time"
-                                class="form-control time-input"
-                                v-model="card.time">
-                    </div>
                 </div>
 
             </form>
