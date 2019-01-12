@@ -93,9 +93,16 @@
                         <td class="scheme-col center" @click="removeActiveId">
                             <div v-if="example.image" class="d-flex justify-content-center">
                                 <figure class="ml-auto">
-                                    <img :src="example.image.url" alt="..." class="img-fluid height-max">
+                                    <img :src="example.image.url" alt="..." 
+                                            class="img-fluid height-max scheme-changing" 
+                                            @click="changeSchemeAction(example.image)">
                                 </figure>
                                 <div class="material-icons pointer ml-auto" @click="example.image = ''">close</div>
+                                <change-scheme 
+                                        v-if="changeScheme" 
+                                        @close="changeScheme = false"
+                                        :image="changingSchemeImage"
+                                        @image_changed="imageChanged"></change-scheme>
                             </div>
                             <div v-else>
                                 <button 
@@ -152,6 +159,7 @@
     import UploadScheme from '../Elements/Modals/UploadScheme.vue'
     import SelectScheme from '../Elements/Modals/SelectScheme.vue'
     import MakeVoice from './Modals/MakeVoice.vue'
+    import ChangeScheme from './Modals/ChangeScheme.vue'
     import ClickOutside from 'vue-click-outside'
     import '../Elements/v-html_styles.css'
 
@@ -180,14 +188,17 @@
                             [{'color': []}]
                         ]
                     }
-                }
+                },
+                changeScheme: false,
+                changingSchemeImage: {},
             };
         },
 
         components: {
             UploadScheme,
             SelectScheme,
-            MakeVoice
+            MakeVoice,
+            ChangeScheme
         },
 
         directives: {
@@ -195,6 +206,26 @@
         },
 
         methods: {
+            // Изменение схемы
+            imageChanged(imageData) {
+                this.imageUploaded(imageData);
+                let id = this.changingSchemeImage.id;
+                this.examples.forEach((example) => {
+                    if (example.image) {
+                        if (example.image.id === id) {
+                            example.image = imageData;
+                        }
+                    }
+                });
+                this.changingSchemeImage = {};
+            },
+
+            // Замена всех схем с одинаковым id
+            changeSchemeAction(image) {
+                this.changingSchemeImage = image;
+                this.changeScheme = true;
+            },
+
             // Запись id активного quill-редактора
             setActiveId(id, type) {
                 this.activeId = id;
@@ -459,6 +490,9 @@
         padding-bottom: 0;
         vertical-align: middle;
     }*/
+    .scheme-changing {
+        cursor: alias;
+    }
 
     .width-full {
         width: 100%;
